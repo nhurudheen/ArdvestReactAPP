@@ -18,9 +18,9 @@ const UserLogin = () => {
             <AuthHeaders />
             <Buttons btnType={'backButton'} />
 
-            <div class="grid gap-2">
-                <p class="text-sm text-center">Good {timeOfTheDay},</p>
-                <p class="text-center text-xl font-semibold text-primary">Welcome back!</p>
+            <div className="grid gap-2">
+                <p className="text-sm text-center">Good {timeOfTheDay},</p>
+                <p className="text-center text-xl font-semibold text-primary">Welcome back!</p>
             </div>
 
             <div className="flex justify-center w-full my-5">
@@ -32,10 +32,9 @@ const UserLogin = () => {
                         <InputWithLabel labelName={'Password'}
                             inputType={'password'}
                             placeholder={'*********************'} />
-                        <a href="/forgot-password.html" class="text-xs font-semibold underline text-primary text-end">Forgot password?</a>
+                        <a href="/forgot-password.html" className="text-xs font-semibold underline text-primary text-end">Forgot password?</a>
                         <Buttons btnText={'Continue'} btnType={'primary'} />
-                        <p className="text-center text-sm">Don't have an account ? <Link to={'/createAccount'}><span className="text-primary">Login</span></Link></p>
-
+                        <p className="text-center text-sm">Don't have an account ? <Link to={'/createAccount'}><span className="text-primary">Create Account</span></Link></p>
                     </div>
                 </div>
             </div>

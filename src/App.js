@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import LandingPage from './Pages/landingPage';
 import CreateAccount from './Pages/user/auth/createAccount';
 import UserLogin from './Pages/user/auth/login';
+import VerifyEmail from './Pages/user/auth/verifyEmail';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path='/' element={<LandingPage/>}/>
           <Route path='/createAccount' element ={<CreateAccount/>}/>
           <Route path='/auth' element ={<UserLogin/>}/>
+          <Route path='/verifyEmail/:emailAddress' element={<VerifyEmail/>}/>
         </Routes>
       </BrowserRouter>
     </div>
