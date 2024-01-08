@@ -2,14 +2,15 @@ import { useEffect } from "react";
 import AuthHeaders from "../../../Components/authHeader";
 import Buttons from "../../../Components/buttons";
 import InputWithLabel from "../../../Components/inputWithLabel";
+import { Link } from "react-router-dom";
 
 const CreateAccount = () => {
     useEffect(() => {
         document.title = "Create Account | Ardvest";
-        document.querySelector('meta[name="description"]').content = "";
+        document.querySelector('meta[name="description"]').content = "Join Ardvest: Start your investment journey with a personalized account.";
     }, []);
     return (
-        <div>
+        <div className="relative">
             <AuthHeaders />
             <Buttons btnType={'backButton'} />
 
@@ -51,7 +52,7 @@ const CreateAccount = () => {
                         </ul>
 
                         <Buttons btnText={'Continue'} btnType={'primary'} />
-                        <p className="text-center text-sm">If you already created an account, <a href="/login.html" className="text-primary">Login</a></p>
+                        <p className="text-center text-sm">If you already created an account, <Link to={'/auth'}><span className="text-primary">Create Account</span></Link></p>
 
                     </div>
                 </div>

@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 const LandingPage = () => {
     return (
         <div className="relative">
-            <AuthHeaders />
+            <AuthHeaders position={'absolute'} />
             <div className="grid grid-cols-1 md:grid-cols-2 h-screen items-center px-5 md:px-8">
                 <div className="h-full flex items-end md:items-center">
                     <div className="px-0 md:px-10">
@@ -29,7 +29,7 @@ const LandingPage = () => {
                         </div>
                         <div className="mt-10 grid grid-cols-1 md:flex gap-6">
                             <Link to={'/createAccount'}><Buttons btnText={'Create Account'} btnType={'primary'}/></Link>
-                            <Buttons btnText={'Login'} btnType={'secondary'}/>
+                            <Link to={'auth'}><Buttons btnText={'Login'} btnType={'secondary'}/></Link>
                         </div>
                     </div>
                 </div>
