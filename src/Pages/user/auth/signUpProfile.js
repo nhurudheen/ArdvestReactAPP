@@ -4,12 +4,14 @@ import Buttons from "../../../Components/buttons";
 import { useParams } from "react-router-dom";
 import InputWithLabel from "../../../Components/inputWithLabel";
 import { previewImage, openFileInput } from "../../../Components/utils";
+import SelectInput from "../../../Components/selectInput";
 
 const SignUpProfile = () =>{
     useEffect(() => {
         document.title = "Complete Account | Ardvest";
         document.querySelector('meta[name="description"]').content = "Start your investment journey with a personalized account.";
     }, []);
+    const genderOptions = [{value:'Male', label:'Male'}, {value:'Female', label:'Female'}];
     let { emailAddress } = useParams();
     emailAddress = atob(emailAddress);
     return (
@@ -46,14 +48,7 @@ const SignUpProfile = () =>{
             <InputWithLabel labelName={'Home Address'}
                             placeholder={'No 20 xyz Street ...'}
                             inputType={'text'}/>
-              <div className="grid">
-                <span className="text-sm font-medium">Gender:</span>
-                <select name="" id="" className="p-3 bg-[#f8f8f8] border text-sm rounded">
-                  <option value="" disabled selected >Select a gender</option>
-                  <option value="">Male</option>
-                  <option value="">Female</option>
-                </select>    
-              </div>
+           <SelectInput labelName={'Gender'} selectOptions={genderOptions} valueKey="value" labelKey="label" />
               <InputWithLabel labelName={'Next of kin'}
                               placeholder={'Bolu Doe'}
                               inputType={'text'}/>
