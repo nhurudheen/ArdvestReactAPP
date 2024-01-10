@@ -36,3 +36,19 @@ export function handleInput(currentInput) {
     document.getElementById('userInput').value = userInput;
     focusNext(currentInput);
 }
+
+export function openFileInput() {
+    document.getElementById('imageInput').click();
+  }
+  
+export function previewImage() {
+    var image = document.getElementById("imageInput").files[0];
+    var reader = new FileReader();
+  
+    reader.onload = function (e) {
+      document.getElementById("imagePreview").style.backgroundImage =
+        "url('" + e.target.result + "')";
+    };
+  
+    reader.readAsDataURL(image);
+  }

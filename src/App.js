@@ -5,6 +5,7 @@ import LandingPage from './Pages/landingPage';
 import CreateAccount from './Pages/user/auth/createAccount';
 import UserLogin from './Pages/user/auth/login';
 import VerifyEmail from './Pages/user/auth/verifyEmail';
+import SignUpProfile from './Pages/user/auth/signUpProfile';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path='/createAccount' element ={<CreateAccount/>}/>
           <Route path='/auth' element ={<UserLogin/>}/>
           <Route path='/verifyEmail/:emailAddress' element={<VerifyEmail/>}/>
+          <Route path='/signUpProfile/:emailAddress' element={<SignUpProfile/>}/>
         </Routes>
       </BrowserRouter>
     </div>

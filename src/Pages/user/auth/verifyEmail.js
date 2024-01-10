@@ -7,10 +7,11 @@ import OtpInputs from "../../../Components/otpInputs";
 const VerifyEmail = () => {
     useEffect(() => {
         document.title = "Verify Email Address | Ardvest";
-        document.querySelector('meta[name="description"]').content = "Join Ardvest: Start your investment journey with a personalized account.";
+        document.querySelector('meta[name="description"]').content = "Verify Email Address to validate your account for your investment";
     }, []);
     let { emailAddress } = useParams();
     emailAddress = atob(emailAddress);
+    const userEmail = btoa(emailAddress);
     const clearUserOTP = ()=>{
         clearOTP();
         document.getElementById('userInput').value ="";
@@ -47,7 +48,7 @@ const VerifyEmail = () => {
                     </div>
 
                    
-                       <Buttons btnType={'primary'} btnText={'Continue'}/>
+                       <Link to={`/signUpProfile/${userEmail}`}><Buttons btnType={'primary'} btnText={'Continue'}/></Link>
                   
 
                    <p className="text-center text-sm font-medium mt-5">If you already created an account, <Link to={'/auth'}><span className="text-primary">Login</span></Link></p>
