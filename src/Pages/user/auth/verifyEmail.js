@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import AuthHeaders from "../../../Components/authHeader";
 import Buttons from "../../../Components/buttons";
 import { useEffect } from "react";
@@ -9,9 +9,6 @@ const VerifyEmail = () => {
         document.title = "Verify Email Address | Ardvest";
         document.querySelector('meta[name="description"]').content = "Verify Email Address to validate your account for your investment";
     }, []);
-    let { emailAddress } = useParams();
-    emailAddress = atob(emailAddress);
-    const userEmail = btoa(emailAddress);
     const clearUserOTP = ()=>{
         clearOTP();
         document.getElementById('userInput').value ="";
@@ -23,7 +20,7 @@ const VerifyEmail = () => {
             <Buttons btnType={'backButton'} />
             <div className="grid gap-2">
                 <p className="text-center text-xl font-semibold text-primary">Verify your email address</p>
-                <p className="text-sm text-center">Enter 6 (Six)-digit OTP code sent to {emailAddress}</p>
+                <p className="text-sm text-center">Enter 6 (Six)-digit OTP code sent to ifaniyioluwapelumi@gmail.com</p>
             </div>
 
             <div className="flex justify-center w-full my-5">
@@ -48,7 +45,7 @@ const VerifyEmail = () => {
                     </div>
 
                    
-                       <Link to={`/signUpProfile/${userEmail}`}><Buttons btnType={'primary'} btnText={'Continue'}/></Link>
+                       <Link to={`/signUpProfile`}><Buttons btnType={'primary'} btnText={'Continue'}/></Link>
                   
 
                    <p className="text-center text-sm font-medium mt-5">If you already created an account, <Link to={'/auth'}><span className="text-primary">Login</span></Link></p>

@@ -1,4 +1,4 @@
-import { focusNext, handleInput } from "./utils";
+import {handleInput } from "./utils";
 const OtpInputs = ({ id }) => {
     const handleInputChange = (event) => {
         handleInput(event.target);

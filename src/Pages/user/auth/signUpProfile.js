@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import AuthHeaders from "../../../Components/authHeader";
 import Buttons from "../../../Components/buttons";
-import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import InputWithLabel from "../../../Components/inputWithLabel";
 import { previewImage, openFileInput } from "../../../Components/utils";
 import SelectInput from "../../../Components/selectInput";
@@ -12,8 +12,6 @@ const SignUpProfile = () =>{
         document.querySelector('meta[name="description"]').content = "Start your investment journey with a personalized account.";
     }, []);
     const genderOptions = [{value:'Male', label:'Male'}, {value:'Female', label:'Female'}];
-    let { emailAddress } = useParams();
-    emailAddress = atob(emailAddress);
     return (
      <div>
         <AuthHeaders/>
@@ -61,8 +59,8 @@ const SignUpProfile = () =>{
             <InputWithLabel labelName={'Next of Kin Address'}
                             placeholder={'No 20 xyz Street ...'}
                             inputType={'text'}/>
-           <Buttons btnText={'Continue'}
-                        btnType={'primary'}/>
+             <Link to={`/setUpPin`}><Buttons btnText={'Continue'}
+                        btnType={'primary'}/></Link>
         </div>
     </div>
   </div>

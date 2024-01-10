@@ -6,6 +6,11 @@ import CreateAccount from './Pages/user/auth/createAccount';
 import UserLogin from './Pages/user/auth/login';
 import VerifyEmail from './Pages/user/auth/verifyEmail';
 import SignUpProfile from './Pages/user/auth/signUpProfile';
+import CreatePin from './Pages/user/auth/createPin';
+import ProfileComplete from './Pages/user/auth/profileComplete';
+import ForgotPassword from './Pages/user/auth/forgotPassword';
+import ResetPin from './Pages/user/auth/resetPasswordPin';
+import ResetPassword from './Pages/user/auth/resetPassword';
 
 function App() {
   return (
@@ -15,8 +20,13 @@ function App() {
           <Route path='/' element={<LandingPage/>}/>
           <Route path='/createAccount' element ={<CreateAccount/>}/>
           <Route path='/auth' element ={<UserLogin/>}/>
-          <Route path='/verifyEmail/:emailAddress' element={<VerifyEmail/>}/>
-          <Route path='/signUpProfile/:emailAddress' element={<SignUpProfile/>}/>
+          <Route path='/verifyEmail' element={<VerifyEmail/>}/>
+          <Route path='/signUpProfile' element={<SignUpProfile/>}/>
+          <Route path='/setUpPin' element={<CreatePin/>}/>
+          <Route path='/profileComplete' element={<ProfileComplete/>}/>
+          <Route path='/forgotPassword' element={<ForgotPassword/>}/>
+          <Route path='/verifyPasswordReset' element={<ResetPin/>}/>
+          <Route path='/resetPassword' element={<ResetPassword/>}/>
         </Routes>
       </BrowserRouter>
     </div>

@@ -5,7 +5,6 @@ import InputWithLabel from "../../../Components/inputWithLabel";
 import { Link } from "react-router-dom";
 
 const CreateAccount = () => {
-    const userEmail = btoa('ifaniyioluwapelumi@gmail.com');
     useEffect(() => {
         document.title = "Create Account | Ardvest";
         document.querySelector('meta[name="description"]').content = "Join Ardvest: Start your investment journey with a personalized account.";
@@ -52,7 +51,7 @@ const CreateAccount = () => {
                             </div>
                         </ul>
 
-                        <Link to={`/verifyEmail/${userEmail}`}><Buttons btnText={'Continue'} btnType={'primary'} /></Link>
+                        <Link to={`/verifyEmail`}><Buttons btnText={'Continue'} btnType={'primary'} /></Link>
                         <p className="text-center text-sm">If you already created an account, <Link to={'/auth'}><span className="text-primary">Login</span></Link></p>
 
                     </div>

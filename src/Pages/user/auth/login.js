@@ -32,7 +32,7 @@ const UserLogin = () => {
                         <InputWithLabel labelName={'Password'}
                             inputType={'password'}
                             placeholder={'*********************'} />
-                        <a href="/forgot-password.html" className="text-xs font-semibold underline text-primary text-end">Forgot password?</a>
+                        <Link to={'/forgotPassword'} className="text-end"><span className="text-xs font-semibold underline text-primary text-end">Forgot password?</span></Link>
                         <Buttons btnText={'Continue'} btnType={'primary'} />
                         <p className="text-center text-sm">Don't have an account ? <Link to={'/createAccount'}><span className="text-primary">Create Account</span></Link></p>
                     </div>
