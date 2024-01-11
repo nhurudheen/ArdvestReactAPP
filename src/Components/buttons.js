@@ -1,5 +1,5 @@
 import backSvg from "../assets/icons/arrow.svg";
-const Buttons = ({ btnText, btnType, onClick }) => {
+const Buttons = ({ btnText, btnType, onClick, type, disabled }) => {
     const goBack = () => {
         window.history.back();
     };
@@ -7,12 +7,12 @@ const Buttons = ({ btnText, btnType, onClick }) => {
         <div>
             {btnType === "primary" ?
                 (
-                    <button onClick={onClick} className="bg-primary text-center px-8 py-4 text-sm rounded text-white w-full">{btnText}</button>
+                    <button onClick={onClick} type={type} className="bg-primary text-center px-8 py-4 text-sm rounded text-white w-full" disabled={disabled}>{btnText}</button>
                 )
                 :
                 btnType === "secondary" ?
                     (
-                        <button className="border border-primary text-primary text-center px-8 py-4 text-sm rounded w-full">{btnText}</button>
+                        <button type={type}  onClick={onClick} className="border border-primary text-primary text-center px-8 py-4 text-sm rounded w-full">{btnText}</button>
 
                     )
                     :
