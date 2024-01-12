@@ -1,4 +1,4 @@
-import { createAsyncThunk } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { APIService } from "../remote/apiServices"
 
 const initialState = {
@@ -16,3 +16,10 @@ export const userRegistration = createAsyncThunk(
         return response;
     }
 )
+
+const userSlice = createSlice({
+    name: "user",
+    reducers : {},
+    initialState : initialState
+})
+export const userReducer = userSlice.reducer;
