@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import AuthHeaders from "../../../Components/authHeader";
 import Buttons from "../../../Components/buttons";
 import InputWithLabel from "../../../Components/inputWithLabel";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PasswordInput from "../../../Components/passwordInput";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
@@ -18,6 +18,7 @@ const CreateAccount = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [password, setPassword] = useState("");
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const users = useSelector((state)=>state.user) 
     const createAccountForm = useFormik(
         {
@@ -42,7 +43,9 @@ const CreateAccount = () => {
                 const {emailAddress, phoneNumber, password, confirmPassword} = values;
                 let userRegistrationData = {emailAddress,phoneNumber,password,confirmPassword};
                 const { payload } = await dispatch(userRegistration(userRegistrationData));
-                console.log(payload)
+                if(payload.statusCode === "200"){
+                    navigate('/verifyEmail', {state: {emailAddress}});
+                }
             }
         }
     )

@@ -25,11 +25,11 @@ const userSlice = createSlice({
     extraReducers : (builder)=>{
         builder
         .addCase(userRegistration.fulfilled, (state,action)=>{
-            if(action.payload.statusCode === 200){
+            if(action.payload.statusCode === "200"){
                 state.users = action.payload;
                 showSuccessToastMessage(action.payload.message);
             }
-            else if(action.payload.statusCode === 400){
+            else if(action.payload.statusCode === "400"){
                 state.error = action.payload.message;
                 showErrorToastMessage(action.payload.message);
             }
@@ -37,6 +37,7 @@ const userSlice = createSlice({
                 state.error = action.payload.message;
                 showErrorToastMessage(action.payload.message);
             }
+            state.loading = false;
         })
         .addMatcher(isAnyOf(
             userRegistration.pending

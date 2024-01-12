@@ -36,8 +36,11 @@ export function handleInput(currentInput) {
         userInput += digitInput.value;
     });
     document.getElementById('userInput').value = userInput;
+    
     focusNext(currentInput);
+    return userInput
 }
+
 
 export function openFileInput() {
     document.getElementById('imageInput').click();
