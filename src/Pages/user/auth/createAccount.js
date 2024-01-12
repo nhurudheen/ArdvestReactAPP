@@ -6,8 +6,9 @@ import { Link } from "react-router-dom";
 import PasswordInput from "../../../Components/passwordInput";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userRegistration } from "../../../hooks/local/userReducer";
+import Spinner from "../../../Components/spinner";
 
 const CreateAccount = () => {
     useEffect(() => {
@@ -17,6 +18,7 @@ const CreateAccount = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [password, setPassword] = useState("");
     const dispatch = useDispatch();
+    const users = useSelector((state)=>state.user) 
     const createAccountForm = useFormik(
         {
             initialValues :{
@@ -47,6 +49,7 @@ const CreateAccount = () => {
 
     return (
         <div className="relative">
+            <Spinner loading={users.loading}/>
             <AuthHeaders />
             <Buttons btnType={'backButton'} />
 

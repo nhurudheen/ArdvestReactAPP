@@ -1,5 +1,6 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit"
 import { APIService } from "../remote/apiServices"
+import { showErrorToastMessage, showSuccessToastMessage } from "../../Utils/constant";
 
 const initialState = {
     users : null,
@@ -20,6 +21,41 @@ export const userRegistration = createAsyncThunk(
 const userSlice = createSlice({
     name: "user",
     reducers : {},
-    initialState : initialState
+    initialState : initialState,
+    extraReducers : (builder)=>{
+        builder
+        .addCase(userRegistration.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === 200){
+                state.users = action.payload;
+                showSuccessToastMessage(action.payload.message);
+            }
+            else if(action.payload.statusCode === 400){
+                state.error = action.payload.message;
+                showErrorToastMessage(action.payload.message);
+            }
+            else{
+                state.error = action.payload.message;
+                showErrorToastMessage(action.payload.message);
+            }
+        })
+        .addMatcher(isAnyOf(
+            userRegistration.pending
+        ), 
+        (state)=>{
+            state.loading = true;
+            state.users = null;
+            state.error = null;
+        }
+        )
+        .addMatcher(isAnyOf(
+            userRegistration.rejected
+        ),
+        (state,action)=>{
+            state.loading = false;
+            state.users = null;
+            state.error = showErrorToastMessage(action.error.message);
+        }
+        )
+    }
 })
 export const userReducer = userSlice.reducer;
