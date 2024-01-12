@@ -1,3 +1,5 @@
+
+
 export function getPeriodOfDay() {
     const currentHour = new Date().getHours();
 
@@ -52,3 +54,5 @@ export function previewImage() {
   
     reader.readAsDataURL(image);
   }
+
+

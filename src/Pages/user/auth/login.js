@@ -3,7 +3,7 @@ import AuthHeaders from "../../../Components/authHeader";
 import Buttons from "../../../Components/buttons";
 import InputWithLabel from "../../../Components/inputWithLabel";
 import { Link } from "react-router-dom";
-import { getPeriodOfDay } from "../../../Components/utils";
+import { getPeriodOfDay } from "../../../Utils/utils";
 
 const UserLogin = () => {
     const [timeOfTheDay, setTimeOfTheDay] = useState();

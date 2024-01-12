@@ -3,7 +3,7 @@ import AuthHeaders from "../../../Components/authHeader";
 import Buttons from "../../../Components/buttons";
 import { Link } from "react-router-dom";
 import InputWithLabel from "../../../Components/inputWithLabel";
-import { previewImage, openFileInput } from "../../../Components/utils";
+import { previewImage, openFileInput } from "../../../Utils/utils";
 import SelectInput from "../../../Components/selectInput";
 
 const SignUpProfile = () =>{

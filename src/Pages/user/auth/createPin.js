@@ -2,7 +2,7 @@
 import AuthHeaders from "../../../Components/authHeader";
 import Buttons from "../../../Components/buttons";
 import { useEffect } from "react";
-import { clearOTP } from "../../../Components/utils";
+import { clearOTP } from "../../../Utils/utils";
 import OtpInputs from "../../../Components/otpInputs";
 import pinIcon from "../../../assets/icons/lock.svg";
 import { Link } from "react-router-dom";

@@ -1,4 +1,4 @@
-import {handleInput } from "./utils";
+import {handleInput } from "../Utils/utils";
 const OtpInputs = ({ id }) => {
     const handleInputChange = (event) => {
         handleInput(event.target);

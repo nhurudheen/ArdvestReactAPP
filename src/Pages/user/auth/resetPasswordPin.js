@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { clearOTP } from "../../../Components/utils";
+import { clearOTP } from "../../../Utils/utils";
 import AuthHeaders from "../../../Components/authHeader";
 import Buttons from "../../../Components/buttons";
 import OtpInputs from "../../../Components/otpInputs";

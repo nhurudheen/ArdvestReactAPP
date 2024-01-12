@@ -11,22 +11,24 @@ import ProfileComplete from './Pages/user/auth/profileComplete';
 import ForgotPassword from './Pages/user/auth/forgotPassword';
 import ResetPin from './Pages/user/auth/resetPasswordPin';
 import ResetPassword from './Pages/user/auth/resetPassword';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
     <div className="App">
+      <ToastContainer position='top-right' theme='colored' newestOnTop={true} bodyClassName={() => 'toastBody flex items-center text-sm'} />
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<LandingPage/>}/>
-          <Route path='/createAccount' element ={<CreateAccount/>}/>
-          <Route path='/auth' element ={<UserLogin/>}/>
-          <Route path='/verifyEmail' element={<VerifyEmail/>}/>
-          <Route path='/signUpProfile' element={<SignUpProfile/>}/>
-          <Route path='/setUpPin' element={<CreatePin/>}/>
-          <Route path='/profileComplete' element={<ProfileComplete/>}/>
-          <Route path='/forgotPassword' element={<ForgotPassword/>}/>
-          <Route path='/verifyPasswordReset' element={<ResetPin/>}/>
-          <Route path='/resetPassword' element={<ResetPassword/>}/>
+          <Route path='/' element={<LandingPage />} />
+          <Route path='/createAccount' element={<CreateAccount />} />
+          <Route path='/auth' element={<UserLogin />} />
+          <Route path='/verifyEmail' element={<VerifyEmail />} />
+          <Route path='/signUpProfile' element={<SignUpProfile />} />
+          <Route path='/setUpPin' element={<CreatePin />} />
+          <Route path='/profileComplete' element={<ProfileComplete />} />
+          <Route path='/forgotPassword' element={<ForgotPassword />} />
+          <Route path='/verifyPasswordReset' element={<ResetPin />} />
+          <Route path='/resetPassword' element={<ResetPassword />} />
         </Routes>
       </BrowserRouter>
     </div>

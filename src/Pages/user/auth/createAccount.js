@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import PasswordInput from "../../../Components/passwordInput";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
+import { useDispatch } from "react-redux";
+import { userRegistration } from "../../../hooks/local/userReducer";
 
 const CreateAccount = () => {
     useEffect(() => {
@@ -14,7 +16,7 @@ const CreateAccount = () => {
     }, []);
     const [confirmPassword, setConfirmPassword] = useState("");
     const [password, setPassword] = useState("");
-    
+    const dispatch = useDispatch();
     const createAccountForm = useFormik(
         {
             initialValues :{
@@ -34,8 +36,11 @@ const CreateAccount = () => {
                 .required('Confirm Password is required')
                 .oneOf([Yup.ref('password'), null], 'Passwords must match'),
             }),
-            onSubmit: ()=>{
-                console.log("continue")
+            onSubmit: async(values)=>{
+                const {emailAddress, phoneNumber, password, confirmPassword} = values;
+                let userRegistrationData = {emailAddress,phoneNumber,password,confirmPassword};
+                const { payload } = await dispatch(userRegistration(userRegistrationData));
+                console.log(payload)
             }
         }
     )
