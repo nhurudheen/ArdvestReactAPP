@@ -30,4 +30,13 @@ export class APIService{
             throw(error);
         }
     }
+    static async verifyOTPEmailAddress(otpData){
+        try{
+            return APIClient.post("/verify_email", otpData);
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw(error);
+        }
+    }
 }

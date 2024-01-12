@@ -18,6 +18,15 @@ export const userRegistration = createAsyncThunk(
     }
 )
 
+export const verifyEmailAddress = createAsyncThunk(
+    "user/verifyEmailAddress",
+    async(otpData) =>{
+        const apiClientVerifyEmailAddress = await APIService.verifyOTPEmailAddress(otpData);
+        const response = await apiClientVerifyEmailAddress.data;
+        return response;
+    }
+)
+
 const userSlice = createSlice({
     name: "user",
     reducers : {},
@@ -39,8 +48,24 @@ const userSlice = createSlice({
             }
             state.loading = false;
         })
+        .addCase(verifyEmailAddress.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.users = action.payload;
+                showSuccessToastMessage(action.payload.message);
+            }
+            else if(action.payload.statusCode === "400"){
+                state.error = action.payload.message;
+                showErrorToastMessage(action.payload.message);
+            }
+            else{
+                state.error = action.payload.message;
+                showErrorToastMessage(action.payload.message);
+            }
+            state.loading = false;
+        })
         .addMatcher(isAnyOf(
-            userRegistration.pending
+            userRegistration.pending,
+            verifyEmailAddress.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -49,7 +74,8 @@ const userSlice = createSlice({
         }
         )
         .addMatcher(isAnyOf(
-            userRegistration.rejected
+            userRegistration.rejected,
+            verifyEmailAddress.rejected
         ),
         (state,action)=>{
             state.loading = false;

@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import AuthHeaders from "../../../Components/authHeader";
 import Buttons from "../../../Components/buttons";
 import { useEffect } from "react";
@@ -7,20 +7,27 @@ import OtpInputs from "../../../Components/otpInputs";
 import { focusNext } from "../../../Utils/utils";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
+import { useDispatch, useSelector } from "react-redux";
+import { verifyEmailAddress } from "../../../hooks/local/userReducer";
+import { showErrorToastMessage } from "../../../Utils/constant";
+import Spinner from "../../../Components/spinner";
 
 const VerifyEmail = () => {
     useEffect(() => {
         document.title = "Verify Email Address | Ardvest";
         document.querySelector('meta[name="description"]').content = "Verify Email Address to validate your account for your investment";
     }, []);
+
+    const location = useLocation();
+    const navigate = useNavigate();
+    const userEmailAddress = location.state?.emailAddress || '';
+    const users = useSelector((state)=>state.user) 
+
+    const dispatch = useDispatch();
     const clearUserOTP = ()=>{
         clearOTP();
         document.getElementById('userInput').value ="";
     }
-
-    const location = useLocation();
-    const userEmailAddress = location.state?.emailAddress || '';
-
     const handleOtpCodeChange = (currentInput) => {
         const userInput = handleInput(currentInput);
         verifyUserOtp.setFieldValue('otpCode', userInput);
@@ -29,21 +36,30 @@ const VerifyEmail = () => {
     const verifyUserOtp = useFormik(
         {
             initialValues:{
-                emailAddress :  userEmailAddress,
                 otpCode : "",
                 agreement: false
             },
             validationSchema: Yup.object({
                 agreement: Yup.boolean().oneOf([true], 'You must agree to the Terms & Conditions'),
             }),
-            onSubmit: (values)=>{
-                console.log(values.otpCode);
+            onSubmit: async (values)=>{
+                if(values.otpCode === ""){
+                    showErrorToastMessage("OTP Code cannot be empty");
+                    return;
+                }
+                const {otpCode } = values;
+                let otpData = {otpCode};
+                const { payload } = await dispatch(verifyEmailAddress(otpData));
+                if(payload.statusCode === "200"){
+                    navigate('/signUpProfile', {state: {userEmailAddress}});
+                }
             }
         }
     )
 
     return (
         <div>
+            <Spinner loading={users.loading}/>
             <AuthHeaders />
             <Buttons btnType={'backButton'} />
             <div className="grid gap-2">
@@ -66,7 +82,7 @@ const VerifyEmail = () => {
                         <OtpInputs id={'digit6'} onChange={handleOtpCodeChange}/>
                     </div>
                     <form onSubmit={verifyUserOtp.handleSubmit}>
-                    <input name="otpCode" type="text" id="userInput"  value={verifyUserOtp.values.otpCode} onChange={verifyUserOtp.handleChange} onBlur={verifyUserOtp.handleBlur} />
+                    <input name="otpCode" type="text" id="userInput" hidden  value={verifyUserOtp.values.otpCode} onChange={verifyUserOtp.handleChange} onBlur={verifyUserOtp.handleBlur} />
                     <div className="mb-10">
                       <div className="flex gap-2 text-sm font-medium">
                       <input type="checkbox" name="agreement" id="" className="bg-red-700" value={verifyUserOtp.values.agreement} onChange={verifyUserOtp.handleChange} onBlur={verifyUserOtp.handleBlur}/>
