@@ -27,12 +27,36 @@ export const verifyEmailAddress = createAsyncThunk(
     }
 )
 
+export const userAuthenticate = createAsyncThunk(
+    "user/userLogin",
+    async(userData) =>{
+        const apiClientUserLogin = await APIService.userLogin(userData);
+        const response = await apiClientUserLogin.data;
+        return response;
+    }
+)
+
 const userSlice = createSlice({
     name: "user",
     reducers : {},
     initialState : initialState,
     extraReducers : (builder)=>{
         builder
+        .addCase(userAuthenticate.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+
+            }
+            else{
+                state.error = action.payload.message;
+                showErrorToastMessage(action.payload.message);
+            }
+            state.loading= false;
+        })
+        .addCase(userAuthenticate.rejected, (state,action)=>{
+            state.loading = false;
+            state.isAuthenticated = false;
+            state.error = showErrorToastMessage("Server Down, Contact Admin");
+        })
         .addCase(userRegistration.fulfilled, (state,action)=>{
             if(action.payload.statusCode === "200"){
                 state.users = action.payload;
@@ -65,7 +89,8 @@ const userSlice = createSlice({
         })
         .addMatcher(isAnyOf(
             userRegistration.pending,
-            verifyEmailAddress.pending
+            verifyEmailAddress.pending,
+            userAuthenticate.pending
         ), 
         (state)=>{
             state.loading = true;
