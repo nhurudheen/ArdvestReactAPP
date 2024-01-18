@@ -54,6 +54,15 @@ export const userTransactionPin = createAsyncThunk(
     }
 )
 
+export const userForgotPassword = createAsyncThunk(
+    "user/ForgotPassword",
+    async(data)=>{
+        const apiCLientForgotPassword = await APIService.forgotPassword(data);
+        const response = await apiCLientForgotPassword.data;
+        return response;
+    }
+)
+
 const userSlice = createSlice({
     name: "user",
     reducers : {},
@@ -80,7 +89,8 @@ const userSlice = createSlice({
             userRegistration.fulfilled,
             verifyEmailAddress.fulfilled,
             userCompleteProfile.fulfilled,
-            userTransactionPin.fulfilled
+            userTransactionPin.fulfilled,
+            userForgotPassword.fulfilled
         ), (state,action)=>{
             if(action.payload.statusCode === "200"){
                 state.users = action.payload;
@@ -101,7 +111,8 @@ const userSlice = createSlice({
             verifyEmailAddress.pending,
             userAuthenticate.pending,
             userCompleteProfile.pending,
-            userTransactionPin.pending
+            userTransactionPin.pending,
+            userForgotPassword.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -112,7 +123,8 @@ const userSlice = createSlice({
             userRegistration.rejected,
             verifyEmailAddress.rejected,
             userCompleteProfile.rejected,
-            userTransactionPin.rejected
+            userTransactionPin.rejected,
+            userForgotPassword.rejected
         ),
         (state,action)=>{
             state.loading = false;

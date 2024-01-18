@@ -4,13 +4,16 @@ import Buttons from "../../../Components/buttons";
 import InputWithLabel from "../../../Components/inputWithLabel";
 import Modal from "../../../Components/modals";
 import emailIcon from "../../../assets/icons/email.svg";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 const ResetPassword = () => {
     useEffect(() => {
         document.title = "Reset Password | Ardvest";
         document.querySelector('meta[name="description"]').content = "Reset Password to validate your account for your investment";
     }, []);
     const [showModal, setShowModal] = useState(false);
+    const location = useLocation();
+    const emailAddress = location.state?.emailAddress||"";
+    console.log(emailAddress);
     return (
         <div>
             <AuthHeaders />

@@ -72,4 +72,14 @@ export class APIService{
         }
     }
 
+    static async forgotPassword(data){
+        try{
+            return APIClient.post("/forget_password", data);
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw(error);
+        }
+    }
+
 }
