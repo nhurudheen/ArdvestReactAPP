@@ -2,10 +2,15 @@
 import AuthHeaders from "../../../Components/authHeader";
 import Buttons from "../../../Components/buttons";
 import { useEffect } from "react";
-import { clearOTP } from "../../../Utils/utils";
+import { clearOTP, handleInput } from "../../../Utils/utils";
 import OtpInputs from "../../../Components/otpInputs";
 import pinIcon from "../../../assets/icons/lock.svg";
-import { Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import { showErrorToastMessage } from "../../../Utils/constant";
+import { useDispatch, useSelector } from "react-redux";
+import Spinner from "../../../Components/spinner";
+import { userTransactionPin } from "../../../hooks/local/userReducer";
 const CreatePin = () => {
     useEffect(() => {
         document.title = "Set Pin | Ardvest";
@@ -16,11 +21,39 @@ const CreatePin = () => {
         clearOTP();
         document.getElementById('userInput').value = "";
     }
+    const handlePinInput = (currentInput)=>{
+        const userInput = handleInput(currentInput);
+        createUserPin.setFieldValue('userPin', userInput);
+    }
+    const location = useLocation();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const users = useSelector((state)=>state.user);
+    const emailAddress = location.state?.emailAddress || "";
 
+    const createUserPin = useFormik({
+        initialValues:{
+            emailAddress : emailAddress,
+            userPin : ""
+        },
+        onSubmit: async(values)=>{
+            if(values.userPin === ""){
+                showErrorToastMessage("Transaction Pin Cannot be empty");
+                return;
+            }
+            const {emailAddress, userPin} = values;
+            let createPinData = {emailAddress, userPin};
+            const { payload } = await dispatch(userTransactionPin(createPinData));
+            if(payload.statusCode === "200"){
+                navigate('/profileComplete');
+            }
+        }
+    })
     return (
         <div>
             <AuthHeaders />
             <Buttons btnType={'backButton'} />
+            <Spinner loading={users.loading} />
             <div className="grid gap-2">
                 <img src={pinIcon} alt="" className="justify-self-center mb-5"/>
                     <p className="text-center text-xl font-semibold text-primary">Create a new PIN</p>
@@ -34,16 +67,20 @@ const CreatePin = () => {
                         <p className="text-sm font-semibold text-primary/50 cursor-pointer" onClick={clearUserOTP}>Clear Pin</p>
                     </div>
                     <div className="grid grid-cols-4 gap-10  mt-2 mb-12" id="inputs" >
-                        <OtpInputs id={'digit1'} />
-                        <OtpInputs id={'digit2'} />
-                        <OtpInputs id={'digit3'} />
-                        <OtpInputs id={'digit4'} />
+                        {
+                        [{id: 'digit1'},{id:'digit2'},{id:'digit3'},{id:'digit4'}].map(
+                            ({id})=>(
+                                <OtpInputs id={id} onChange={handlePinInput}/>
+                            )
+                        )                    
+                        }
                     </div>
-                    <input name="" type="text" id="userInput" hidden  />
+                    <form onSubmit={createUserPin.handleSubmit}>
+                    <input name="userPin" type="text" id="userInput" value={createUserPin.values.userPin} onChange={createUserPin.handleChange} onBlur={createUserPin.handleBlur}  hidden />
 
-                    <Link to={'/profileComplete'}><Buttons btnType={'primary'} btnText={'Create PIN'} /></Link>
+                    <Buttons btnType={'primary'} btnText={'Create PIN'} type={'submit'}/>
 
-
+                    </form>
                 </div>
             </div>
         </div>

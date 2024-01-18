@@ -39,8 +39,17 @@ export const userAuthenticate = createAsyncThunk(
 export const userCompleteProfile = createAsyncThunk(
     "user/completeProfileData",
     async(userProfileData)=>{
-        const apiClientProfileData = await APIService.userCompleteProfile(userProfileData);
+        const apiClientProfileData = await APIService.completeUserProfile(userProfileData);
         const response = await apiClientProfileData.data;
+        return response;
+    }
+)
+
+export const userTransactionPin = createAsyncThunk(
+    "user/setTransactionPin",//Action Type definiton of Redux
+    async(pinData)=>{
+        const apiCLientSetTransactionPin = await APIService.setUserTransactionPin(pinData);
+        const response = await apiCLientSetTransactionPin.data;
         return response;
     }
 )
@@ -70,7 +79,8 @@ const userSlice = createSlice({
         .addMatcher(isAnyOf(
             userRegistration.fulfilled,
             verifyEmailAddress.fulfilled,
-            userCompleteProfile.fulfilled
+            userCompleteProfile.fulfilled,
+            userTransactionPin.fulfilled
         ), (state,action)=>{
             if(action.payload.statusCode === "200"){
                 state.users = action.payload;
@@ -90,7 +100,8 @@ const userSlice = createSlice({
             userRegistration.pending,
             verifyEmailAddress.pending,
             userAuthenticate.pending,
-            userCompleteProfile.pending
+            userCompleteProfile.pending,
+            userTransactionPin.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -100,7 +111,8 @@ const userSlice = createSlice({
         .addMatcher(isAnyOf(
             userRegistration.rejected,
             verifyEmailAddress.rejected,
-            userCompleteProfile.rejected
+            userCompleteProfile.rejected,
+            userTransactionPin.rejected
         ),
         (state,action)=>{
             state.loading = false;

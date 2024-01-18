@@ -1,5 +1,5 @@
 import { showErrorToastMessage } from "../../Utils/constant";
-import { APIClient, APIFormDataCleint } from "./apiClient";
+import { APIClient, APIFormDataClient } from "./apiClient";
 
 export class APIService{
     static extractError(error){
@@ -53,11 +53,23 @@ export class APIService{
 
     static async completeUserProfile(userProfileData){
         try{
-            return APIFormDataCleint.post("/update_account", userProfileData);
+            return APIFormDataClient.post("/update_account", userProfileData);
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw(error);
+           
+        }   
+    }
+
+    static async setUserTransactionPin(userPinData){
+        try{
+            return APIClient.post("/set_user_pin", userPinData);
         }
         catch(error){
             APIService.extractError(error);
             throw(error);
         }
     }
+
 }

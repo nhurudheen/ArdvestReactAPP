@@ -8,7 +8,7 @@ export const APIClient = Axios.create(
     }
 )
 
-export const APIFormDataCleint = Axios.create(
+export const APIFormDataClient = Axios.create(
     {
         baseURL : API_BASE_URL,
         headers : FORM_DATA_HEADER
