@@ -1,5 +1,5 @@
 import { showErrorToastMessage } from "../../Utils/constant";
-import { APIClient } from "./apiClient";
+import { APIClient, APIFormDataCleint } from "./apiClient";
 
 export class APIService{
     static extractError(error){
@@ -44,6 +44,16 @@ export class APIService{
     static async userLogin(loginData){
         try{
             return APIClient.post("/user_login", loginData);
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw(error);
+        }
+    }
+
+    static async completeUserProfile(userProfileData){
+        try{
+            return APIFormDataCleint.post("/update_account", userProfileData);
         }
         catch(error){
             APIService.extractError(error);

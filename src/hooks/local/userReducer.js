@@ -36,6 +36,15 @@ export const userAuthenticate = createAsyncThunk(
     }
 )
 
+export const userCompleteProfile = createAsyncThunk(
+    "user/completeProfileData",
+    async(userProfileData)=>{
+        const apiClientProfileData = await APIService.userCompleteProfile(userProfileData);
+        const response = await apiClientProfileData.data;
+        return response;
+    }
+)
+
 const userSlice = createSlice({
     name: "user",
     reducers : {},
@@ -57,7 +66,12 @@ const userSlice = createSlice({
             state.isAuthenticated = false;
             state.error = showErrorToastMessage("Server Down, Contact Admin");
         })
-        .addCase(userRegistration.fulfilled, (state,action)=>{
+
+        .addMatcher(isAnyOf(
+            userRegistration.fulfilled,
+            verifyEmailAddress.fulfilled,
+            userCompleteProfile.fulfilled
+        ), (state,action)=>{
             if(action.payload.statusCode === "200"){
                 state.users = action.payload;
                 showSuccessToastMessage(action.payload.message);
@@ -70,37 +84,23 @@ const userSlice = createSlice({
                 state.error = action.payload.message;
                 showErrorToastMessage(action.payload.message);
             }
-            state.loading = false;
-        })
-        .addCase(verifyEmailAddress.fulfilled, (state,action)=>{
-            if(action.payload.statusCode === "200"){
-                state.users = action.payload;
-                showSuccessToastMessage(action.payload.message);
-            }
-            else if(action.payload.statusCode === "400"){
-                state.error = action.payload.message;
-                showErrorToastMessage(action.payload.message);
-            }
-            else{
-                state.error = action.payload.message;
-                showErrorToastMessage(action.payload.message);
-            }
-            state.loading = false;
+            state.loading = false;     
         })
         .addMatcher(isAnyOf(
             userRegistration.pending,
             verifyEmailAddress.pending,
-            userAuthenticate.pending
+            userAuthenticate.pending,
+            userCompleteProfile.pending
         ), 
         (state)=>{
             state.loading = true;
             state.users = null;
             state.error = null;
-        }
-        )
+        })
         .addMatcher(isAnyOf(
             userRegistration.rejected,
-            verifyEmailAddress.rejected
+            verifyEmailAddress.rejected,
+            userCompleteProfile.rejected
         ),
         (state,action)=>{
             state.loading = false;
