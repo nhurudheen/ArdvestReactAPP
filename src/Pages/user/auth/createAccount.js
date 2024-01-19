@@ -32,7 +32,7 @@ const CreateAccount = () => {
                 emailAddress: Yup.string().email("Invalid Email Address").required("Email is required"),
                 phoneNumber: Yup.number().required("Phone Number cannot be empty").typeError('Invalid Phone Number Format').max(9999999999,'Phone Number has to be 11 digit').min(999999999,'Phone Number has to be 11 digit'),
                 password: Yup.string().required("Password cannot be empty").matches(
-                    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/,
+                    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?.&])[A-Za-z\d@$!%*#.?&]{6,}$/,
                     "Password Criteria does't match"
                 ),
                 confirmPassword: Yup.string()

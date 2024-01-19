@@ -34,7 +34,7 @@ const ResetPassword = () => {
             },
             validationSchema : Yup.object({
                 password: Yup.string().required("Password cannot be empty").matches(
-                    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/,
+                    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#.?&]{6,}$/,
                     "Password Criteria does't match"
                 ),
                 confirmPassword: Yup.string()
