@@ -62,6 +62,14 @@ export const userForgotPassword = createAsyncThunk(
         return response;
     }
 )
+export const userResetPassword = createAsyncThunk(
+    "user/ResetPassword",
+    async(data)=>{
+        const apiClientResetPassword = await APIService.resetPassword(data);
+        const response = await apiClientResetPassword.data;
+        return response;
+    }
+)
 
 const userSlice = createSlice({
     name: "user",
@@ -90,7 +98,8 @@ const userSlice = createSlice({
             verifyEmailAddress.fulfilled,
             userCompleteProfile.fulfilled,
             userTransactionPin.fulfilled,
-            userForgotPassword.fulfilled
+            userForgotPassword.fulfilled,
+            userResetPassword.fulfilled
         ), (state,action)=>{
             if(action.payload.statusCode === "200"){
                 state.users = action.payload;
@@ -112,7 +121,8 @@ const userSlice = createSlice({
             userAuthenticate.pending,
             userCompleteProfile.pending,
             userTransactionPin.pending,
-            userForgotPassword.pending
+            userForgotPassword.pending,
+            userResetPassword.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -124,7 +134,8 @@ const userSlice = createSlice({
             verifyEmailAddress.rejected,
             userCompleteProfile.rejected,
             userTransactionPin.rejected,
-            userForgotPassword.rejected
+            userForgotPassword.rejected,
+            userResetPassword.rejected
         ),
         (state,action)=>{
             state.loading = false;

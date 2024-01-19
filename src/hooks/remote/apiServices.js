@@ -82,4 +82,13 @@ export class APIService{
         }
     }
 
+    static async resetPassword(data){
+        try{
+            return APIClient.post("/reset_password", data);
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw(error);
+        }
+    }
 }
