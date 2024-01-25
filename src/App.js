@@ -11,6 +11,7 @@ import ForgotPassword from './Pages/user/auth/forgotPassword';
 import ResetPin from './Pages/user/auth/resetPasswordPin';
 import ResetPassword from './Pages/user/auth/resetPassword';
 import { ToastContainer } from 'react-toastify';
+import UserLayout from './Pages/user/userLayout';
 
 function App() {
   return (
@@ -28,6 +29,8 @@ function App() {
           <Route path='/forgotPassword' element={<ForgotPassword />} />
           <Route path='/verifyPasswordReset' element={<ResetPin />} />
           <Route path='/resetPassword' element={<ResetPassword />} />
+          <Route path='*' element={<UserLayout/>}/>
+          
         </Routes>
       </BrowserRouter>
     </div>

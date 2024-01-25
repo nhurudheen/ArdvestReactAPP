@@ -44,6 +44,9 @@ const UserLogin = () => {
             if(payload.statusCode === "203"){
                 navigate('/setUpPin', {state: {emailAddress}})
             }
+            if(payload.statusCode === "200"){
+                navigate('/dashboard');
+            }
         }
     })
     return (
