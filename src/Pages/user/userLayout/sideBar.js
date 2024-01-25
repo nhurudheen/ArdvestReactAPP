@@ -3,11 +3,11 @@ import portfolioIcon from '../../../assets/icons/portfoliio.svg';
 import transactionIcon from '../../../assets/icons/transaction.svg';
 import supportIcon from '../../../assets/icons/support.svg';
 import { Link } from 'react-router-dom';
-const SideBar = ({ sideBarVisibility, topBarTitle }) => {
+const SideBar = ({ sideBarVisibility, topBarTitle, closeSideBar }) => {
     return (
         <div className={`col-span-12 lg:col-span-2 ${sideBarVisibility ? 'block' : 'hidden'} lg:block h-screen`} id="sidebar">
             <div className="grid gap-4">
-                <Link to={"/dashboard"}>
+                <Link to={"/dashboard"} onClick={closeSideBar}>
                     <div className="pb-2 border-b">
                         <div className={`flex gap-3 items-center ${topBarTitle === 'Dashboard' ? 'bg-primary/10' : 'hover:bg-primary/10'} p-3 rounded-lg hover:scale-105`}>
                             <img src={homeIcon} alt="" />
@@ -15,7 +15,7 @@ const SideBar = ({ sideBarVisibility, topBarTitle }) => {
                         </div>
                     </div>
                 </Link>
-                <Link to={"/investment"}>
+                <Link to={"/investment"} onClick={closeSideBar}>
                     <div className="pb-2 border-b">
                         <div className={`flex gap-3 items-center ${topBarTitle === 'Investments' ? 'bg-primary/10' : 'hover:bg-primary/10'} p-3 rounded-lg hover:scale-105`}>
                             <img src={portfolioIcon} alt="" />

@@ -10,12 +10,15 @@ const UserLayout = () => {
     const toggleSideBar = ()=>{
         setSideBarVisibility(!sideBarVisibility); 
     }
+    const closeSideBar = ()=>{
+        setSideBarVisibility(false);
+    }
     const [pageTitle, setPageTitle] = useState("");
     return ( 
         <div>
             <TopBar toggleSideBar={toggleSideBar} topBarTitle={pageTitle}/>
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 px-3 md:px-8  pb-20">
-            <SideBar sideBarVisibility={sideBarVisibility} topBarTitle={pageTitle}/>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 px-3 md:px-8  pb-20">
+            <SideBar sideBarVisibility={sideBarVisibility} topBarTitle={pageTitle} closeSideBar={closeSideBar}/>
             <Routes>
                 <Route path="/dashboard" element={<UserDashboard setPageTitle={setPageTitle}/>}/>
                 <Route path="/investment" element={<Investment setPageTitle={setPageTitle} />}/>
