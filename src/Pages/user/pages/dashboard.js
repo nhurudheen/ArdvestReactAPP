@@ -11,9 +11,14 @@ import cardSvg from "../../../assets/icons/card.svg";
 import debitSvg from "../../../assets/icons/debit.svg";
 import Modal from "../../../Components/modals";
 import copyIcon from "../../../assets/icons/copyIcon.svg";
+import pieChartIcon from "../../../assets/icons/pie-chart-line.svg";
+import plantLineIcon from "../../../assets/icons/plant-line.svg";
 import InputWithLabel from "../../../Components/inputWithLabel";
 import { Button } from "@mui/material";
 import Buttons from "../../../Components/buttons";
+import SelectInput from "../../../Components/selectInput";
+import CurrencyInput from "../../../Components/currencyInput";
+import DigitInput from "../../../Components/digitInput";
 
 const UserDashboard = ({ setPageTitle }) => {
   const [timeOfTheDay, setTimeOfTheDay] = useState("");
@@ -31,7 +36,10 @@ const UserDashboard = ({ setPageTitle }) => {
   const [bankPayment, setBankPayment] = useState(false);
   const [cardPayment, setCardPayment] = useState(false);
   const [depositConfirmation, setDepositConfirmation] = useState(false);
-
+  const [withdrawalModal, setWithdrawalModal] = useState(false);
+  const [portfolioBalanceModal, setPortfolioBalanceModal] = useState(false);
+  const [investmentBalanceModal, setInvestmentBalanceModal] = useState(false);
+  const withdrawalBalance = [{ amount: '200,000', label: 'Local Breed Investment (200,000)' }, { amount: '500,000', label: 'International Breed (500,000)' }];
 
   return (
     <div className="col-span-10">
@@ -60,7 +68,7 @@ const UserDashboard = ({ setPageTitle }) => {
               </button>
             </div>
             <div>
-              <button oncClick="openModal('withdraw')" className="bg-brandyellow flex w-full justify-center gap-4 items-center text-white rounded-md p-3">
+              <button onClick={() => { setWithdrawalModal(true) }} className="bg-brandyellow flex w-full justify-center gap-4 items-center text-white rounded-md p-3">
                 <img src={withdrawIcon} alt="" />
                 <span>Withdraw</span>
               </button>
@@ -147,7 +155,7 @@ const UserDashboard = ({ setPageTitle }) => {
             <span><img src={arrowSvg} alt="" /></span>
           </button>
           <button className="w-full flex justify-between items-center bg-[#F5F5F5] rounded-lg p-5"
-            onClick={() => { setCardPayment(true) }}>
+            onClick={() => { setCardPayment(true); setDepositModal(false) }}>
             <span className="flex items-center gap-4">
               <img src={cardSvg} alt="" />
               <p>Card</p>
@@ -193,30 +201,83 @@ const UserDashboard = ({ setPageTitle }) => {
         <button onClick={() => { setDepositConfirmation(true); setBankPayment(false); setDepositModal(false) }} className="bg-primary p-4 rounded text-white text-sm">Continue</button>
       </Modal>
 
-      <Modal isVisible={cardPayment} onClose={() => { setCardPayment(false) }}>
+      <Modal isVisible={cardPayment} onClose={() => { setCardPayment(false); setDepositModal(true) }}>
         <p className="text-xl text-primary py-16 text-center font-bold">Card Payment Options is not
           available for now, <br />Kindly Use Bank Transfer</p>
       </Modal>
 
       <Modal isVisible={depositConfirmation} onClose={() => { setDepositConfirmation(false) }}>
-        <p class="text-xl text-primary font-medium">Complete the form to confirm your deposit</p>
-        <div class="grid gap-6 mt-8">
-        <InputWithLabel labelName={'Amount'}
-                        inputType={'number'}
-                        placeholder={'000,000.00'}/>
-        <InputWithLabel labelName={'Reference Number'}
-                        inputType={'number'}
-                        placeholder={'00000000'}/>
-        <InputWithLabel labelName={'Proof of Payment'}
-                        inputType={'file'}
-                        placeholder={'000,000.00'}/>  
-        <Buttons btnText={'Continue'} btnType={'primary'} onClick={()=>{setDepositConfirmation(false)}} />
+        <p className="text-xl text-primary font-medium">Complete the form to confirm your deposit</p>
+        <div className="grid gap-6 mt-8">
+          <CurrencyInput labelName={'Amount'}
+            inputType={'text'}
+            placeholder={'000,000.00'} />
+          <InputWithLabel labelName={'Reference Number'}
+            inputType={'number'}
+            placeholder={'00000000'} />
+          <InputWithLabel labelName={'Proof of Payment'}
+            inputType={'file'}
+            placeholder={'000,000.00'} />
+          <Buttons btnText={'Continue'} btnType={'primary'} onClick={() => { setDepositConfirmation(false) }} />
         </div>
-      
-                        
+
+
       </Modal>
 
+      <Modal isVisible={withdrawalModal} onClose={() => { setWithdrawalModal(false) }}>
+        <p className="text-xl text-primary font-medium">Choose an Account</p>
+        <p className="text-sm text-black/50 font-medium mb-5">Select a balance you wish to initiate withdrawal from</p>
+        <div className="grid gap-4 text-sm mt-4 mb-8">
+          <button className="w-full flex justify-between items-center bg-[#F5F5F5] rounded-lg p-5"
+            onClick={() => { setPortfolioBalanceModal(true); setWithdrawalModal(false) }}>
+            <span className="flex items-center gap-4">
+              <img src={pieChartIcon} alt="" />
+              <p>Portfolio Balance <span className="font-bold ps-2">(&#8358;904,000.90)</span></p>
+            </span>
+            <span><img src={arrowSvg} alt="" /></span>
+          </button>
+          <button className="w-full flex justify-between items-center bg-[#F5F5F5] rounded-lg p-5"
+            onClick={()=>{setInvestmentBalanceModal(true); setWithdrawalModal(false)}}>
+            <span className="flex items-center gap-4">
+              <img src={plantLineIcon} alt="" />
+              <p>Investment Balance <span className="font-bold ps-2">(&#8358;89,000.00)</span></p>
+            </span>
+            <span><img src={arrowSvg} alt="" /></span>
+          </button>
+        </div>
+      </Modal>
 
+      <Modal isVisible={portfolioBalanceModal} onClose={() => {setPortfolioBalanceModal(false);setWithdrawalModal(true)}}>
+        <p className="text-xl text-primary font-medium">Complete the form to confirm your withdrawal from your Portfolio Balance</p>
+        <p className="text-sm text-red-500 font-medium mb-5">Kindly Note that withdrawal will be made to the account set up in your profile</p>
+        <div className="grid gap-6 mt-4">
+        <CurrencyInput labelName={'Amount'}
+                        inputType={'text'}
+                        placeholder={'000,000.00'}/>
+          <DigitInput labelName={'User Pin'}
+                      maxLength={'4'}
+                      inputType={'password'}/>
+          <Buttons btnText={'Continue'} btnType={'primary'}/>
+        </div>
+      </Modal>
+
+      <Modal isVisible={investmentBalanceModal} onClose={()=>{setInvestmentBalanceModal(false); setWithdrawalModal(true)}}>
+      <p className="text-xl text-primary font-medium">Complete the form to confirm your withdrawal from your Investment Balance</p>
+        <p className="text-sm text-red-500 font-medium mb-5">Kindly Note that withdrawal will be made to the account set up in your profile</p>
+        <div className="grid gap-6 mt-4">
+          <SelectInput labelName={'Select Investment you want to withdraw from'}
+                       selectOptions={withdrawalBalance}
+                       valueKey={'amount'}
+                       labelKey={'label'} />
+          <CurrencyInput labelName={'Amount'}
+                          inputType={'text'}
+                          placeholder={'000,000.00'}/>
+          <DigitInput labelName={'User Pin'}
+                      maxLength={'4'}
+                      inputType={'password'}/>
+          <Buttons btnText={'Continue'} btnType={'primary'}/>
+        </div>
+      </Modal>
     </div>
   );
 }

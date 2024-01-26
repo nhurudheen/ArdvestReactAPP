@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 
 
 export function getPeriodOfDay() {
@@ -75,3 +76,48 @@ export async function copyToClipboard(userContent) {
     }
   }
 
+
+  export function useCurrencyDigit() {
+    useEffect(() => {
+      const handleCurrencyInput = (event) => {
+        const removeString = event.target.value.replace(/[^0-9.]/g, '');
+        const convertToDigit = parseFloat(removeString);
+        if (!isNaN(convertToDigit)) {
+          event.target.value = convertToDigit.toLocaleString('en-US');
+        } else {
+          event.target.value = '';
+        }
+      };
+  
+      document.querySelectorAll('.currencyDigit').forEach((input) => {
+        input.addEventListener('input', handleCurrencyInput);
+  
+        return () => {
+          input.removeEventListener('input', handleCurrencyInput);
+        };
+      });
+    }, []);
+  }
+
+  export function useDigitInput() {
+    useEffect(() => {
+      const handleDigitInput = (event) => {
+        const removeString = event.target.value.replace(/[^0-9.]/g, '');
+        const convertToDigit = parseFloat(removeString);
+        if (!isNaN(convertToDigit)) {
+          event.target.value = convertToDigit;
+        } else {
+          event.target.value = '';
+        }
+      };
+  
+      document.querySelectorAll('.digitFormat').forEach((input) => {
+        input.addEventListener('keyup', handleDigitInput);
+  
+        return () => {
+          input.removeEventListener('keyup', handleDigitInput);
+        };
+      });
+    }, []);
+  }
+  
