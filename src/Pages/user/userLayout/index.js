@@ -4,8 +4,11 @@ import TopBar from "./topBar";
 import SideBar from "./sideBar";
 import { useState } from "react";
 import Investment from "../pages/investment";
+import { useSelector } from "react-redux";
+import LogOut from "../auth/logout";
 
 const UserLayout = () => {
+    const isAuthenticated = useSelector((state)=>state.user.isAuthenticated);
     const [sideBarVisibility, setSideBarVisibility] = useState(false);
     const toggleSideBar = ()=>{
         setSideBarVisibility(!sideBarVisibility); 
@@ -14,6 +17,10 @@ const UserLayout = () => {
         setSideBarVisibility(false);
     }
     const [pageTitle, setPageTitle] = useState("");
+    
+    if(!isAuthenticated){
+        return <LogOut/>;
+    }
     return ( 
         <div>
             <TopBar toggleSideBar={toggleSideBar} topBarTitle={pageTitle}/>
@@ -22,6 +29,7 @@ const UserLayout = () => {
             <Routes>
                 <Route path="/dashboard" element={<UserDashboard setPageTitle={setPageTitle}/>}/>
                 <Route path="/investment" element={<Investment setPageTitle={setPageTitle} />}/>
+                <Route path="/userLogout" element={<LogOut/>}/>
             </Routes>
             </div>
         </div>

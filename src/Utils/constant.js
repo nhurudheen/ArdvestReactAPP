@@ -24,3 +24,12 @@ export const showErrorToastMessage = (errorMessage)=>{
     toast.error(errorMessage);
     return null;
 }
+
+export const retrieveFromLocalStorage = (keys)=>{
+    const data = {};
+    keys.forEach((key)=>{
+      const persistedState = sessionStorage.getItem(key);
+      data[key] = persistedState ? JSON.parse(persistedState) : null;
+    });
+    return data;
+  };

@@ -1,12 +1,22 @@
 import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit"
 import { APIService } from "../remote/apiServices"
 import { showErrorToastMessage, showSuccessToastMessage } from "../../Utils/constant";
+import { retrieveFromLocalStorage } from "../../Utils/constant";
+import { getPeriodOfDay } from "../../Utils/utils";
 
 const initialState = {
     users : null,
     loading : false,
     error : null,
     isAuthenticated :  false,
+    ...retrieveFromLocalStorage([
+        "userSessionData"
+    ])
+}
+const periodOfTheDay = getPeriodOfDay();
+
+const saveToLocalStorage = (key, data)=>{
+    sessionStorage.setItem(key,data);
 }
 
 export const userRegistration = createAsyncThunk(
@@ -32,6 +42,7 @@ export const userAuthenticate = createAsyncThunk(
     async(userData) =>{
         const apiClientUserLogin = await APIService.userLogin(userData);
         const response = await apiClientUserLogin.data;
+        saveToLocalStorage("userSessionData", JSON.stringify(response.data));
         return response;
     }
 )
@@ -71,6 +82,17 @@ export const userResetPassword = createAsyncThunk(
     }
 )
 
+const logOutSession = () =>{
+    sessionStorage.removeItem("users");
+    sessionStorage.removeItem("userSessionData");  
+}
+export const userLogOut = createAsyncThunk(
+    "user/LogOut",
+    async()=>{
+        logOutSession();
+    }
+)
+
 const userSlice = createSlice({
     name: "user",
     reducers : {},
@@ -79,7 +101,10 @@ const userSlice = createSlice({
         builder
         .addCase(userAuthenticate.fulfilled, (state,action)=>{
             if(action.payload.statusCode === "200"){
-
+                state.users = action.payload;
+                state.isAuthenticated = true;
+                state.userSessionData = action.payload.result;
+                showSuccessToastMessage(`Good ${periodOfTheDay} `+action.payload.result.firstname);
             }
             else{
                 state.error = action.payload.message;
@@ -92,7 +117,11 @@ const userSlice = createSlice({
             state.isAuthenticated = false;
             state.error = showErrorToastMessage("Server Down, Contact Admin");
         })
-
+        .addCase(userLogOut.fulfilled , (state)=>{
+            state.isAuthenticated = false;
+            state.loading = false;
+            state.users = null;
+        })
         .addMatcher(isAnyOf(
             userRegistration.fulfilled,
             verifyEmailAddress.fulfilled,
