@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit"
 import { APIService } from "../remote/apiServices"
-import { showErrorToastMessage, showSuccessToastMessage } from "../../Utils/constant";
-import { retrieveFromLocalStorage } from "../../Utils/constant";
+import { retrieveFromLocalStorage, showErrorToastMessage, showSuccessToastMessage } from "../../Utils/constant";
 import { getPeriodOfDay } from "../../Utils/utils";
 
 const initialState = {
@@ -10,7 +9,8 @@ const initialState = {
     error : null,
     isAuthenticated :  false,
     ...retrieveFromLocalStorage([
-        "userSessionData"
+        "userSessionData",
+        "userBalanceData"
     ])
 }
 const periodOfTheDay = getPeriodOfDay();
@@ -18,6 +18,7 @@ const periodOfTheDay = getPeriodOfDay();
 const saveToLocalStorage = (key, data)=>{
     sessionStorage.setItem(key,data);
 }
+
 
 export const userRegistration = createAsyncThunk(
     "user/registration",
@@ -42,7 +43,7 @@ export const userAuthenticate = createAsyncThunk(
     async(userData) =>{
         const apiClientUserLogin = await APIService.userLogin(userData);
         const response = await apiClientUserLogin.data;
-        saveToLocalStorage("userSessionData", JSON.stringify(response.data));
+        saveToLocalStorage("userSessionData", JSON.stringify(response.result));
         return response;
     }
 )
@@ -82,9 +83,28 @@ export const userResetPassword = createAsyncThunk(
     }
 )
 
+export const userBalanceSummary = createAsyncThunk(
+    "user/BalanceSummary",
+    async(userId)=>{
+        const apiUserBalanceSummary = await APIService.userBalance(userId);
+        const response = await apiUserBalanceSummary.data;
+        saveToLocalStorage("userBalanceData", JSON.stringify(response.result));
+        return response;
+    }
+)
+
+export const depositBankAccount = createAsyncThunk(
+    "user/BankAccountForDeposit",
+    async()=>{
+        const apiBankAccount = await APIService.bankAccountDetails();
+        const response = await apiBankAccount.data;
+        return response;
+    }
+)
 const logOutSession = () =>{
     sessionStorage.removeItem("users");
     sessionStorage.removeItem("userSessionData");  
+    sessionStorage.removeItem("userBalanceData")
 }
 export const userLogOut = createAsyncThunk(
     "user/LogOut",
@@ -122,6 +142,19 @@ const userSlice = createSlice({
             state.loading = false;
             state.users = null;
         })
+        .addCase(userBalanceSummary.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.users = action.payload;
+                state.userBalanceData = action.payload.result;
+            }
+            state.loading = false;
+        })
+        .addCase(depositBankAccount.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.users = action.payload;
+            }
+            state.loading = false;
+        })
         .addMatcher(isAnyOf(
             userRegistration.fulfilled,
             verifyEmailAddress.fulfilled,
@@ -151,7 +184,9 @@ const userSlice = createSlice({
             userCompleteProfile.pending,
             userTransactionPin.pending,
             userForgotPassword.pending,
-            userResetPassword.pending
+            userResetPassword.pending,
+            userBalanceSummary.pending,
+            depositBankAccount.pending,
         ), 
         (state)=>{
             state.loading = true;
@@ -164,7 +199,9 @@ const userSlice = createSlice({
             userCompleteProfile.rejected,
             userTransactionPin.rejected,
             userForgotPassword.rejected,
-            userResetPassword.rejected
+            userResetPassword.rejected,
+            userBalanceSummary.rejected,
+            depositBankAccount.rejected
         ),
         (state,action)=>{
             state.loading = false;

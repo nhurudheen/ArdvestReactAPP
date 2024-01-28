@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import LogOut from "../auth/logout";
 
 const UserLayout = () => {
-    const isAuthenticated = useSelector((state)=>state.user.isAuthenticated);
+    const userSession = useSelector((state)=>state.user.userSessionData);
     const [sideBarVisibility, setSideBarVisibility] = useState(false);
     const toggleSideBar = ()=>{
         setSideBarVisibility(!sideBarVisibility); 
@@ -17,8 +17,7 @@ const UserLayout = () => {
         setSideBarVisibility(false);
     }
     const [pageTitle, setPageTitle] = useState("");
-    
-    if(!isAuthenticated){
+    if(!userSession){
         return <LogOut/>;
     }
     return ( 

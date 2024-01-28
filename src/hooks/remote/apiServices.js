@@ -1,6 +1,5 @@
 import { showErrorToastMessage } from "../../Utils/constant";
 import { APIClient, APIFormDataClient } from "./apiClient";
-
 export class APIService{
     static extractError(error){
         let extracted;
@@ -85,6 +84,26 @@ export class APIService{
     static async resetPassword(data){
         try{
             return APIClient.post("/reset_password", data);
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw(error);
+        }
+    }
+
+    static async userBalance(userId){
+        try{
+            return APIClient.get(`/user_balance_summary?userId=${userId}`);
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw(error);
+        }
+    }
+
+    static async bankAccountDetails(){
+        try{
+            return APIClient.get("/bank_details");
         }
         catch(error){
             APIService.extractError(error);

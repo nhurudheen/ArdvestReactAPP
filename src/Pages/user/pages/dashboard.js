@@ -14,36 +14,51 @@ import copyIcon from "../../../assets/icons/copyIcon.svg";
 import pieChartIcon from "../../../assets/icons/pie-chart-line.svg";
 import plantLineIcon from "../../../assets/icons/plant-line.svg";
 import InputWithLabel from "../../../Components/inputWithLabel";
-import { Button } from "@mui/material";
 import Buttons from "../../../Components/buttons";
 import SelectInput from "../../../Components/selectInput";
 import CurrencyInput from "../../../Components/currencyInput";
 import DigitInput from "../../../Components/digitInput";
+import { useDispatch, useSelector } from "react-redux";
+import { depositBankAccount } from "../../../hooks/local/userReducer";
 
 const UserDashboard = ({ setPageTitle }) => {
+  const dispatch = useDispatch();
   const [timeOfTheDay, setTimeOfTheDay] = useState("");
-  useEffect(() => {
-    setPageTitle("Dashboard");
-    document.title = "Dashboard | Ardvest";
-    document.querySelector('meta[name="description"]').content = "Track investments, gain insights, and grow wealth with Ardvest dashboard.";
-    setTimeOfTheDay(getPeriodOfDay);
-  }, [setPageTitle]);
-  const userBalance = currencyFormat("2700900.58");
-  const referenceNumber = "859440004949";
-  const accountNumber = "0137712594";
+  const userBalanceSummary = useSelector((state)=>state.user.userBalanceData);
+  const portfolioBalance = currencyFormat(userBalanceSummary.totalBalance);
   const [showBalance, setShowBalance] = useState(false);
   const [depositModal, setDepositModal] = useState(false);
   const [bankPayment, setBankPayment] = useState(false);
   const [cardPayment, setCardPayment] = useState(false);
+  const [depositBankDetails, setDepositBankDetails] = useState([]);
   const [depositConfirmation, setDepositConfirmation] = useState(false);
   const [withdrawalModal, setWithdrawalModal] = useState(false);
   const [portfolioBalanceModal, setPortfolioBalanceModal] = useState(false);
   const [investmentBalanceModal, setInvestmentBalanceModal] = useState(false);
   const withdrawalBalance = [{ amount: '200,000', label: 'Local Breed Investment (200,000)' }, { amount: '500,000', label: 'International Breed (500,000)' }];
 
+  useEffect(() => {
+    setPageTitle("Dashboard");
+    document.title = "Dashboard | Ardvest";
+    document.querySelector('meta[name="description"]').content = "Track investments, gain insights, and grow wealth with Ardvest dashboard.";
+    setTimeOfTheDay(getPeriodOfDay);
+
+  }, [setPageTitle]);
+  
+  useEffect(()=>{
+    const fetchBankDetails = async()=>{
+        try{
+          const { payload } = await dispatch(depositBankAccount());
+          setDepositBankDetails(payload.result[0])
+        }
+        catch(error){}
+    }
+    fetchBankDetails();
+  },[dispatch])
+  
   return (
     <div className="col-span-10">
-      <p>Good {timeOfTheDay} <span id="time-period"></span>, <span className="font-semibold">Oladapo</span></p>
+      <p>Good {timeOfTheDay}<span id="time-period"></span>, <span className="font-semibold">{useSelector((state)=>state.user.userSessionData).firstname}</span></p>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="grid gap-4">
           <div className="p-4 bg-white rounded-md grid">
@@ -55,7 +70,7 @@ const UserDashboard = ({ setPageTitle }) => {
             <p className="text-2xl text-primary">
               <span>&#8358;</span>
               {showBalance ?
-                (<><span className="text-5xl font-medium">{userBalance.wholeNumber}</span>.<span>{userBalance.decimalPart}</span></>)
+                (<><span className="text-5xl font-medium">{portfolioBalance.wholeNumber}</span>.<span>{portfolioBalance.decimalPart}</span></>)
                 : (<span className="text-5xl font-medium">*,***,***.**</span>)
               }
             </p>
@@ -171,31 +186,31 @@ const UserDashboard = ({ setPageTitle }) => {
         <div className="grid gap-4 text-sm mt-4 mb-8">
           <div className="grid bg-[#f8f8f8] p-3 rounded-lg">
             <p className="text-sm text-black/50">Account name:</p>
-            <p className="text-lg font-medium text-primary">Nurudeen Oluwapelumi Faniyi</p>
+            <p className="text-lg font-medium text-primary">{depositBankDetails.accountName}</p>
           </div>
           <div className="grid bg-[#f8f8f8] p-3 rounded-lg">
             <p className="text-sm text-black/50">Bank name:</p>
-            <p className="text-lg font-medium text-primary">GtBank</p>
+            <p className="text-lg font-medium text-primary">{depositBankDetails.bankName}</p>
           </div>
           <div className="flex justify-between items-end bg-[#f8f8f8] p-3 rounded-lg">
             <div>
               <p className="text-sm text-black/50">Account number:</p>
               <p className="text-lg font-medium text-primary" >
-                {accountNumber}</p>
+                {depositBankDetails.accountNumber}</p>
             </div>
             <div className="pt-3 pe-4 hover:scale-105"> <img
               src={copyIcon} alt=""
-              className="justify-self-end mb-4" onClick={() => { copyToClipboard(accountNumber) }} /></div>
+              className="justify-self-end mb-4" onClick={() => { copyToClipboard(depositBankDetails.accountNumber) }} /></div>
           </div>
           <div className="flex justify-between items-end bg-[#f8f8f8] p-3 rounded-lg">
             <div>
               <p className="text-sm text-black/50">Reference Number:</p>
               <p className="text-lg font-medium text-primary" >
-                {referenceNumber}</p>
+                {depositBankDetails.referenceNumber}</p>
             </div>
             <div className="pt-3 pe-4 hover:scale-105"> <img
               src={copyIcon} alt=""
-              className="justify-self-end mb-4" onClick={() => { copyToClipboard(referenceNumber) }} /></div>
+              className="justify-self-end mb-4" onClick={() => { copyToClipboard(depositBankDetails.referenceNumber) }} /></div>
           </div>
         </div>
         <button onClick={() => { setDepositConfirmation(true); setBankPayment(false); setDepositModal(false) }} className="bg-primary p-4 rounded text-white text-sm">Continue</button>
@@ -232,7 +247,7 @@ const UserDashboard = ({ setPageTitle }) => {
             onClick={() => { setPortfolioBalanceModal(true); setWithdrawalModal(false) }}>
             <span className="flex items-center gap-4">
               <img src={pieChartIcon} alt="" />
-              <p>Portfolio Balance <span className="font-bold ps-2">(&#8358;904,000.90)</span></p>
+              <p>Portfolio Balance <span className="font-bold ps-2">(&#8358;{userBalanceSummary.totalBalance})</span></p>
             </span>
             <span><img src={arrowSvg} alt="" /></span>
           </button>
@@ -240,7 +255,7 @@ const UserDashboard = ({ setPageTitle }) => {
             onClick={()=>{setInvestmentBalanceModal(true); setWithdrawalModal(false)}}>
             <span className="flex items-center gap-4">
               <img src={plantLineIcon} alt="" />
-              <p>Investment Balance <span className="font-bold ps-2">(&#8358;89,000.00)</span></p>
+              <p>Investment Balance <span className="font-bold ps-2">(&#8358;{userBalanceSummary.investmentBalance})</span></p>
             </span>
             <span><img src={arrowSvg} alt="" /></span>
           </button>

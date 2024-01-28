@@ -16,7 +16,7 @@ export const FORM_DATA_HEADER = {
   }
   
 
-  export const showSuccessToastMessage =(successMessage)=>{
+export const showSuccessToastMessage =(successMessage)=>{
     toast.success(successMessage);
     return null;
 }
@@ -26,10 +26,10 @@ export const showErrorToastMessage = (errorMessage)=>{
 }
 
 export const retrieveFromLocalStorage = (keys)=>{
-    const data = {};
-    keys.forEach((key)=>{
-      const persistedState = sessionStorage.getItem(key);
-      data[key] = persistedState ? JSON.parse(persistedState) : null;
-    });
-    return data;
-  };
+  const data = {};
+  keys.forEach((key)=>{
+    const persistedState = sessionStorage.getItem(key);
+    data[key] = persistedState ? JSON.parse(persistedState) : null;
+  });
+  return data;
+};
