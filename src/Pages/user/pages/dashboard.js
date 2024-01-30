@@ -18,11 +18,10 @@ import Buttons from "../../../Components/buttons";
 import SelectInput from "../../../Components/selectInput";
 import CurrencyInput from "../../../Components/currencyInput";
 import DigitInput from "../../../Components/digitInput";
-import { useDispatch, useSelector } from "react-redux";
-import { depositBankAccount } from "../../../hooks/local/userReducer";
+import { useSelector } from "react-redux";
+import { useDepositBankList, useUserActiveInvestmentList } from "../userLayout/reusableEffects";
 
 const UserDashboard = ({ setPageTitle }) => {
-  const dispatch = useDispatch();
   const [timeOfTheDay, setTimeOfTheDay] = useState("");
   const userBalanceSummary = useSelector((state)=>state.user.userBalanceData);
   const portfolioBalance = currencyFormat(userBalanceSummary.totalBalance);
@@ -30,12 +29,13 @@ const UserDashboard = ({ setPageTitle }) => {
   const [depositModal, setDepositModal] = useState(false);
   const [bankPayment, setBankPayment] = useState(false);
   const [cardPayment, setCardPayment] = useState(false);
-  const [depositBankDetails, setDepositBankDetails] = useState([]);
   const [depositConfirmation, setDepositConfirmation] = useState(false);
   const [withdrawalModal, setWithdrawalModal] = useState(false);
   const [portfolioBalanceModal, setPortfolioBalanceModal] = useState(false);
   const [investmentBalanceModal, setInvestmentBalanceModal] = useState(false);
-  const withdrawalBalance = [{ amount: '200,000', label: 'Local Breed Investment (200,000)' }, { amount: '500,000', label: 'International Breed (500,000)' }];
+  const depositBankDetails = useDepositBankList();
+  const userActiveInvestmentList = useUserActiveInvestmentList();
+  const activeInvestment = userActiveInvestmentList.map((response)=>({amount: response.amount, label:`${response.investmentName} (${response.amount})`}));
 
   useEffect(() => {
     setPageTitle("Dashboard");
@@ -44,17 +44,8 @@ const UserDashboard = ({ setPageTitle }) => {
     setTimeOfTheDay(getPeriodOfDay);
 
   }, [setPageTitle]);
+
   
-  useEffect(()=>{
-    const fetchBankDetails = async()=>{
-        try{
-          const { payload } = await dispatch(depositBankAccount());
-          setDepositBankDetails(payload.result[0])
-        }
-        catch(error){}
-    }
-    fetchBankDetails();
-  },[dispatch])
   
   return (
     <div className="col-span-10">
@@ -281,7 +272,7 @@ const UserDashboard = ({ setPageTitle }) => {
         <p className="text-sm text-red-500 font-medium mb-5">Kindly Note that withdrawal will be made to the account set up in your profile</p>
         <div className="grid gap-6 mt-4">
           <SelectInput labelName={'Select Investment you want to withdraw from'}
-                       selectOptions={withdrawalBalance}
+                       selectOptions={activeInvestment}
                        valueKey={'amount'}
                        labelKey={'label'} />
           <CurrencyInput labelName={'Amount'}

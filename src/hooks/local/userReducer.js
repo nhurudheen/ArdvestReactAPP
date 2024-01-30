@@ -101,6 +101,15 @@ export const depositBankAccount = createAsyncThunk(
         return response;
     }
 )
+
+export const userActiveInvestmentList = createAsyncThunk(
+    "user/ActiveInvestment",
+    async(userId)=>{
+        const apiActiveInvestment = await APIService.userActiveInvestment(userId);
+        const response = apiActiveInvestment.data;
+        return response;
+    }
+)
 const logOutSession = () =>{
     sessionStorage.removeItem("users");
     sessionStorage.removeItem("userSessionData");  
@@ -155,13 +164,19 @@ const userSlice = createSlice({
             }
             state.loading = false;
         })
+        .addCase(userActiveInvestmentList.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.users = action.payload;
+            }
+            state.loading = false;
+        })
         .addMatcher(isAnyOf(
             userRegistration.fulfilled,
             verifyEmailAddress.fulfilled,
             userCompleteProfile.fulfilled,
             userTransactionPin.fulfilled,
             userForgotPassword.fulfilled,
-            userResetPassword.fulfilled
+            userResetPassword.fulfilled,
         ), (state,action)=>{
             if(action.payload.statusCode === "200"){
                 state.users = action.payload;
@@ -187,6 +202,7 @@ const userSlice = createSlice({
             userResetPassword.pending,
             userBalanceSummary.pending,
             depositBankAccount.pending,
+            userActiveInvestmentList.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -201,7 +217,8 @@ const userSlice = createSlice({
             userForgotPassword.rejected,
             userResetPassword.rejected,
             userBalanceSummary.rejected,
-            depositBankAccount.rejected
+            depositBankAccount.rejected,
+            userActiveInvestmentList.rejected
         ),
         (state,action)=>{
             state.loading = false;

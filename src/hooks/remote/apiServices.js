@@ -1,113 +1,133 @@
 import { showErrorToastMessage } from "../../Utils/constant";
 import { APIClient, APIFormDataClient } from "./apiClient";
-export class APIService{
-    static extractError(error){
+export class APIService {
+    static extractError(error) {
         let extracted;
-        if(error.isAxiosError){
-            if(error.request){
+        if (error.isAxiosError) {
+            if (error.request) {
                 extracted = ["Network Error Occurred"];
             }
-            else if(error.response){
+            else if (error.response) {
                 extracted = [error.response.message];
             }
-            else{
+            else {
                 extracted = ["An Unexpected Error Occurred"];
             }
         }
-        else{
+        else {
             extracted = [error.response.message || "An unexpected Error occurred"];
         }
-        extracted.forEach((error)=>showErrorToastMessage(error))
+        extracted.forEach((error) => showErrorToastMessage(error))
     }
 
-    static async userRegistration(registrationData){
-        try{
+    static async userRegistration(registrationData) {
+        try {
             return APIClient.post("/create_account", registrationData);
         }
-        catch(error){
+        catch (error) {
             APIService.extractError(error);
-            throw(error);
+            throw (error);
         }
     }
 
-    static async verifyOTPEmailAddress(otpData){
-        try{
+    static async verifyOTPEmailAddress(otpData) {
+        try {
             return APIClient.post("/verify_email", otpData);
         }
-        catch(error){
+        catch (error) {
             APIService.extractError(error);
-            throw(error);
+            throw (error);
         }
     }
 
-    static async userLogin(loginData){
-        try{
+    static async userLogin(loginData) {
+        try {
             return APIClient.post("/user_login", loginData);
         }
-        catch(error){
+        catch (error) {
             APIService.extractError(error);
-            throw(error);
+            throw (error);
         }
     }
 
-    static async completeUserProfile(userProfileData){
-        try{
+    static async completeUserProfile(userProfileData) {
+        try {
             return APIFormDataClient.post("/update_account", userProfileData);
         }
-        catch(error){
+        catch (error) {
             APIService.extractError(error);
-            throw(error);
-           
-        }   
+            throw (error);
+
+        }
     }
 
-    static async setUserTransactionPin(userPinData){
-        try{
+    static async setUserTransactionPin(userPinData) {
+        try {
             return APIClient.post("/set_user_pin", userPinData);
         }
-        catch(error){
+        catch (error) {
             APIService.extractError(error);
-            throw(error);
+            throw (error);
         }
     }
 
-    static async forgotPassword(data){
-        try{
+    static async forgotPassword(data) {
+        try {
             return APIClient.post("/forget_password", data);
         }
-        catch(error){
+        catch (error) {
             APIService.extractError(error);
-            throw(error);
+            throw (error);
         }
     }
 
-    static async resetPassword(data){
-        try{
+    static async resetPassword(data) {
+        try {
             return APIClient.post("/reset_password", data);
         }
-        catch(error){
+        catch (error) {
             APIService.extractError(error);
-            throw(error);
+            throw (error);
         }
     }
 
-    static async userBalance(userId){
-        try{
+    static async userBalance(userId) {
+        try {
             return APIClient.get(`/user_balance_summary?userId=${userId}`);
         }
-        catch(error){
+        catch (error) {
             APIService.extractError(error);
-            throw(error);
+            throw (error);
         }
     }
 
-    static async bankAccountDetails(){
-        try{
+    static async bankAccountDetails() {
+        try {
             return APIClient.get("/bank_details");
         }
-        catch(error){
+        catch (error) {
             APIService.extractError(error);
-            throw(error);
+            throw (error);
+        }
+    }
+
+    static async userActiveInvestment(userId) {
+        try {
+            return APIClient.get(`/user_active_investment_list?userId=${userId}`);
+        }
+        catch (error) {
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
+
+    static async userTransactionHistory(userId) {
+        try {
+            return APIClient.get(`/user_transactions?userId=${userId}`);
+        }
+        catch (error) {
+            APIService.extractError(error);
+            throw (error);
         }
     }
 }
