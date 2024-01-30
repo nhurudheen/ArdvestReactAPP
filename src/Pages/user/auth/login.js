@@ -8,7 +8,7 @@ import PasswordInput from "../../../Components/passwordInput";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { userAuthenticate, userBalanceSummary } from "../../../hooks/local/userReducer";
+import { userAuthenticate } from "../../../hooks/local/userReducer";
 import Spinner from "../../../Components/spinner";
 
 const UserLogin = () => {
@@ -45,8 +45,6 @@ const UserLogin = () => {
                 navigate('/setUpPin', {state: {emailAddress}})
             }
             if(payload.statusCode === "200"){
-                const userId = payload.result.userId;
-                await dispatch(userBalanceSummary(userId));
                 navigate('/dashboard');
             }
         }

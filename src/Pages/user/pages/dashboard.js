@@ -19,12 +19,11 @@ import SelectInput from "../../../Components/selectInput";
 import CurrencyInput from "../../../Components/currencyInput";
 import DigitInput from "../../../Components/digitInput";
 import { useSelector } from "react-redux";
-import { useDepositBankList, useUserActiveInvestmentList } from "../userLayout/reusableEffects";
+import { useDepositBankList, useUserActiveInvestmentList, useUserBalanceSummary, useUserTransactionHistory } from "../userLayout/reusableEffects";
+import Spinner from "../../../Components/spinner";
 
 const UserDashboard = ({ setPageTitle }) => {
   const [timeOfTheDay, setTimeOfTheDay] = useState("");
-  const userBalanceSummary = useSelector((state)=>state.user.userBalanceData);
-  const portfolioBalance = currencyFormat(userBalanceSummary.totalBalance);
   const [showBalance, setShowBalance] = useState(false);
   const [depositModal, setDepositModal] = useState(false);
   const [bankPayment, setBankPayment] = useState(false);
@@ -35,7 +34,13 @@ const UserDashboard = ({ setPageTitle }) => {
   const [investmentBalanceModal, setInvestmentBalanceModal] = useState(false);
   const depositBankDetails = useDepositBankList();
   const userActiveInvestmentList = useUserActiveInvestmentList();
-  const activeInvestment = userActiveInvestmentList.map((response)=>({amount: response.amount, label:`${response.investmentName} (${response.amount})`}));
+  const userTransactionHistory = useUserTransactionHistory().slice(0,5);
+  const userBalanceSummary = useUserBalanceSummary();
+  const dashboardBalance = userBalanceSummary?.totalBalance? currencyFormat(userBalanceSummary.totalBalance) : '0.00';
+  const portfolioBalance = userBalanceSummary?.totalBalance? userBalanceSummary.totalBalance : '0.00';
+  const investmentBalance = userBalanceSummary?.investmentBalance? userBalanceSummary.investmentBalance : '0.00';
+  
+  const activeInvestment = userActiveInvestmentList.map((response) => ({ amount: response.amount, label: `${response.investmentName} (${response.amount})` }));
 
   useEffect(() => {
     setPageTitle("Dashboard");
@@ -45,11 +50,13 @@ const UserDashboard = ({ setPageTitle }) => {
 
   }, [setPageTitle]);
 
-  
-  
+
+
   return (
+    
     <div className="col-span-10">
-      <p>Good {timeOfTheDay}<span id="time-period"></span>, <span className="font-semibold">{useSelector((state)=>state.user.userSessionData).firstname}</span></p>
+      <Spinner loading={useSelector((state)=>state.user).loading}/>
+      <p>Good {timeOfTheDay}<span id="time-period"></span>, <span className="font-semibold">{useSelector((state) => state.user.userSessionData).firstname}</span></p>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="grid gap-4">
           <div className="p-4 bg-white rounded-md grid">
@@ -61,7 +68,7 @@ const UserDashboard = ({ setPageTitle }) => {
             <p className="text-2xl text-primary">
               <span>&#8358;</span>
               {showBalance ?
-                (<><span className="text-5xl font-medium">{portfolioBalance.wholeNumber}</span>.<span>{portfolioBalance.decimalPart}</span></>)
+                (<><span className="text-5xl font-medium">{dashboardBalance.wholeNumber}</span>.<span>{dashboardBalance.decimalPart}</span></>)
                 : (<span className="text-5xl font-medium">*,***,***.**</span>)
               }
             </p>
@@ -126,24 +133,30 @@ const UserDashboard = ({ setPageTitle }) => {
             <span className="text-primary font-medium underline">View all</span>
           </div>
           <div className="bg-white px-4 py-8 rounded-md mt-4 grid gap-4">
-            <div className="flex gap-4 ">
-              <div><img src={creditSvg} alt="" /></div>
-              <div className="grid grid-cols-12 w-full font-medium text-sm items-center border-b">
-                <div className="col-span-6 md:col-span-4 text-start">Deposit</div>
-                <div className="col-span-6 md:col-span-3 text-end">2022-12-01</div>
-                <div className="hidden md:block col-span-3 text-center">&#8358;<span>180,000</span></div>
-                <div className="text-primary font-bold hidden md:block col-span-2 text-end">Successful</div>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <div><img src={debitSvg} alt="" /></div>
-              <div className="grid grid-cols-12 w-full font-medium text-sm items-center border-b">
-                <div className="col-span-6 md:col-span-4 text-start">Withdrawal</div>
-                <div className="col-span-6 md:col-span-3 text-end">2022-12-01</div>
-                <div className="hidden md:block col-span-3 text-center">&#8358;<span>200,000</span></div>
-                <div className="text-red-500 font-bold hidden md:block col-span-2 text-end">Pending</div>
-              </div>
-            </div>
+            {
+              userTransactionHistory.length > 0 ?
+              userTransactionHistory.map((val, key) => {
+                const transactionIcon = (val.transactionType === "Deposit") ? creditSvg : debitSvg;
+                const statusColor = (val.status === "Approved") ? 'text-primary' : 'text-red-500';
+                return (
+                  <div key={key} className="flex gap-4 ">
+                    <div><img src={transactionIcon} alt="" /></div>
+                    <div className="grid grid-cols-12 w-full font-medium text-sm items-center border-b">
+                      <div className="col-span-6 md:col-span-4 text-start">{val.transactionType}</div>
+                      <div className="col-span-6 md:col-span-3 text-start">{val.insertedDt}</div>
+                      <div className="hidden md:block col-span-3 text-center">&#8358;<span>{val.amount}</span></div>
+                      <div className={`${statusColor} font-bold hidden md:block col-span-2 text-end`}>{val.status}</div>
+                    </div>
+                  </div>
+                )
+              })
+              :
+              (
+                <div className="text-center pt-3 text-lg font-bold">No Transaction Available</div>
+              )
+            }
+
+
           </div>
         </div>
       </div>
@@ -238,50 +251,50 @@ const UserDashboard = ({ setPageTitle }) => {
             onClick={() => { setPortfolioBalanceModal(true); setWithdrawalModal(false) }}>
             <span className="flex items-center gap-4">
               <img src={pieChartIcon} alt="" />
-              <p>Portfolio Balance <span className="font-bold ps-2">(&#8358;{userBalanceSummary.totalBalance})</span></p>
+              <p>Portfolio Balance <span className="font-bold ps-2">(&#8358;{portfolioBalance})</span></p>
             </span>
             <span><img src={arrowSvg} alt="" /></span>
           </button>
           <button className="w-full flex justify-between items-center bg-[#F5F5F5] rounded-lg p-5"
-            onClick={()=>{setInvestmentBalanceModal(true); setWithdrawalModal(false)}}>
+            onClick={() => { setInvestmentBalanceModal(true); setWithdrawalModal(false) }}>
             <span className="flex items-center gap-4">
               <img src={plantLineIcon} alt="" />
-              <p>Investment Balance <span className="font-bold ps-2">(&#8358;{userBalanceSummary.investmentBalance})</span></p>
+              <p>Investment Balance <span className="font-bold ps-2">(&#8358;{investmentBalance})</span></p>
             </span>
             <span><img src={arrowSvg} alt="" /></span>
           </button>
         </div>
       </Modal>
 
-      <Modal isVisible={portfolioBalanceModal} onClose={() => {setPortfolioBalanceModal(false);setWithdrawalModal(true)}}>
+      <Modal isVisible={portfolioBalanceModal} onClose={() => { setPortfolioBalanceModal(false); setWithdrawalModal(true) }}>
         <p className="text-xl text-primary font-medium">Complete the form to confirm your withdrawal from your Portfolio Balance</p>
         <p className="text-sm text-red-500 font-medium mb-5">Kindly Note that withdrawal will be made to the account set up in your profile</p>
         <div className="grid gap-6 mt-4">
-        <CurrencyInput labelName={'Amount'}
-                        inputType={'text'}
-                        placeholder={'000,000.00'}/>
+          <CurrencyInput labelName={'Amount'}
+            inputType={'text'}
+            placeholder={'000,000.00'} />
           <DigitInput labelName={'User Pin'}
-                      maxLength={'4'}
-                      inputType={'password'}/>
-          <Buttons btnText={'Continue'} btnType={'primary'}/>
+            maxLength={'4'}
+            inputType={'password'} />
+          <Buttons btnText={'Continue'} btnType={'primary'} />
         </div>
       </Modal>
 
-      <Modal isVisible={investmentBalanceModal} onClose={()=>{setInvestmentBalanceModal(false); setWithdrawalModal(true)}}>
-      <p className="text-xl text-primary font-medium">Complete the form to confirm your withdrawal from your Investment Balance</p>
+      <Modal isVisible={investmentBalanceModal} onClose={() => { setInvestmentBalanceModal(false); setWithdrawalModal(true) }}>
+        <p className="text-xl text-primary font-medium">Complete the form to confirm your withdrawal from your Investment Balance</p>
         <p className="text-sm text-red-500 font-medium mb-5">Kindly Note that withdrawal will be made to the account set up in your profile</p>
         <div className="grid gap-6 mt-4">
           <SelectInput labelName={'Select Investment you want to withdraw from'}
-                       selectOptions={activeInvestment}
-                       valueKey={'amount'}
-                       labelKey={'label'} />
+            selectOptions={activeInvestment}
+            valueKey={'amount'}
+            labelKey={'label'} />
           <CurrencyInput labelName={'Amount'}
-                          inputType={'text'}
-                          placeholder={'000,000.00'}/>
+            inputType={'text'}
+            placeholder={'000,000.00'} />
           <DigitInput labelName={'User Pin'}
-                      maxLength={'4'}
-                      inputType={'password'}/>
-          <Buttons btnText={'Continue'} btnType={'primary'}/>
+            maxLength={'4'}
+            inputType={'password'} />
+          <Buttons btnText={'Continue'} btnType={'primary'} />
         </div>
       </Modal>
     </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { depositBankAccount, userActiveInvestmentList } from "../../../hooks/local/userReducer";
+import { depositBankAccount, userActiveInvestmentList, userBalanceSummary, userTransactionHistory } from "../../../hooks/local/userReducer";
 
 export function useDepositBankList(){
   const [depositBankDetails, setDepositBankDetails] = useState([]);
@@ -19,6 +19,23 @@ export function useDepositBankList(){
     return depositBankDetails;
 }
 
+export function useUserBalanceSummary(){
+    const [balanceSummary, setBalanceSummary] = useState([]);
+    const userId = useSelector((state)=>state.user.userSessionData).userId;
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        const getUserBalanceSummary = async()=>{
+            try{
+                const { payload } = await dispatch(userBalanceSummary(userId));
+                setBalanceSummary(payload.result)
+            }
+            catch(error){}
+        }
+        getUserBalanceSummary();
+    },[dispatch, userId]);
+    return balanceSummary;
+}
+
 export function useUserActiveInvestmentList(){
     const [activeInvestmentList, setActiveInvestmentList] = useState([]);
     const userId = useSelector((state)=>state.user.userSessionData).userId;
@@ -35,3 +52,21 @@ export function useUserActiveInvestmentList(){
     },[dispatch, userId]);
     return activeInvestmentList;
 }
+
+export function useUserTransactionHistory(){
+    const [transactionList, setTransactionList] = useState([]);
+    const userId = useSelector((state)=>state.user.userSessionData).userId;
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        const getUserTransaction = async()=>{
+            try{
+                const { payload } = await dispatch(userTransactionHistory(userId));
+                setTransactionList(payload.result)
+            }
+            catch(error){}
+        }
+        getUserTransaction();
+    },[dispatch, userId]);
+    return transactionList;
+}
+

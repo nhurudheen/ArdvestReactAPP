@@ -1,8 +1,9 @@
 import homeIcon from '../../../assets/icons/home.svg';
 import portfolioIcon from '../../../assets/icons/portfoliio.svg';
-import transactionIcon from '../../../assets/icons/transaction.svg';
-import supportIcon from '../../../assets/icons/support.svg';
+import transactionIcon from '../../../assets/icons/transactions.svg';
+import settingsIcon from '../../../assets/icons/settings.svg';
 import powerIcon from '../../../assets/icons/power.svg';
+import profileIcon from '../../../assets/icons/user.svg';
 import { Link } from 'react-router-dom';
 const SideBar = ({ sideBarVisibility, topBarTitle, closeSideBar }) => {
     return (
@@ -32,8 +33,14 @@ const SideBar = ({ sideBarVisibility, topBarTitle, closeSideBar }) => {
                 </div>
                 <div className="pb-2 border-b">
                     <div className="flex gap-3 items-center p-3">
-                        <img src={supportIcon} alt="" />
-                        <div className="text-lg font-medium">Support</div>
+                        <img src={profileIcon} alt="" />
+                        <div className="text-lg font-medium">Profile</div>
+                    </div>
+                </div>
+                <div className="pb-2 border-b">
+                    <div className="flex gap-3 items-center p-3">
+                        <img src={settingsIcon} alt="" />
+                        <div className="text-lg font-medium">Settings</div>
                     </div>
                 </div>
                 <Link to={"/userLogout"} onClick={closeSideBar}>

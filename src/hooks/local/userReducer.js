@@ -10,7 +10,6 @@ const initialState = {
     isAuthenticated :  false,
     ...retrieveFromLocalStorage([
         "userSessionData",
-        "userBalanceData"
     ])
 }
 const periodOfTheDay = getPeriodOfDay();
@@ -88,7 +87,6 @@ export const userBalanceSummary = createAsyncThunk(
     async(userId)=>{
         const apiUserBalanceSummary = await APIService.userBalance(userId);
         const response = await apiUserBalanceSummary.data;
-        saveToLocalStorage("userBalanceData", JSON.stringify(response.result));
         return response;
     }
 )
@@ -110,10 +108,17 @@ export const userActiveInvestmentList = createAsyncThunk(
         return response;
     }
 )
+export const userTransactionHistory = createAsyncThunk(
+    "user/TransactionHistory",
+    async(userId)=>{
+        const apiTransactionHistory = await APIService.userTransactionHistory(userId);
+        const response = apiTransactionHistory.data;
+        return response;
+    }
+)
 const logOutSession = () =>{
     sessionStorage.removeItem("users");
-    sessionStorage.removeItem("userSessionData");  
-    sessionStorage.removeItem("userBalanceData")
+    sessionStorage.removeItem("userSessionData"); 
 }
 export const userLogOut = createAsyncThunk(
     "user/LogOut",
@@ -154,7 +159,6 @@ const userSlice = createSlice({
         .addCase(userBalanceSummary.fulfilled, (state,action)=>{
             if(action.payload.statusCode === "200"){
                 state.users = action.payload;
-                state.userBalanceData = action.payload.result;
             }
             state.loading = false;
         })
@@ -165,6 +169,12 @@ const userSlice = createSlice({
             state.loading = false;
         })
         .addCase(userActiveInvestmentList.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.users = action.payload;
+            }
+            state.loading = false;
+        })
+        .addCase(userTransactionHistory.fulfilled, (state,action)=>{
             if(action.payload.statusCode === "200"){
                 state.users = action.payload;
             }
@@ -202,7 +212,8 @@ const userSlice = createSlice({
             userResetPassword.pending,
             userBalanceSummary.pending,
             depositBankAccount.pending,
-            userActiveInvestmentList.pending
+            userActiveInvestmentList.pending,
+            userTransactionHistory.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -218,7 +229,8 @@ const userSlice = createSlice({
             userResetPassword.rejected,
             userBalanceSummary.rejected,
             depositBankAccount.rejected,
-            userActiveInvestmentList.rejected
+            userActiveInvestmentList.rejected,
+            userTransactionHistory.rejected
         ),
         (state,action)=>{
             state.loading = false;
