@@ -25,12 +25,15 @@ const SideBar = ({ sideBarVisibility, topBarTitle, closeSideBar }) => {
                         </div>
                     </div>
                 </Link>
-                <div className="pb-2 border-b">
-                    <div className="flex gap-3 items-center p-3">
-                        <img src={transactionIcon} alt="" />
-                        <div className="text-lg font-medium">Transactions</div>
+                <Link to={"/transactions"} onClick={closeSideBar}>
+                    <div className="pb-2 border-b">
+                        <div className={`flex gap-3 items-center ${topBarTitle === 'Transactions' ? 'bg-primary/10' : 'hover:bg-primary/10'} p-3 rounded-lg hover:scale-105`}>
+                            <img src={transactionIcon} alt="" />
+                            <div className={`text-lg ${topBarTitle === 'Transactions' ? 'text-primary' : ''} font-medium`}>Transactions</div>
+                        </div>
                     </div>
-                </div>
+                </Link>
+    
                 <div className="pb-2 border-b">
                     <div className="flex gap-3 items-center p-3">
                         <img src={profileIcon} alt="" />
