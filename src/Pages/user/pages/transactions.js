@@ -8,6 +8,7 @@ import Spinner from "../../../Components/spinner";
 import { useSelector } from "react-redux";
 import Modal from "../../../Components/modals";
 import TransactionModal from "../../../Components/transactionModal";
+import { SearchTable } from "../../../Utils/utils";
 
 const Transactions = ({ setPageTitle }) => {
     const transactionList = useUserTransactionHistory();
@@ -23,7 +24,7 @@ const Transactions = ({ setPageTitle }) => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-0 mb-8 items-center">
                 <NavigationHeader title={'All Transactions'} />
                 <div className="justify-end flex">
-                    <input type="search" name="" id="searchInput" className="p-3 bg-[#f8f8f880] focus:outline focus:outline-primary border text-sm rounded w-full md:w-2/3 placeholder:text-xs" onInput="searchTable()" placeholder="Search Transactions..." />
+                    <input type="search" name="" id="searchInput" className="p-3 bg-[#f8f8f880] focus:outline focus:outline-primary border text-sm rounded w-full md:w-2/3 placeholder:text-xs" onInput={SearchTable} placeholder="Search Transactions..." />
                 </div>
             </div>
 

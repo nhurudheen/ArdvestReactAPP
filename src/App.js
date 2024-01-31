@@ -29,8 +29,8 @@ function App() {
           <Route path='/forgotPassword' element={<ForgotPassword />} />
           <Route path='/verifyPasswordReset' element={<ResetPin />} />
           <Route path='/resetPassword' element={<ResetPassword />} />
-          <Route path='*' element={<UserLayout/>}/>
-          
+          <Route path='*' element={<UserLayout />} />
+
         </Routes>
       </BrowserRouter>
     </div>

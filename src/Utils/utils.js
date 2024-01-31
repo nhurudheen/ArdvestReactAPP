@@ -120,4 +120,40 @@ export async function copyToClipboard(userContent) {
       });
     }, []);
   }
+
+  export function SearchTable(){
+      // Declare variables
+      var input, filter, table, tr, td, i, j, txtValue;
+      input = document.getElementById("searchInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("dataTable");
+      tr = table.getElementsByTagName("tr");
+    
+      // Start the loop from the second row to exclude the header
+      for (i = 1; i < tr.length; i++) {
+        let matchFound = false;
+    
+        // Loop through all table columns in each row
+        for (j = 0; j < tr[i].getElementsByTagName("td").length; j++) {
+          td = tr[i].getElementsByTagName("td")[j];
+          
+          if (td) {
+            txtValue = td.textContent || td.innerText;
+    
+            // Check if the search query matches any column
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              matchFound = true;
+              break; // Break the inner loop if a match is found
+            }
+          }
+        }
+    
+        // Set display style based on whether a match was found
+        if (matchFound) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+  }
   
