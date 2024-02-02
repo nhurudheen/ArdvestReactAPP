@@ -34,12 +34,15 @@ const SideBar = ({ sideBarVisibility, topBarTitle, closeSideBar }) => {
                     </div>
                 </Link>
     
-                <div className="pb-2 border-b">
-                    <div className="flex gap-3 items-center p-3">
-                        <img src={profileIcon} alt="" />
-                        <div className="text-lg font-medium">Profile</div>
+                <Link to={"/profile"} onClick={closeSideBar}>
+                    <div className="pb-2 border-b">
+                        <div className={`flex gap-3 items-center ${topBarTitle === 'Profile' ? 'bg-primary/10' : 'hover:bg-primary/10'} p-3 rounded-lg hover:scale-105`}>
+                            <img src={profileIcon} alt="" />
+                            <div className={`text-lg ${topBarTitle === 'Profile' ? 'text-primary' : ''} font-medium`}>Profile</div>
+                        </div>
                     </div>
-                </div>
+                </Link>
+    
                 <div className="pb-2 border-b">
                     <div className="flex gap-3 items-center p-3">
                         <img src={settingsIcon} alt="" />

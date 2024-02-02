@@ -130,4 +130,33 @@ export class APIService {
             throw (error);
         }
     }
+
+    static async userInvestments(userId) {
+             try {
+            return APIClient.get(`/user_investment_list?userId=${userId}`);
+        }
+        catch (error) {
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
+    static async userSummary(userId) {
+        try {
+            return APIClient.get(`/single_user_data?userId=${userId}`);
+        }
+        catch (error) {
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
+
+    static async updateUserWithdrawalAccount(data) {
+        try {
+            return APIClient.post("/set_withdrawal_account", data);
+        }
+        catch (error) {
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
 }

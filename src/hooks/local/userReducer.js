@@ -10,6 +10,8 @@ const initialState = {
     isAuthenticated :  false,
     ...retrieveFromLocalStorage([
         "userSessionData",
+        "userInvestmentList",
+        "userSummaryData"
     ])
 }
 const periodOfTheDay = getPeriodOfDay();
@@ -116,9 +118,38 @@ export const userTransactionHistory = createAsyncThunk(
         return response;
     }
 )
+export const userInvestmentList = createAsyncThunk(
+    "user/InvestmentList",
+    async(userId)=>{
+        const apiInvestmentList = await APIService.userInvestments(userId);
+        const response = apiInvestmentList.data;
+        saveToLocalStorage("userInvestmentList", JSON.stringify(response.result));
+        return response;
+    }
+)
+export const userDataSummary = createAsyncThunk(
+    "user/Summary",
+    async(userId)=>{
+        const apiUserDataSummary  = await APIService.userSummary(userId);
+        const response = apiUserDataSummary.data;
+        saveToLocalStorage("userSummaryData", JSON.stringify(response.result));
+        return response;
+    }
+)
+export const setUserWithdrawalAccount = createAsyncThunk(
+    "user/SetUserWithdrawalAccount",
+    async(data)=>{
+        const apiSetUserWIthdrawalAccount = await APIService.updateUserWithdrawalAccount(data);
+        const response = apiSetUserWIthdrawalAccount.data;
+        return response;
+    }
+)
+
 const logOutSession = () =>{
     sessionStorage.removeItem("users");
     sessionStorage.removeItem("userSessionData"); 
+    sessionStorage.removeItem("userInvestmentList");
+    sessionStorage.removeItem("userSummaryData")
 }
 export const userLogOut = createAsyncThunk(
     "user/LogOut",
@@ -180,6 +211,26 @@ const userSlice = createSlice({
             }
             state.loading = false;
         })
+        .addCase(userInvestmentList.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.users = action.payload;
+                state.userInvestmentList = action.payload.result;
+            }
+            state.loading = false
+        })
+        .addCase(userDataSummary.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.users = action.payload;
+                state.userSummaryData = action.payload.result;
+            }
+            state.loading = false
+        })
+        .addCase(setUserWithdrawalAccount.fulfilled,(state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.users = action.payload;
+            }
+            state.loading = false
+        })
         .addMatcher(isAnyOf(
             userRegistration.fulfilled,
             verifyEmailAddress.fulfilled,
@@ -213,7 +264,10 @@ const userSlice = createSlice({
             userBalanceSummary.pending,
             depositBankAccount.pending,
             userActiveInvestmentList.pending,
-            userTransactionHistory.pending
+            userTransactionHistory.pending,
+            userInvestmentList.pending,
+            userDataSummary.pending,
+            setUserWithdrawalAccount.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -230,7 +284,10 @@ const userSlice = createSlice({
             userBalanceSummary.rejected,
             depositBankAccount.rejected,
             userActiveInvestmentList.rejected,
-            userTransactionHistory.rejected
+            userTransactionHistory.rejected,
+            userInvestmentList.rejected,
+            userDataSummary.rejected,
+            setUserWithdrawalAccount.rejected
         ),
         (state,action)=>{
             state.loading = false;
