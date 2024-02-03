@@ -228,6 +228,7 @@ const userSlice = createSlice({
         .addCase(setUserWithdrawalAccount.fulfilled,(state,action)=>{
             if(action.payload.statusCode === "200"){
                 state.users = action.payload;
+                showSuccessToastMessage(action.payload.message);
             }
             state.loading = false
         })
