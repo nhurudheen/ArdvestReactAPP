@@ -54,7 +54,7 @@ const UserDashboard = ({ setPageTitle }) => {
 
   return (
     
-    <div className="col-span-10">
+    <div className="col-span-10 md:mx-4">
       <Spinner loading={useSelector((state)=>state.user).loading}/>
       <p>Good {timeOfTheDay}<span id="time-period"></span>, <span className="font-semibold">{useSelector((state) => state.user.userSessionData).firstname}</span></p>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -6,7 +6,6 @@ import { useUserTransactionHistory } from "../userLayout/reusableEffects";
 import comingSoonSvg from "../../../assets/icons/comingSoon.svg";
 import Spinner from "../../../Components/spinner";
 import { useSelector } from "react-redux";
-import Modal from "../../../Components/modals";
 import TransactionModal from "../../../Components/transactionModal";
 import { SearchTable } from "../../../Utils/utils";
 
@@ -19,7 +18,7 @@ const Transactions = ({ setPageTitle }) => {
         document.querySelector('meta[name="description"]').content = "Track Transactions, inflow and outflow of investment, and grow wealth with Ardvest dashboard.";
     }, [setPageTitle]);
     return (
-        <div className="col-span-10 bg-white md:px-5 pb-8 rounded-lg">
+        <div className="col-span-10 bg-white md:px-5 pb-8 rounded-lg md:mx-4">
             <Spinner loading={useSelector((state) => state.user).loading} />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-0 mb-8 items-center">
                 <NavigationHeader title={'All Transactions'} />

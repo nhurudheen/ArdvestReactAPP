@@ -60,7 +60,7 @@ const UserProfile = ({ setPageTitle }) => {
 
     })
     return (
-        <div className="col-span-10">
+        <div className="col-span-10 md:mx-4">
             <Spinner loading={useSelector((state)=>state.user).loading}/>
             <NavigationHeader title={'Profile Details'} />
             <div className="mt-10 grid md:flex gap-4 mb-4">
