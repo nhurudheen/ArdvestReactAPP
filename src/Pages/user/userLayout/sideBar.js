@@ -42,13 +42,17 @@ const SideBar = ({ sideBarVisibility, topBarTitle, closeSideBar }) => {
                         </div>
                     </div>
                 </Link>
-    
-                <div className="pb-2 border-b">
-                    <div className="flex gap-3 items-center p-3">
-                        <img src={settingsIcon} alt="" />
-                        <div className="text-lg font-medium">Settings</div>
+
+                <Link to={"/settings"} onClick={closeSideBar}>
+                    <div className="pb-2 border-b">
+                        <div className={`flex gap-3 items-center ${topBarTitle === 'Settings' ? 'bg-primary/10' : 'hover:bg-primary/10'} p-3 rounded-lg hover:scale-105`}>
+                            <img src={settingsIcon} alt="" />
+                            <div className={`text-lg ${topBarTitle === 'Settings' ? 'text-primary' : ''} font-medium`}>Settings</div>
+                        </div>
                     </div>
-                </div>
+                </Link>
+    
+    
                 <Link to={"/userLogout"} onClick={closeSideBar}>
                     <div className="pb-2 border-b">
                         <div className={`flex gap-3 items-center ${topBarTitle === 'SignOut' ? 'bg-primary/10' : 'hover:bg-primary/10'} p-3 rounded-lg hover:scale-105`}>

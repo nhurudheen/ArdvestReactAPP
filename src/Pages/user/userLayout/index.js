@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import LogOut from "../auth/logout";
 import Transactions from "../pages/transactions";
 import UserProfile from "../pages/profile";
+import UserProfileSettings from "../pages/settings";
 
 const UserLayout = () => {
     const userSession = useSelector((state)=>state.user.userSessionData);
@@ -32,6 +33,7 @@ const UserLayout = () => {
                 <Route path="/investment" element={<Investment setPageTitle={setPageTitle} />}/>
                 <Route path="/transactions" element={<Transactions setPageTitle={setPageTitle}/>}/>
                 <Route path="/profile" element={<UserProfile setPageTitle={setPageTitle}/>}/>
+                <Route path="/settings" element={<UserProfileSettings setPageTitle={setPageTitle}/>}/>
                 <Route path="/userLogout" element={<LogOut/>}/>
             </Routes>
             </div>
