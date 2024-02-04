@@ -168,4 +168,13 @@ export class APIService {
             throw (error);
         }
     }
+    static async updateUserTransactionPin(data) {
+        try {
+            return APIClient.post("/update_user_pin", data);
+        }
+        catch (error) {
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
 }

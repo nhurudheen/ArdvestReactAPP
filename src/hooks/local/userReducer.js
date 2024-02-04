@@ -153,6 +153,15 @@ export const changeUserPassword = createAsyncThunk(
         return response;
     }
 )
+
+export const changeUserTransactionPin = createAsyncThunk(
+    "user/changeUserTransactionPin",
+    async(data)=>{
+        const apiChangeUserTransactionPin = await APIService.updateUserTransactionPin(data);
+        const response = apiChangeUserTransactionPin.data;
+        return response;
+    }
+)
 const logOutSession = () =>{
     sessionStorage.removeItem("users");
     sessionStorage.removeItem("userSessionData"); 
@@ -253,6 +262,16 @@ const userSlice = createSlice({
             }
             state.loading= false;
         })
+        .addCase(changeUserTransactionPin.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.users = action.payload;
+                showSuccessToastMessage(action.payload.message);
+            }
+            else{
+                showErrorToastMessage(action.payload.message)
+            }
+            state.loading= false;
+        })
         .addMatcher(isAnyOf(
             userRegistration.fulfilled,
             verifyEmailAddress.fulfilled,
@@ -291,6 +310,7 @@ const userSlice = createSlice({
             userDataSummary.pending,
             setUserWithdrawalAccount.pending,
             changeUserPassword.pending,
+            changeUserTransactionPin.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -311,7 +331,8 @@ const userSlice = createSlice({
             userInvestmentList.rejected,
             userDataSummary.rejected,
             setUserWithdrawalAccount.rejected,
-            changeUserPassword.rejected
+            changeUserPassword.rejected,
+            changeUserTransactionPin.rejected
         ),
         (state,action)=>{
             state.loading = false;

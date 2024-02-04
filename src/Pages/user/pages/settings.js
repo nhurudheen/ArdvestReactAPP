@@ -10,7 +10,7 @@ import InputWithLabel from "../../../Components/inputWithLabel";
 import DigitInput from "../../../Components/digitInput";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
-import { changeUserPassword } from "../../../hooks/local/userReducer";
+import { changeUserPassword, changeUserTransactionPin } from "../../../hooks/local/userReducer";
 import PasswordInput from "../../../Components/passwordInput";
 
 const UserProfileSettings = ({ setPageTitle }) => {
@@ -40,6 +40,26 @@ const UserProfileSettings = ({ setPageTitle }) => {
             const { payload } = await dispatch(changeUserPassword(passwordData))
             if(payload.statusCode === "200"){
                 setPasswordModal(false);
+                resetForm();
+            }
+        }
+    })
+
+    const changeUserTransactionPinForm = useFormik({
+        initialValues:{
+            password : "",
+            transactionPin : ""
+        },
+        validationSchema: Yup.object({
+            password : Yup.string().required("Kindly type your password"),
+            transactionPin: Yup.string().required("New Transaction Pin cannot be empty")
+        }),
+        onSubmit: async(values, {resetForm})=>{
+            const {password,transactionPin} = values;
+            let passwordData =  {emailAddress, password,transactionPin};
+            const { payload } = await dispatch(changeUserTransactionPin(passwordData))
+            if(payload.statusCode === "200"){
+                setTransactionPinModal(false);
                 resetForm();
             }
         }
@@ -91,13 +111,23 @@ const UserProfileSettings = ({ setPageTitle }) => {
             </Modal>
             <Modal isVisible={transactionPinModal} onClose={()=>setTransactionPinModal(false)}>
             <p className="text-xl text-primary font-medium">Complete the form to Change Transaction Pin</p>
-            <form onSubmit={''}>
+            <form onSubmit={changeUserTransactionPinForm.handleSubmit}>
             <div className="grid gap-6 mt-4">
                 <PasswordInput labelName={'User Password'}
-                                inputType={'password'}/>
+                               inputType={'password'}
+                               inputName={'password'}
+                               inputValue={changeUserTransactionPinForm.values.password}
+                               inputOnBlur={changeUserTransactionPinForm.handleBlur}
+                               inputOnChange={changeUserTransactionPinForm.handleChange}
+                               inputError={changeUserTransactionPinForm.touched.password && changeUserTransactionPinForm.errors.password ? changeUserTransactionPinForm.errors.password : null}/>
                 <DigitInput labelName={'New Transaction Pin (4 Digit Pin):'}
                             maxLength={'4'}
-                            inputType={'password'}/>
+                            inputType={'password'}
+                            inputName={'transactionPin'}
+                            inputValue={changeUserTransactionPinForm.values.transactionPin}
+                            inputOnBlur={changeUserTransactionPinForm.handleBlur}
+                            inputOnChange={changeUserTransactionPinForm.handleChange}
+                            inputError={changeUserTransactionPinForm.touched.transactionPin && changeUserTransactionPinForm.errors.transactionPin ? changeUserTransactionPinForm.errors.transactionPin : null}/>
                 <Buttons btnText={'Continue'} btnType={'primary'} type={'submit'} />
             </div>
             </form>
