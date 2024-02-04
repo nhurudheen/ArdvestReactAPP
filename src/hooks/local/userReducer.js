@@ -238,7 +238,20 @@ const userSlice = createSlice({
                 state.users = action.payload;
                 showSuccessToastMessage(action.payload.message);
             }
+            else{
+                showErrorToastMessage(action.payload.message);
+            }
             state.loading = false
+        })
+        .addCase(changeUserPassword.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.users = action.payload;
+                showSuccessToastMessage(action.payload.message);
+            }
+            else{
+                showErrorToastMessage(action.payload.message)
+            }
+            state.loading= false;
         })
         .addMatcher(isAnyOf(
             userRegistration.fulfilled,
@@ -276,7 +289,8 @@ const userSlice = createSlice({
             userTransactionHistory.pending,
             userInvestmentList.pending,
             userDataSummary.pending,
-            setUserWithdrawalAccount.pending
+            setUserWithdrawalAccount.pending,
+            changeUserPassword.pending,
         ), 
         (state)=>{
             state.loading = true;
@@ -296,7 +310,8 @@ const userSlice = createSlice({
             userTransactionHistory.rejected,
             userInvestmentList.rejected,
             userDataSummary.rejected,
-            setUserWithdrawalAccount.rejected
+            setUserWithdrawalAccount.rejected,
+            changeUserPassword.rejected
         ),
         (state,action)=>{
             state.loading = false;

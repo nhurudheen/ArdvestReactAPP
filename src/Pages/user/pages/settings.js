@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Spinner from "../../../Components/spinner";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import NavigationHeader from "../../../Components/navigationHeader";
 import passwordImage from "../../../assets/images/passwordReset.png";
 import transactionPinImage from "../../../assets/images/pinReset.png";
@@ -10,6 +10,8 @@ import InputWithLabel from "../../../Components/inputWithLabel";
 import DigitInput from "../../../Components/digitInput";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
+import { changeUserPassword } from "../../../hooks/local/userReducer";
+import PasswordInput from "../../../Components/passwordInput";
 
 const UserProfileSettings = ({ setPageTitle }) => {
     useEffect(() => {
@@ -17,10 +19,11 @@ const UserProfileSettings = ({ setPageTitle }) => {
         document.title = "Settings | Ardvest";
         document.querySelector('meta[name="description"]').content = "Ardvest User Account Settings.";
     }, [setPageTitle]);
+    const dispatch = useDispatch();
     const emailAddress = useSelector((state)=>state.user.userSessionData).userEmailAddress;
     const [passwordModal, setPasswordModal] = useState(false);
     const [transactionPinModal, setTransactionPinModal] = useState(false);
-    const changeUserPassword = useFormik({
+    const changeUserPasswordForm = useFormik({
         initialValues:{
             oldPassword : "",
             newPassword : "",
@@ -31,10 +34,14 @@ const UserProfileSettings = ({ setPageTitle }) => {
             newPassword: Yup.string().required("New Password cannot be empty"),
             confirmPassword : Yup.string().required('Confirm Password is required').oneOf([Yup.ref('newPassword'), null], 'Passwords must match'),
         }),
-        onSubmit: async(values)=>{
+        onSubmit: async(values, {resetForm})=>{
             const {oldPassword,newPassword,confirmPassword} = values;
             let passwordData =  {emailAddress, oldPassword,newPassword,confirmPassword};
-            console.log(passwordData);
+            const { payload } = await dispatch(changeUserPassword(passwordData))
+            if(payload.statusCode === "200"){
+                setPasswordModal(false);
+                resetForm();
+            }
         }
     })
     return (
@@ -55,29 +62,29 @@ const UserProfileSettings = ({ setPageTitle }) => {
 
             <Modal isVisible={passwordModal} onClose={()=>setPasswordModal(false)}>
             <p className="text-xl text-primary font-medium">Complete the form to Change  Access Password</p>
-            <form onSubmit={changeUserPassword.handleSubmit}>
+            <form onSubmit={changeUserPasswordForm.handleSubmit}>
             <div className="grid gap-6 mt-4">
-                <InputWithLabel labelName={'Old Password'}
+                <PasswordInput labelName={'Old Password'}
                                 inputType={'password'}
                                 inputName={'oldPassword'}
-                                inputValue={changeUserPassword.values.oldPassword}
-                                inputOnBlur={changeUserPassword.handleBlur}
-                                inputOnChange={changeUserPassword.handleChange}
-                                inputError={changeUserPassword.touched.oldPassword && changeUserPassword.errors.oldPassword ? changeUserPassword.errors.oldPassword : null}/>
-                <InputWithLabel labelName={'New Password'}
+                                inputValue={changeUserPasswordForm.values.oldPassword}
+                                inputOnBlur={changeUserPasswordForm.handleBlur}
+                                inputOnChange={changeUserPasswordForm.handleChange}
+                                inputError={changeUserPasswordForm.touched.oldPassword && changeUserPasswordForm.errors.oldPassword ? changeUserPasswordForm.errors.oldPassword : null}/>
+                <PasswordInput labelName={'New Password'}
                                 inputType={'password'}
                                 inputName={'newPassword'}
-                                inputValue={changeUserPassword.values.newPassword}
-                                inputOnBlur={changeUserPassword.handleBlur}
-                                inputOnChange={changeUserPassword.handleChange}
-                                inputError={changeUserPassword.touched.newPassword && changeUserPassword.errors.newPassword ? changeUserPassword.errors.newPassword : null}/>
-                <InputWithLabel labelName={'Confirm Password'}
+                                inputValue={changeUserPasswordForm.values.newPassword}
+                                inputOnBlur={changeUserPasswordForm.handleBlur}
+                                inputOnChange={changeUserPasswordForm.handleChange}
+                                inputError={changeUserPasswordForm.touched.newPassword && changeUserPasswordForm.errors.newPassword ? changeUserPasswordForm.errors.newPassword : null}/>
+                <PasswordInput labelName={'Confirm Password'}
                                 inputType={'password'}
                                 inputName={'confirmPassword'}
-                                inputValue={changeUserPassword.values.confirmPassword}
-                                inputOnBlur={changeUserPassword.handleBlur}
-                                inputOnChange={changeUserPassword.handleChange}
-                                inputError={changeUserPassword.touched.confirmPassword && changeUserPassword.errors.confirmPassword ? changeUserPassword.errors.confirmPassword : null}/>
+                                inputValue={changeUserPasswordForm.values.confirmPassword}
+                                inputOnBlur={changeUserPasswordForm.handleBlur}
+                                inputOnChange={changeUserPasswordForm.handleChange}
+                                inputError={changeUserPasswordForm.touched.confirmPassword && changeUserPasswordForm.errors.confirmPassword ? changeUserPasswordForm.errors.confirmPassword : null}/>
                 <Buttons btnText={'Continue'} btnType={'primary'} type={'submit'} />
             </div>
             </form>
@@ -86,7 +93,7 @@ const UserProfileSettings = ({ setPageTitle }) => {
             <p className="text-xl text-primary font-medium">Complete the form to Change Transaction Pin</p>
             <form onSubmit={''}>
             <div className="grid gap-6 mt-4">
-                <InputWithLabel labelName={'Password'}
+                <PasswordInput labelName={'User Password'}
                                 inputType={'password'}/>
                 <DigitInput labelName={'New Transaction Pin (4 Digit Pin):'}
                             maxLength={'4'}
