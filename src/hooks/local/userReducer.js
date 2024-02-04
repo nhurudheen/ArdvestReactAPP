@@ -145,6 +145,14 @@ export const setUserWithdrawalAccount = createAsyncThunk(
     }
 )
 
+export const changeUserPassword = createAsyncThunk(
+    "user/changeUserPassword",
+    async(data)=>{
+        const apiChangeUserPassword = await APIService.updateUserPassword(data);
+        const response = apiChangeUserPassword.data;
+        return response;
+    }
+)
 const logOutSession = () =>{
     sessionStorage.removeItem("users");
     sessionStorage.removeItem("userSessionData"); 

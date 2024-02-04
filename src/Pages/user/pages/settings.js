@@ -8,6 +8,8 @@ import Modal from "../../../Components/modals";
 import Buttons from "../../../Components/buttons";
 import InputWithLabel from "../../../Components/inputWithLabel";
 import DigitInput from "../../../Components/digitInput";
+import { useFormik } from "formik";
+import * as Yup from 'yup';
 
 const UserProfileSettings = ({ setPageTitle }) => {
     useEffect(() => {
@@ -15,9 +17,26 @@ const UserProfileSettings = ({ setPageTitle }) => {
         document.title = "Settings | Ardvest";
         document.querySelector('meta[name="description"]').content = "Ardvest User Account Settings.";
     }, [setPageTitle]);
-
+    const emailAddress = useSelector((state)=>state.user.userSessionData).userEmailAddress;
     const [passwordModal, setPasswordModal] = useState(false);
     const [transactionPinModal, setTransactionPinModal] = useState(false);
+    const changeUserPassword = useFormik({
+        initialValues:{
+            oldPassword : "",
+            newPassword : "",
+            confirmPassword: ""
+        },
+        validationSchema: Yup.object({
+            oldPassword : Yup.string().required("Kindly type your old password"),
+            newPassword: Yup.string().required("New Password cannot be empty"),
+            confirmPassword : Yup.string().required('Confirm Password is required').oneOf([Yup.ref('newPassword'), null], 'Passwords must match'),
+        }),
+        onSubmit: async(values)=>{
+            const {oldPassword,newPassword,confirmPassword} = values;
+            let passwordData =  {emailAddress, oldPassword,newPassword,confirmPassword};
+            console.log(passwordData);
+        }
+    })
     return (
         <div className="col-span-10 md:mx-4">
             <Spinner loading={useSelector((state) => state.user).loading} />
@@ -36,14 +55,29 @@ const UserProfileSettings = ({ setPageTitle }) => {
 
             <Modal isVisible={passwordModal} onClose={()=>setPasswordModal(false)}>
             <p className="text-xl text-primary font-medium">Complete the form to Change  Access Password</p>
-            <form onSubmit={''}>
+            <form onSubmit={changeUserPassword.handleSubmit}>
             <div className="grid gap-6 mt-4">
                 <InputWithLabel labelName={'Old Password'}
-                                inputType={'password'}/>
+                                inputType={'password'}
+                                inputName={'oldPassword'}
+                                inputValue={changeUserPassword.values.oldPassword}
+                                inputOnBlur={changeUserPassword.handleBlur}
+                                inputOnChange={changeUserPassword.handleChange}
+                                inputError={changeUserPassword.touched.oldPassword && changeUserPassword.errors.oldPassword ? changeUserPassword.errors.oldPassword : null}/>
                 <InputWithLabel labelName={'New Password'}
-                                inputType={'password'}/>
+                                inputType={'password'}
+                                inputName={'newPassword'}
+                                inputValue={changeUserPassword.values.newPassword}
+                                inputOnBlur={changeUserPassword.handleBlur}
+                                inputOnChange={changeUserPassword.handleChange}
+                                inputError={changeUserPassword.touched.newPassword && changeUserPassword.errors.newPassword ? changeUserPassword.errors.newPassword : null}/>
                 <InputWithLabel labelName={'Confirm Password'}
-                                inputType={'password'}/>
+                                inputType={'password'}
+                                inputName={'confirmPassword'}
+                                inputValue={changeUserPassword.values.confirmPassword}
+                                inputOnBlur={changeUserPassword.handleBlur}
+                                inputOnChange={changeUserPassword.handleChange}
+                                inputError={changeUserPassword.touched.confirmPassword && changeUserPassword.errors.confirmPassword ? changeUserPassword.errors.confirmPassword : null}/>
                 <Buttons btnText={'Continue'} btnType={'primary'} type={'submit'} />
             </div>
             </form>
