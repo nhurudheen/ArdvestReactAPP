@@ -77,15 +77,16 @@ export async function copyToClipboard(userContent) {
   }
 
 
-  export function useCurrencyDigit() {
+  export function useCurrencyDigit(inputOnChange) {
     useEffect(() => {
       const handleCurrencyInput = (event) => {
         const removeString = event.target.value.replace(/[^0-9.]/g, '');
         const convertToDigit = parseFloat(removeString);
-        if (!isNaN(convertToDigit)) {
-          event.target.value = convertToDigit.toLocaleString('en-US');
-        } else {
-          event.target.value = '';
+        if (!isNaN(convertToDigit) && typeof inputOnChange === 'function') {
+          const formattedValue = convertToDigit.toLocaleString('en-US');
+          inputOnChange({ target: { name: event.target.name, value: formattedValue } });
+        } else if (typeof inputOnChange === 'function') {
+          inputOnChange({ target: { name: event.target.name, value: '' } });
         }
       };
   
@@ -96,7 +97,7 @@ export async function copyToClipboard(userContent) {
           input.removeEventListener('input', handleCurrencyInput);
         };
       });
-    }, []);
+    }, [inputOnChange]);
   }
 
   export function useDigitInput() {

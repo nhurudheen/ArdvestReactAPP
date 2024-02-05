@@ -18,16 +18,18 @@ import Buttons from "../../../Components/buttons";
 import SelectInput from "../../../Components/selectInput";
 import CurrencyInput from "../../../Components/currencyInput";
 import DigitInput from "../../../Components/digitInput";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useDepositBankList, useUserActiveInvestmentList, useUserBalanceSummary, useUserTransactionHistory } from "../userLayout/reusableEffects";
 import Spinner from "../../../Components/spinner";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
+import { bankDepositAddFund } from "../../../hooks/local/userReducer";
 
 const UserDashboard = ({ setPageTitle }) => {
   const fileInputRef =  useRef(null);
   const userId= useSelector((state) =>state.user.userSessionData).userId;
   const [timeOfTheDay, setTimeOfTheDay] = useState("");
+  const dispatch = useDispatch();
   const [showBalance, setShowBalance] = useState(false);
   const [depositModal, setDepositModal] = useState(false);
   const [bankPayment, setBankPayment] = useState(false);
@@ -76,7 +78,7 @@ const UserDashboard = ({ setPageTitle }) => {
       amount : Yup.string().required("Amount cannot be empty"),
       referenceId:  Yup.string().required("Reference Id cannot be empty")
     }),
-    onSubmit : async(values)=>{
+    onSubmit : async(values, {resetForm})=>{
       if(!userPaymentReceipt){
         setSelectedFileError(true);
         return;
@@ -85,7 +87,11 @@ const UserDashboard = ({ setPageTitle }) => {
       const channel ="Bank Transfer";
       const  {amount, referenceId} = values;
       let bankDepositData = {amount,referenceId, proofOfPayment, channel,userId};
-      console.log(bankDepositData);
+      const { payload } = await dispatch(bankDepositAddFund(bankDepositData));
+      if(payload.statusCode === "200"){
+        resetForm();
+        setDepositConfirmation(false);
+      }
     }
   })
 

@@ -177,4 +177,15 @@ export class APIService {
             throw (error);
         }
     }
+
+    static async userAddFund(data) {
+        try {
+            return APIFormDataClient.post("/add_fund", data);
+        }
+        catch (error) {
+            APIService.extractError(error);
+            throw (error);
+
+        }
+    }
 }

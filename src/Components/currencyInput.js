@@ -1,7 +1,7 @@
 import { useCurrencyDigit } from "../Utils/utils";
 
 const CurrencyInput = ({ labelName, inputType, placeholder, inputValue, inputOnChange,inputOnBlur,inputError, inputName }) => {
-    useCurrencyDigit();
+    useCurrencyDigit(inputOnChange);
     return (
         <div className="grid">
             <span className="text-sm font-medium pb-1">{labelName}:</span>

@@ -162,6 +162,14 @@ export const changeUserTransactionPin = createAsyncThunk(
         return response;
     }
 )
+export const bankDepositAddFund = createAsyncThunk(
+    "user/AddFundBankDeposit",
+    async(data)=>{
+        const apiAddFunds = await APIService.userAddFund(data);
+        const response = apiAddFunds.data;
+        return response;
+    }
+)
 const logOutSession = () =>{
     sessionStorage.removeItem("users");
     sessionStorage.removeItem("userSessionData"); 
@@ -272,6 +280,16 @@ const userSlice = createSlice({
             }
             state.loading= false;
         })
+        .addCase(bankDepositAddFund.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.users = action.payload;
+                showSuccessToastMessage(action.payload.message);
+            }
+            else{
+                showErrorToastMessage(action.payload.message)
+            }
+            state.loading= false;
+        })
         .addMatcher(isAnyOf(
             userRegistration.fulfilled,
             verifyEmailAddress.fulfilled,
@@ -310,7 +328,8 @@ const userSlice = createSlice({
             userDataSummary.pending,
             setUserWithdrawalAccount.pending,
             changeUserPassword.pending,
-            changeUserTransactionPin.pending
+            changeUserTransactionPin.pending,
+            bankDepositAddFund.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -332,7 +351,8 @@ const userSlice = createSlice({
             userDataSummary.rejected,
             setUserWithdrawalAccount.rejected,
             changeUserPassword.rejected,
-            changeUserTransactionPin.rejected
+            changeUserTransactionPin.rejected,
+            bankDepositAddFund.rejected
         ),
         (state,action)=>{
             state.loading = false;
