@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { copyToClipboard, currencyFormat, getPeriodOfDay } from "../../../Utils/utils";
 import eyeIcon from "../../../assets/icons/eye.svg";
 import plusIcon from "../../../assets/icons/deposit.svg";
@@ -21,13 +21,19 @@ import DigitInput from "../../../Components/digitInput";
 import { useSelector } from "react-redux";
 import { useDepositBankList, useUserActiveInvestmentList, useUserBalanceSummary, useUserTransactionHistory } from "../userLayout/reusableEffects";
 import Spinner from "../../../Components/spinner";
+import { useFormik } from "formik";
+import * as Yup from 'yup';
 
 const UserDashboard = ({ setPageTitle }) => {
+  const fileInputRef =  useRef(null);
+  const userId= useSelector((state) =>state.user.userSessionData).userId;
   const [timeOfTheDay, setTimeOfTheDay] = useState("");
   const [showBalance, setShowBalance] = useState(false);
   const [depositModal, setDepositModal] = useState(false);
   const [bankPayment, setBankPayment] = useState(false);
   const [cardPayment, setCardPayment] = useState(false);
+  const [userPaymentReceipt, setUserPaymentReceipt] = useState(null);
+  const [selectedFileError, setSelectedFileError] = useState(false);
   const [depositConfirmation, setDepositConfirmation] = useState(false);
   const [withdrawalModal, setWithdrawalModal] = useState(false);
   const [portfolioBalanceModal, setPortfolioBalanceModal] = useState(false);
@@ -39,7 +45,6 @@ const UserDashboard = ({ setPageTitle }) => {
   const dashboardBalance = userBalanceSummary?.totalBalance? currencyFormat(userBalanceSummary.totalBalance) : '0.00';
   const portfolioBalance = userBalanceSummary?.totalBalance? userBalanceSummary.totalBalance : '0.00';
   const investmentBalance = userBalanceSummary?.investmentBalance? userBalanceSummary.investmentBalance : '0.00';
-  
   const activeInvestment = userActiveInvestmentList.map((response) => ({ amount: response.amount, label: `${response.investmentName} (${response.amount})` }));
 
   useEffect(() => {
@@ -50,7 +55,39 @@ const UserDashboard = ({ setPageTitle }) => {
 
   }, [setPageTitle]);
 
+  const handleProofPaymentFile =(e) =>{
+      const file =e.target.files[0];
+      if(file){
+        setUserPaymentReceipt(file);
+        setSelectedFileError(false);
+      }
+      else{
+        e.target.value = null;
+        setSelectedFileError(true);
+      }
+  }
 
+  const depositBankTransfer = useFormik({
+    initialValues : {
+      amount : "",
+      referenceId :""
+    },
+    validationSchema: Yup.object({
+      amount : Yup.string().required("Amount cannot be empty"),
+      referenceId:  Yup.string().required("Reference Id cannot be empty")
+    }),
+    onSubmit : async(values)=>{
+      if(!userPaymentReceipt){
+        setSelectedFileError(true);
+        return;
+      }
+      const proofOfPayment = userPaymentReceipt;
+      const channel ="Bank Transfer";
+      const  {amount, referenceId} = values;
+      let bankDepositData = {amount,referenceId, proofOfPayment, channel,userId};
+      console.log(bankDepositData);
+    }
+  })
 
   return (
     
@@ -227,18 +264,30 @@ const UserDashboard = ({ setPageTitle }) => {
 
       <Modal isVisible={depositConfirmation} onClose={() => { setDepositConfirmation(false) }}>
         <p className="text-xl text-primary font-medium">Complete the form to confirm your deposit</p>
-        <div className="grid gap-6 mt-8">
+        <form className="grid gap-6 mt-8" onSubmit={depositBankTransfer.handleSubmit}>
           <CurrencyInput labelName={'Amount'}
-            inputType={'text'}
-            placeholder={'000,000.00'} />
+                        inputType={'text'}
+                        placeholder={'000,000.00'}
+                        inputName={'amount'}
+                        inputValue={depositBankTransfer.values.amount}
+                        inputOnBlur={depositBankTransfer.handleBlur}
+                        inputOnChange={depositBankTransfer.handleChange}
+                        inputError={depositBankTransfer.errors.amount && depositBankTransfer.touched.amount ? depositBankTransfer.errors.amount : null} />
           <InputWithLabel labelName={'Reference Number'}
-            inputType={'number'}
-            placeholder={'00000000'} />
-          <InputWithLabel labelName={'Proof of Payment'}
-            inputType={'file'}
-            placeholder={'000,000.00'} />
-          <Buttons btnText={'Continue'} btnType={'primary'} onClick={() => { setDepositConfirmation(false) }} />
+                          inputType={'number'}
+                          placeholder={'00000000'}                         
+                          inputName={'referenceId'}
+                          inputValue={depositBankTransfer.values.referenceId}
+                          inputOnBlur={depositBankTransfer.handleBlur}
+                          inputOnChange={depositBankTransfer.handleChange}
+                          inputError={depositBankTransfer.errors.referenceId && depositBankTransfer.touched.referenceId ? depositBankTransfer.errors.referenceId : null} />
+        <div className="grid">
+            <span className="text-sm font-medium pb-1">Proof of Payment:</span>
+            <input type='file' className="p-3 bg-[#f8f8f8] border text-sm rounded" ref={fileInputRef} id="fileInput" onChange={handleProofPaymentFile}  />
+            { selectedFileError && (<code className="text-red-500 text-xs">Upload proof of payment to complain deposit</code>) }
         </div>
+          <Buttons btnText={'Continue'} btnType={'primary'} type={'submit'} />
+        </form>
 
 
       </Modal>
