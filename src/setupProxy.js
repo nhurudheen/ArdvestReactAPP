@@ -5,7 +5,7 @@ module.exports = function (app) {
     createProxyMiddleware(
       '/staging',
       {
-        target: "http://localhost:9095/ardvest",
+        target: "http://161.35.56.41:9095/ardvest",
         changeOrigin: true,
         pathRewrite: {
           '^/staging/': '',

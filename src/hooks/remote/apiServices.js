@@ -188,4 +188,14 @@ export class APIService {
 
         }
     }
+    static async userWithdrawalFunds(data) {
+        try {
+            return APIClient.post("/withdraw_funds", data);
+        }
+        catch (error) {
+            APIService.extractError(error);
+            throw (error);
+
+        }
+    }
 }
