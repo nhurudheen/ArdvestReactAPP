@@ -180,6 +180,24 @@ export const userWithdrawal = createAsyncThunk(
     }
 )
 
+export const investmentTypesList = createAsyncThunk(
+    "user/InvestmentTypesList",
+    async(data)=>{
+        const apiGetInvestmentTypes = await APIService.investmentTypeList(data);
+        const response = apiGetInvestmentTypes.data;
+        return response;
+    }
+)
+
+export const investmentTypesInvestments = createAsyncThunk(
+    "user/InvestmentTypesInvestments",
+    async(investmentTypeId)=>{
+        const apiGetInvestmentTypes = await APIService.investmentTypeDetails(investmentTypeId);
+        const response = apiGetInvestmentTypes.data;
+        return response;
+    }
+)
+
 const logOutSession = () =>{
     sessionStorage.removeItem("users");
     sessionStorage.removeItem("userSessionData"); 
@@ -310,6 +328,18 @@ const userSlice = createSlice({
             }
             state.loading= false;
         })
+        .addCase(investmentTypesList.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.users = action.payload;
+            }
+            state.loading = false;
+        })
+        .addCase(investmentTypesInvestments.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.users = action.payload;
+            }
+            state.loading = false;
+        })
         .addMatcher(isAnyOf(
             userRegistration.fulfilled,
             verifyEmailAddress.fulfilled,
@@ -350,7 +380,9 @@ const userSlice = createSlice({
             changeUserPassword.pending,
             changeUserTransactionPin.pending,
             bankDepositAddFund.pending,
-            userWithdrawal.pending
+            userWithdrawal.pending,
+            investmentTypesList.pending,
+            investmentTypesInvestments.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -374,7 +406,9 @@ const userSlice = createSlice({
             changeUserPassword.rejected,
             changeUserTransactionPin.rejected,
             bankDepositAddFund.rejected,
-            userWithdrawal.rejected
+            userWithdrawal.rejected,
+            investmentTypesList.rejected,
+            investmentTypesInvestments.rejected
         ),
         (state,action)=>{
             state.loading = false;

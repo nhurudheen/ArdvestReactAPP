@@ -198,4 +198,23 @@ export class APIService {
 
         }
     }
+
+    static async investmentTypeList() {
+        try {
+            return APIClient.get("/investment_type_list");
+        }
+        catch (error) {
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
+    static async investmentTypeDetails(investmentTypeId) {
+        try {
+            return APIClient.get(`/list_investment_type_investment?investmentTypeId=${investmentTypeId}`);
+        }
+        catch (error) {
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
 }

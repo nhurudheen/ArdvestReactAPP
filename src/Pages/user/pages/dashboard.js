@@ -24,11 +24,11 @@ import Spinner from "../../../Components/spinner";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 import { bankDepositAddFund, userWithdrawal } from "../../../hooks/local/userReducer";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const UserDashboard = ({ setPageTitle }) => {
-  const fileInputRef =  useRef(null);
-  const userId= useSelector((state) =>state.user.userSessionData).userId;
+  const fileInputRef = useRef(null);
+  const userId = useSelector((state) => state.user.userSessionData).userId;
   const [timeOfTheDay, setTimeOfTheDay] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -44,12 +44,12 @@ const UserDashboard = ({ setPageTitle }) => {
   const [investmentBalanceModal, setInvestmentBalanceModal] = useState(false);
   const depositBankDetails = useDepositBankList();
   const userActiveInvestmentList = useUserActiveInvestmentList();
-  const userTransactionHistory = useUserTransactionHistory().slice(0,5);
+  const userTransactionHistory = useUserTransactionHistory().slice(0, 5);
   const userBalanceSummary = useUserBalanceSummary();
-  const dashboardBalance = userBalanceSummary?.totalBalance? currencyFormat(userBalanceSummary.totalBalance) : '0.00';
-  const portfolioBalance = userBalanceSummary?.totalBalance? userBalanceSummary.totalBalance : '0.00';
-  const investmentBalance = userBalanceSummary?.investmentBalance? userBalanceSummary.investmentBalance : '0.00';
-  const activeInvestment = userActiveInvestmentList.map((response) => ({ amount: response.amount, investmentId:response.id, label: `${response.investmentName} (${response.amount})` }));
+  const dashboardBalance = userBalanceSummary?.totalBalance ? currencyFormat(userBalanceSummary.totalBalance) : '0.00';
+  const portfolioBalance = userBalanceSummary?.totalBalance ? userBalanceSummary.totalBalance : '0.00';
+  const investmentBalance = userBalanceSummary?.investmentBalance ? userBalanceSummary.investmentBalance : '0.00';
+  const activeInvestment = userActiveInvestmentList.map((response) => ({ amount: response.amount, investmentId: response.id, label: `${response.investmentName} (${response.amount})` }));
 
   useEffect(() => {
     setPageTitle("Dashboard");
@@ -59,38 +59,38 @@ const UserDashboard = ({ setPageTitle }) => {
 
   }, [setPageTitle]);
 
-  const handleProofPaymentFile =(e) =>{
-      const file =e.target.files[0];
-      if(file){
-        setUserPaymentReceipt(file);
-        setSelectedFileError(false);
-      }
-      else{
-        e.target.value = null;
-        setSelectedFileError(true);
-      }
+  const handleProofPaymentFile = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setUserPaymentReceipt(file);
+      setSelectedFileError(false);
+    }
+    else {
+      e.target.value = null;
+      setSelectedFileError(true);
+    }
   }
 
   const depositBankTransfer = useFormik({
-    initialValues : {
-      amount : "",
-      referenceId :""
+    initialValues: {
+      amount: "",
+      referenceId: ""
     },
     validationSchema: Yup.object({
-      amount : Yup.string().required("Amount cannot be empty"),
-      referenceId:  Yup.string().required("Reference Id cannot be empty")
+      amount: Yup.string().required("Amount cannot be empty"),
+      referenceId: Yup.string().required("Reference Id cannot be empty")
     }),
-    onSubmit : async(values, {resetForm})=>{
-      if(!userPaymentReceipt){
+    onSubmit: async (values, { resetForm }) => {
+      if (!userPaymentReceipt) {
         setSelectedFileError(true);
         return;
       }
       const proofOfPayment = userPaymentReceipt;
-      const channel ="Bank Transfer";
-      const  {amount, referenceId} = values;
-      let bankDepositData = {amount,referenceId, proofOfPayment, channel,userId};
+      const channel = "Bank Transfer";
+      const { amount, referenceId } = values;
+      let bankDepositData = { amount, referenceId, proofOfPayment, channel, userId };
       const { payload } = await dispatch(bankDepositAddFund(bankDepositData));
-      if(payload.statusCode === "200"){
+      if (payload.statusCode === "200") {
         resetForm();
         setDepositConfirmation(false);
         navigate("/transactions")
@@ -99,20 +99,20 @@ const UserDashboard = ({ setPageTitle }) => {
   })
 
   const portfolioBalanceWithdrawal = useFormik({
-    initialValues : {
-      amount : "",
-      userPin :""
+    initialValues: {
+      amount: "",
+      userPin: ""
     },
     validationSchema: Yup.object({
-      amount : Yup.string().required("Amount cannot be empty"),
-      userPin:  Yup.string().required("UserPin cannot be empty")
+      amount: Yup.string().required("Amount cannot be empty"),
+      userPin: Yup.string().required("UserPin cannot be empty")
     }),
-    onSubmit : async(values, {resetForm})=>{
-      const channel ="Portfolio Balance";
-      const  {amount, userPin} = values;
-      let withdrawalData = {amount,userPin, channel,userId};
+    onSubmit: async (values, { resetForm }) => {
+      const channel = "Portfolio Balance";
+      const { amount, userPin } = values;
+      let withdrawalData = { amount, userPin, channel, userId };
       const { payload } = await dispatch(userWithdrawal(withdrawalData));
-      if(payload.statusCode === "200"){
+      if (payload.statusCode === "200") {
         resetForm();
         setPortfolioBalanceModal(false);
         setWithdrawalModal(false)
@@ -122,35 +122,35 @@ const UserDashboard = ({ setPageTitle }) => {
   })
 
   const investmentBalanceWithdrawal = useFormik({
-    initialValues : {
-      amount : "",
-      userPin :"",
+    initialValues: {
+      amount: "",
+      userPin: "",
       userInvestmentId: ""
     },
     validationSchema: Yup.object({
-      amount : Yup.string().required("Amount cannot be empty"),
-      userPin:  Yup.string().required("UserPin cannot be empty"),
-      userInvestmentId : Yup.string().required("Kindly select an investment you want to withdraw from")
+      amount: Yup.string().required("Amount cannot be empty"),
+      userPin: Yup.string().required("UserPin cannot be empty"),
+      userInvestmentId: Yup.string().required("Kindly select an investment you want to withdraw from")
     }),
-    onSubmit : async(values, {resetForm})=>{
-      const channel ="Investment Balance";
-      const  {amount, userPin, userInvestmentId} = values;
-      let withdrawalData = {amount,userPin, channel,userId, userInvestmentId};
+    onSubmit: async (values, { resetForm }) => {
+      const channel = "Investment Balance";
+      const { amount, userPin, userInvestmentId } = values;
+      let withdrawalData = { amount, userPin, channel, userId, userInvestmentId };
       const { payload } = await dispatch(userWithdrawal(withdrawalData));
-      if(payload.statusCode === "200"){
+      if (payload.statusCode === "200") {
         resetForm();
         setPortfolioBalanceModal(false);
         setWithdrawalModal(false)
         navigate("/transactions")
       }
-    
+
     }
   })
 
   return (
-    
+
     <div className="col-span-10 md:mx-4">
-      <Spinner loading={useSelector((state)=>state.user).loading}/>
+      <Spinner loading={useSelector((state) => state.user).loading} />
       <p>Good {timeOfTheDay}<span id="time-period"></span>, <span className="font-semibold">{useSelector((state) => state.user.userSessionData).firstname}</span></p>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="grid gap-4">
@@ -225,30 +225,30 @@ const UserDashboard = ({ setPageTitle }) => {
         <div>
           <div className="flex justify-between items-center">
             <p className="text-xl font-medium">Recent transactions</p>
-            <span className="text-primary font-medium underline">View all</span>
+            <Link to={"/transactions"}><span className="text-primary font-medium underline">View all</span></Link>
           </div>
           <div className="bg-white px-4 py-8 rounded-md mt-4 grid gap-4">
             {
               userTransactionHistory.length > 0 ?
-              userTransactionHistory.map((val, key) => {
-                const transactionIcon = (val.transactionType === "Deposit") ? creditSvg : debitSvg;
-                const statusColor = (val.status === "Approved") ? 'text-primary' : 'text-red-500';
-                return (
-                  <div key={key} className="flex gap-4 ">
-                    <div><img src={transactionIcon} alt="" /></div>
-                    <div className="grid grid-cols-12 w-full font-medium text-sm items-center border-b">
-                      <div className="col-span-6 md:col-span-4 text-start">{val.transactionType}</div>
-                      <div className="col-span-6 md:col-span-3 text-start">{val.insertedDt}</div>
-                      <div className="hidden md:block col-span-3 text-center">&#8358;<span>{val.amount}</span></div>
-                      <div className={`${statusColor} font-bold hidden md:block col-span-2 text-end`}>{val.status}</div>
+                userTransactionHistory.map((val, key) => {
+                  const transactionIcon = (val.transactionType === "Deposit") ? creditSvg : debitSvg;
+                  const statusColor = (val.status === "Approved") ? 'text-primary' : 'text-red-500';
+                  return (
+                    <div key={key} className="flex gap-4 ">
+                      <div><img src={transactionIcon} alt="" /></div>
+                      <div className="grid grid-cols-12 w-full font-medium text-sm items-center border-b">
+                        <div className="col-span-6 md:col-span-4 text-start">{val.transactionType}</div>
+                        <div className="col-span-6 md:col-span-3 text-start">{val.insertedDt}</div>
+                        <div className="hidden md:block col-span-3 text-center">&#8358;<span>{val.amount}</span></div>
+                        <div className={`${statusColor} font-bold hidden md:block col-span-2 text-end`}>{val.status}</div>
+                      </div>
                     </div>
-                  </div>
+                  )
+                })
+                :
+                (
+                  <div className="text-center pt-3 text-lg font-bold">No Transaction Available</div>
                 )
-              })
-              :
-              (
-                <div className="text-center pt-3 text-lg font-bold">No Transaction Available</div>
-              )
             }
 
 
@@ -319,31 +319,31 @@ const UserDashboard = ({ setPageTitle }) => {
         <p className="text-xl text-primary py-16 text-center font-bold">Card Payment Options is not
           available for now, <br />Kindly Use Bank Transfer</p>
       </Modal>
-  
+
       <Modal isVisible={depositConfirmation} onClose={() => { setDepositConfirmation(false) }}>
         <p className="text-xl text-primary font-medium">Complete the form to confirm your deposit</p>
         <form className="grid gap-6 mt-8" onSubmit={depositBankTransfer.handleSubmit}>
           <CurrencyInput labelName={'Amount'}
-                        inputType={'text'}
-                        placeholder={'000,000.00'}
-                        inputName={'amount'}
-                        inputValue={depositBankTransfer.values.amount}
-                        inputOnBlur={depositBankTransfer.handleBlur}
-                        inputOnChange={depositBankTransfer.handleChange}
-                        inputError={depositBankTransfer.errors.amount && depositBankTransfer.touched.amount ? depositBankTransfer.errors.amount : null} />
+            inputType={'text'}
+            placeholder={'000,000.00'}
+            inputName={'amount'}
+            inputValue={depositBankTransfer.values.amount}
+            inputOnBlur={depositBankTransfer.handleBlur}
+            inputOnChange={depositBankTransfer.handleChange}
+            inputError={depositBankTransfer.errors.amount && depositBankTransfer.touched.amount ? depositBankTransfer.errors.amount : null} />
           <InputWithLabel labelName={'Reference Number'}
-                          inputType={'number'}
-                          placeholder={'00000000'}                         
-                          inputName={'referenceId'}
-                          inputValue={depositBankTransfer.values.referenceId}
-                          inputOnBlur={depositBankTransfer.handleBlur}
-                          inputOnChange={depositBankTransfer.handleChange}
-                          inputError={depositBankTransfer.errors.referenceId && depositBankTransfer.touched.referenceId ? depositBankTransfer.errors.referenceId : null} />
-        <div className="grid">
+            inputType={'number'}
+            placeholder={'00000000'}
+            inputName={'referenceId'}
+            inputValue={depositBankTransfer.values.referenceId}
+            inputOnBlur={depositBankTransfer.handleBlur}
+            inputOnChange={depositBankTransfer.handleChange}
+            inputError={depositBankTransfer.errors.referenceId && depositBankTransfer.touched.referenceId ? depositBankTransfer.errors.referenceId : null} />
+          <div className="grid">
             <span className="text-sm font-medium pb-1">Proof of Payment:</span>
-            <input type='file' className="p-3 bg-[#f8f8f8] border text-sm rounded" ref={fileInputRef} id="fileInput" onChange={handleProofPaymentFile}  />
-            { selectedFileError && (<code className="text-red-500 text-xs">Upload proof of payment to complain deposit</code>) }
-        </div>
+            <input type='file' className="p-3 bg-[#f8f8f8] border text-sm rounded" ref={fileInputRef} id="fileInput" onChange={handleProofPaymentFile} />
+            {selectedFileError && (<code className="text-red-500 text-xs">Upload proof of payment to complain deposit</code>)}
+          </div>
           <Buttons btnText={'Continue'} btnType={'primary'} type={'submit'} />
         </form>
 
@@ -378,22 +378,22 @@ const UserDashboard = ({ setPageTitle }) => {
         <p className="text-sm text-red-500 font-medium mb-5">Kindly Note that withdrawal will be made to the account set up in your profile</p>
         <form className="grid gap-6 mt-4" onSubmit={portfolioBalanceWithdrawal.handleSubmit}>
           <CurrencyInput labelName={'Amount'}
-                        inputType={'text'}
-                        placeholder={'000,000.00'}
-                        inputName={'amount'}
-                        inputOnChange={portfolioBalanceWithdrawal.handleChange}
-                        inputOnBlur={portfolioBalanceWithdrawal.handleBlur}
-                        inputValue={portfolioBalanceWithdrawal.values.amount}
-                        inputError={portfolioBalanceWithdrawal.errors.amount && portfolioBalanceWithdrawal.touched.amount ?portfolioBalanceWithdrawal.errors.amount : null} />
+            inputType={'text'}
+            placeholder={'000,000.00'}
+            inputName={'amount'}
+            inputOnChange={portfolioBalanceWithdrawal.handleChange}
+            inputOnBlur={portfolioBalanceWithdrawal.handleBlur}
+            inputValue={portfolioBalanceWithdrawal.values.amount}
+            inputError={portfolioBalanceWithdrawal.errors.amount && portfolioBalanceWithdrawal.touched.amount ? portfolioBalanceWithdrawal.errors.amount : null} />
           <DigitInput labelName={'User Pin'}
-                      maxLength={'4'}
-                      inputType={'password'}
-                      inputName={'userPin'}
-                      inputOnChange={portfolioBalanceWithdrawal.handleChange}
-                      inputOnBlur={portfolioBalanceWithdrawal.handleBlur}
-                      inputValue={portfolioBalanceWithdrawal.values.userPin}
-                      inputError={portfolioBalanceWithdrawal.errors.userPin && portfolioBalanceWithdrawal.touched.userPin ?portfolioBalanceWithdrawal.errors.userPin : null} />
-          <Buttons btnText={'Continue'} btnType={'primary'} type={'submit'}/>
+            maxLength={'4'}
+            inputType={'password'}
+            inputName={'userPin'}
+            inputOnChange={portfolioBalanceWithdrawal.handleChange}
+            inputOnBlur={portfolioBalanceWithdrawal.handleBlur}
+            inputValue={portfolioBalanceWithdrawal.values.userPin}
+            inputError={portfolioBalanceWithdrawal.errors.userPin && portfolioBalanceWithdrawal.touched.userPin ? portfolioBalanceWithdrawal.errors.userPin : null} />
+          <Buttons btnText={'Continue'} btnType={'primary'} type={'submit'} />
         </form>
       </Modal>
 
@@ -402,29 +402,29 @@ const UserDashboard = ({ setPageTitle }) => {
         <p className="text-sm text-red-500 font-medium mb-5">Kindly Note that withdrawal will be made to the account set up in your profile</p>
         <form className="grid gap-6 mt-4" onSubmit={investmentBalanceWithdrawal.handleSubmit}>
           <SelectInput labelName={'Select Investment you want to withdraw from'}
-                      selectOptions={activeInvestment}
-                      valueKey={'investmentId'}
-                      labelKey={'label'} 
-                      selectValue={investmentBalanceWithdrawal.values.userInvestmentId}
-                      selectBlur={investmentBalanceWithdrawal.handleBlur}
-                      onChange={(event) => investmentBalanceWithdrawal.setFieldValue('userInvestmentId', event.target.value)}
-                      selectError={investmentBalanceWithdrawal.touched.userInvestmentId && investmentBalanceWithdrawal.errors.userInvestmentId ? investmentBalanceWithdrawal.errors.userInvestmentId : null}/>
-         <CurrencyInput labelName={'Amount'}
-                        inputType={'text'}
-                        placeholder={'000,000.00'}
-                        inputName={'amount'}
-                        inputOnChange={investmentBalanceWithdrawal.handleChange}
-                        inputOnBlur={investmentBalanceWithdrawal.handleBlur}
-                        inputValue={investmentBalanceWithdrawal.values.amount}
-                        inputError={investmentBalanceWithdrawal.errors.amount && investmentBalanceWithdrawal.touched.amount ?investmentBalanceWithdrawal.errors.amount : null} />
+            selectOptions={activeInvestment}
+            valueKey={'investmentId'}
+            labelKey={'label'}
+            selectValue={investmentBalanceWithdrawal.values.userInvestmentId}
+            selectBlur={investmentBalanceWithdrawal.handleBlur}
+            onChange={(event) => investmentBalanceWithdrawal.setFieldValue('userInvestmentId', event.target.value)}
+            selectError={investmentBalanceWithdrawal.touched.userInvestmentId && investmentBalanceWithdrawal.errors.userInvestmentId ? investmentBalanceWithdrawal.errors.userInvestmentId : null} />
+          <CurrencyInput labelName={'Amount'}
+            inputType={'text'}
+            placeholder={'000,000.00'}
+            inputName={'amount'}
+            inputOnChange={investmentBalanceWithdrawal.handleChange}
+            inputOnBlur={investmentBalanceWithdrawal.handleBlur}
+            inputValue={investmentBalanceWithdrawal.values.amount}
+            inputError={investmentBalanceWithdrawal.errors.amount && investmentBalanceWithdrawal.touched.amount ? investmentBalanceWithdrawal.errors.amount : null} />
           <DigitInput labelName={'User Pin'}
-                      maxLength={'4'}
-                      inputType={'password'}
-                      inputName={'userPin'}
-                      inputOnChange={investmentBalanceWithdrawal.handleChange}
-                      inputOnBlur={investmentBalanceWithdrawal.handleBlur}
-                      inputValue={investmentBalanceWithdrawal.values.userPin}
-                      inputError={investmentBalanceWithdrawal.errors.userPin && investmentBalanceWithdrawal.touched.userPin ?investmentBalanceWithdrawal.errors.userPin : null} />
+            maxLength={'4'}
+            inputType={'password'}
+            inputName={'userPin'}
+            inputOnChange={investmentBalanceWithdrawal.handleChange}
+            inputOnBlur={investmentBalanceWithdrawal.handleBlur}
+            inputValue={investmentBalanceWithdrawal.values.userPin}
+            inputError={investmentBalanceWithdrawal.errors.userPin && investmentBalanceWithdrawal.touched.userPin ? investmentBalanceWithdrawal.errors.userPin : null} />
           <Buttons btnText={'Continue'} btnType={'primary'} type={'submit'} />
         </form>
       </Modal>

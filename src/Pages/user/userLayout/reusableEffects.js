@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { depositBankAccount, userActiveInvestmentList, userBalanceSummary, userTransactionHistory } from "../../../hooks/local/userReducer";
+import { depositBankAccount, investmentTypesInvestments, investmentTypesList, userActiveInvestmentList, userBalanceSummary, userTransactionHistory } from "../../../hooks/local/userReducer";
 
 export function useDepositBankList(){
   const [depositBankDetails, setDepositBankDetails] = useState([]);
@@ -68,5 +68,37 @@ export function useUserTransactionHistory(){
         getUserTransaction();
     },[dispatch, userId]);
     return transactionList;
+}
+
+export function useInvestmentTypes(){
+    const [investmentTypeList, setInvestmentTypeList] = useState([]);
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        const getInvestmentTypes = async()=>{
+            try{
+                const { payload } = await dispatch(investmentTypesList());
+                setInvestmentTypeList(payload.result)
+            }
+            catch(error){}
+        }
+        getInvestmentTypes();
+    },[dispatch]);
+    return investmentTypeList;
+}
+
+export function useInvestmentTypeList(investmentId){
+    const [investmentTypeDetails, setInvestmentTypeDetails] = useState([]);
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        const getInvestmentDetails = async()=>{
+            try{
+                const { payload } = await dispatch(investmentTypesInvestments(investmentId));
+                setInvestmentTypeDetails(payload.result)
+            }
+            catch(error){}
+        }
+        getInvestmentDetails();
+    },[dispatch, investmentId]);
+    return investmentTypeDetails;
 }
 
