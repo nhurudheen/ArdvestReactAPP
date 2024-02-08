@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import NavigationHeader from "../../../Components/navigationHeader";
 import Spinner from "../../../Components/spinner";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { useSingleInvestmentDetails } from "../userLayout/reusableEffects";
 import { showErrorToastMessage } from "../../../Utils/constant";
 import Modal from "../../../Components/modals";
 import Buttons from "../../../Components/buttons";
 import { useFormik } from "formik";
+import { userBookInvestment } from "../../../hooks/local/userReducer";
 
 const SingleInvestment = ({ setPageTitle }) => {
     useEffect(() => {
@@ -18,6 +19,7 @@ const SingleInvestment = ({ setPageTitle }) => {
     let { investmentId } = useParams();
     investmentId = atob(investmentId);
     const [quantity, setQuantity] = useState(1);
+    const dispatch = useDispatch();
     const [totalAmount, setTotalAmount] = useState(0);
     const [stockModal, setStockModal] = useState(false);
     const investmentData = useSingleInvestmentDetails(investmentId);
@@ -43,7 +45,10 @@ const SingleInvestment = ({ setPageTitle }) => {
             investmentId: investmentId
         },
         onSubmit: async(values)=>{
-            console.log(values);
+            const {userId, amount,investmentId} = values;
+            let bookInvestmentData = {userId, amount,investmentId};
+            const {payload} = await dispatch(userBookInvestment(bookInvestmentData))
+            if()
         }
     })
     useEffect(() => {

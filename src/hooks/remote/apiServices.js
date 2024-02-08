@@ -227,4 +227,14 @@ export class APIService {
             throw (error);
         }
     }
+
+    static async bookInvestment() {
+        try {
+            return APIClient.post("/book_investment");
+        }
+        catch (error) {
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
 }

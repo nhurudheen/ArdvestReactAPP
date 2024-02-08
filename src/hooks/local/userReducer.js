@@ -207,6 +207,15 @@ export const singleInvestment = createAsyncThunk(
     }
 )
 
+export const userBookInvestment = createAsyncThunk(
+    "user/BookInvestment",
+    async(data)=>{
+        const apiBookInvestment = await APIService.bookInvestment(data);
+        const response = apiBookInvestment.data;
+        return response;
+    }
+)
+
 const logOutSession = () =>{
     sessionStorage.removeItem("users");
     sessionStorage.removeItem("userSessionData"); 
@@ -355,6 +364,16 @@ const userSlice = createSlice({
             }
             state.loading = false;
         })
+        .addCase(userBookInvestment.fulfilled,(state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.users = action.payload;
+                showSuccessToastMessage(action.payload.message);
+            }
+            else{
+                showErrorToastMessage(action.payload.message);
+            }
+            state.loading = false
+        })
         .addMatcher(isAnyOf(
             userRegistration.fulfilled,
             verifyEmailAddress.fulfilled,
@@ -399,6 +418,7 @@ const userSlice = createSlice({
             investmentTypesList.pending,
             investmentTypesInvestments.pending,
             singleInvestment.pending,
+            userBookInvestment.pending,
         ), 
         (state)=>{
             state.loading = true;
@@ -426,6 +446,7 @@ const userSlice = createSlice({
             investmentTypesList.rejected,
             investmentTypesInvestments.rejected,
             singleInvestment.rejected,
+            userBookInvestment.rejected
         ),
         (state,action)=>{
             state.loading = false;
