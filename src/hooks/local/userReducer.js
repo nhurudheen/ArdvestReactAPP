@@ -198,6 +198,15 @@ export const investmentTypesInvestments = createAsyncThunk(
     }
 )
 
+export const singleInvestment = createAsyncThunk(
+    "user/SingleInvestment",
+    async(investmentId)=>{
+        const apiGetSingleInvestment = await APIService.singleInvestmentDetails(investmentId);
+        const response = apiGetSingleInvestment.data;
+        return response;
+    }
+)
+
 const logOutSession = () =>{
     sessionStorage.removeItem("users");
     sessionStorage.removeItem("userSessionData"); 
@@ -340,6 +349,12 @@ const userSlice = createSlice({
             }
             state.loading = false;
         })
+        .addCase(singleInvestment.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.users = action.payload;
+            }
+            state.loading = false;
+        })
         .addMatcher(isAnyOf(
             userRegistration.fulfilled,
             verifyEmailAddress.fulfilled,
@@ -382,7 +397,8 @@ const userSlice = createSlice({
             bankDepositAddFund.pending,
             userWithdrawal.pending,
             investmentTypesList.pending,
-            investmentTypesInvestments.pending
+            investmentTypesInvestments.pending,
+            singleInvestment.pending,
         ), 
         (state)=>{
             state.loading = true;
@@ -408,7 +424,8 @@ const userSlice = createSlice({
             bankDepositAddFund.rejected,
             userWithdrawal.rejected,
             investmentTypesList.rejected,
-            investmentTypesInvestments.rejected
+            investmentTypesInvestments.rejected,
+            singleInvestment.rejected,
         ),
         (state,action)=>{
             state.loading = false;

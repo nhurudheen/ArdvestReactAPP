@@ -6,6 +6,7 @@ import investmentImage from "../../../assets/images/cowThumbnail.png";
 import Spinner from "../../../Components/spinner";
 import { useSelector } from "react-redux";
 import Modal from "../../../Components/modals";
+import { Link } from "react-router-dom";
 
 const Investment = ({ setPageTitle }) => {
     useEffect(() => {
@@ -139,7 +140,7 @@ const Investment = ({ setPageTitle }) => {
 
                                         <p className="text-sm mt-4 m-8">Investment Status: <span className={`font-semibold ${(selectedInvestmentDetails.status === 'Active') ? 'text-primary/50' : 'text-red-500'}`}>{selectedInvestmentDetails.status}</span></p>
                                         {(selectedInvestmentDetails.status === 'Active')
-                                            ? <button class='bg-primary text-center p-4 text-sm rounded text-white w-full'>Invest now</button> : ''}
+                                            ? <Link to={`/invest_now/${btoa(selectedInvestmentDetails.id)}`}><button class='bg-primary text-center p-4 text-sm rounded text-white w-full'>Invest now</button></Link> : ''}
 
                                     </Modal>
                                 </div>

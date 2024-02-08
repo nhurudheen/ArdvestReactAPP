@@ -217,4 +217,14 @@ export class APIService {
             throw (error);
         }
     }
+
+    static async singleInvestmentDetails(investmentId) {
+        try {
+            return APIClient.get(`/single_investment?investmentId=${investmentId}`);
+        }
+        catch (error) {
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
 }

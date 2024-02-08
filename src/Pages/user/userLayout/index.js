@@ -9,6 +9,7 @@ import LogOut from "../auth/logout";
 import Transactions from "../pages/transactions";
 import UserProfile from "../pages/profile";
 import UserProfileSettings from "../pages/settings";
+import SingleInvestment from "../pages/singleInvestment";
 
 const UserLayout = () => {
     const userSession = useSelector((state)=>state.user.userSessionData);
@@ -28,12 +29,13 @@ const UserLayout = () => {
             <TopBar toggleSideBar={toggleSideBar} topBarTitle={pageTitle}/>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 px-3 md:px-8  pb-20">
             <SideBar sideBarVisibility={sideBarVisibility} topBarTitle={pageTitle} closeSideBar={closeSideBar}/>
-            <Routes>
+            <Routes> 
                 <Route path="/dashboard" element={<UserDashboard setPageTitle={setPageTitle}/>}/>
                 <Route path="/investment" element={<Investment setPageTitle={setPageTitle} />}/>
                 <Route path="/transactions" element={<Transactions setPageTitle={setPageTitle}/>}/>
                 <Route path="/profile" element={<UserProfile setPageTitle={setPageTitle}/>}/>
                 <Route path="/settings" element={<UserProfileSettings setPageTitle={setPageTitle}/>}/>
+                <Route path="/invest_now/:investmentId" element={<SingleInvestment setPageTitle={setPageTitle} />}/>
                 <Route path="/userLogout" element={<LogOut/>}/>
             </Routes>
             </div>
