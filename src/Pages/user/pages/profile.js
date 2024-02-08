@@ -80,7 +80,7 @@ const UserProfile = ({ setPageTitle }) => {
                     </div>
                 </div>
 
-                <form className="grid grid-cols-1 md:grid-cols-2 gap-8" onSubmit={updateUserProfile.handleSubmit}>
+                <form className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <InputWithLabel labelName={'Legal first name'}
                                     inputName={'firstname'}
                                     inputValue={updateUserProfile.values.firstname}
@@ -118,7 +118,7 @@ const UserProfile = ({ setPageTitle }) => {
                                     inputName={'nextOfKinAddress'}
                                     inputValue={updateUserProfile.values.nextOfKinAddress} />
                     <div className="items-center pt-5"> 
-                     <Buttons btnText={'Update Account'} btnType={'primary'} type={'submit'} />
+                     <Buttons btnText={'Update Account'} btnType={'primary'} type={'button'} />
                     </div>
                 </form>
             </div>

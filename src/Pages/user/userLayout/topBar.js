@@ -2,6 +2,7 @@ import ardvestLogo from '../../../assets/icons/logo.svg';
 import notificationLogo from '../../../assets/icons/notification.svg';
 import menuIcon from '../../../assets/icons/menu.svg';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 const TopBar = ({toggleSideBar, topBarTitle}) => {  
     const userData = useSelector((state)=>state.user.userSessionData); 
     return (
@@ -12,7 +13,7 @@ const TopBar = ({toggleSideBar, topBarTitle}) => {
                     <p className="text-lg font-bold text-primary hidden lg:block">{topBarTitle}</p>
                     <div className="flex gap-4 ">
                         <img src={notificationLogo} alt="" className="cursor-pointer" onClick="openModal('notifications')"/>
-                        <img src ={userData.passport} className="rounded-full h-8 w-8 hover:scale-105" alt='' />
+                        <Link to={'/profile'}><img src ={userData.passport} className="rounded-full h-8 w-8 hover:scale-105" alt='' /></Link>
                             {/* <div className="h-8 w-8 bg-primary text-white rounded-full text-sm font-bold flex items-center justify-center">
                                 {userData.passport}
                             </div> */}

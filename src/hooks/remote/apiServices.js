@@ -228,9 +228,9 @@ export class APIService {
         }
     }
 
-    static async bookInvestment() {
+    static async bookInvestment(data) {
         try {
-            return APIClient.post("/book_investment");
+            return APIClient.post("/book_investment",data);
         }
         catch (error) {
             APIService.extractError(error);

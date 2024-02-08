@@ -189,7 +189,7 @@ const UserDashboard = ({ setPageTitle }) => {
             <div className="grid grid-cols-2 absolute top-0 p-8">
               <div>
                 <p className="col-span-1 text-2xl md:text-3xl font-semibold mb-8">Invest in what you eat</p>
-                <span className=" rounded-md bg-primary py-4 px-8 text-sm text-white">Start now</span>
+                <Link to={'/investment'}><span className=" rounded-md bg-primary py-4 px-8 text-sm text-white">Start now</span></Link>
               </div>
             </div>
           </div>
