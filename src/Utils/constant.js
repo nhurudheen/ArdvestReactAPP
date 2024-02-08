@@ -1,9 +1,9 @@
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
-export const API_KEY ="08112023";
+export const API_KEY ="27102023";
 export const JSON_CONTENT_TYPE = "application/json";
-export const API_BASE_URL ="/staging";
+export const API_BASE_URL ="https://toptrade.com.ng/api_toptrade/v1/api";
 
 export const API_HEADER = {
     'Content-Type' : JSON_CONTENT_TYPE,
