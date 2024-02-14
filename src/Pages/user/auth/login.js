@@ -10,7 +10,6 @@ import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { userAuthenticate, userDataSummary, userInvestmentList } from "../../../hooks/local/userReducer";
 import Spinner from "../../../Components/spinner";
-import { showSuccessToastMessage } from "../../../Utils/constant";
 
 const UserLogin = () => {
     const [timeOfTheDay, setTimeOfTheDay] = useState();
@@ -46,11 +45,10 @@ const UserLogin = () => {
                 navigate('/setUpPin', {state: {emailAddress}})
             }
             if(payload.statusCode === "200"){
-                showSuccessToastMessage("Working Fine")
-                // navigate('/dashboard');
-                // const userId = payload.result.userId;
-                // await dispatch(userDataSummary(userId));
-                // await dispatch(userInvestmentList(userId));
+                navigate('/dashboard');
+                const userId = payload.result.userId;
+                await dispatch(userDataSummary(userId));
+                await dispatch(userInvestmentList(userId));
             }
         }
     })
