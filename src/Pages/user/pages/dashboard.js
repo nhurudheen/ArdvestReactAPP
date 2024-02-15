@@ -49,6 +49,10 @@ const UserDashboard = ({ setPageTitle }) => {
   const dashboardBalance = userBalanceSummary?.totalBalance ? currencyFormat(userBalanceSummary.totalBalance) : '0.00';
   const portfolioBalance = userBalanceSummary?.totalBalance ? userBalanceSummary.totalBalance : '0.00';
   const investmentBalance = userBalanceSummary?.investmentBalance ? userBalanceSummary.investmentBalance : '0.00';
+  const accountNumber = depositBankDetails?.accountNumber ? depositBankDetails.accountNumber : '';
+  const accountName = depositBankDetails?.accountName? depositBankDetails.accountName : '';
+  const bankName = depositBankDetails?.bankName? depositBankDetails.bankName : '';
+  const referenceNumber = depositBankDetails?.referenceNumber? depositBankDetails.referenceNumber : '';
   const activeInvestment = userActiveInvestmentList.map((response) => ({ amount: response.amount, investmentId: response.id, label: `${response.investmentName} (${response.amount})` }));
 
   useEffect(() => {
@@ -285,31 +289,31 @@ const UserDashboard = ({ setPageTitle }) => {
         <div className="grid gap-4 text-sm mt-4 mb-8">
           <div className="grid bg-[#f8f8f8] p-3 rounded-lg">
             <p className="text-sm text-black/50">Account name:</p>
-            <p className="text-lg font-medium text-primary">{depositBankDetails?.accountName ? depositBankDetails.accountName : ''}</p>
+            <p className="text-lg font-medium text-primary">{accountName}</p>
           </div>
           <div className="grid bg-[#f8f8f8] p-3 rounded-lg">
             <p className="text-sm text-black/50">Bank name:</p>
-            <p className="text-lg font-medium text-primary">{depositBankDetails?.bankName ? depositBankDetails.bankName : ''}</p>
+            <p className="text-lg font-medium text-primary">{bankName}</p>
           </div>
           <div className="flex justify-between items-end bg-[#f8f8f8] p-3 rounded-lg">
             <div>
               <p className="text-sm text-black/50">Account number:</p>
               <p className="text-lg font-medium text-primary" >
-                {depositBankDetails.accountNumber}</p>
+                {accountNumber}</p>
             </div>
             <div className="pt-3 pe-4 hover:scale-105"> <img
               src={copyIcon} alt=""
-              className="justify-self-end mb-4" onClick={() => { copyToClipboard(depositBankDetails?.accountNumber ? depositBankDetails.accountNumber : '') }} /></div>
+              className="justify-self-end mb-4" onClick={() => { copyToClipboard(accountNumber) }} /></div>
           </div>
           <div className="flex justify-between items-end bg-[#f8f8f8] p-3 rounded-lg">
             <div>
               <p className="text-sm text-black/50">Reference Number:</p>
               <p className="text-lg font-medium text-primary" >
-                {depositBankDetails.referenceNumber}</p>
+                {referenceNumber}</p>
             </div>
             <div className="pt-3 pe-4 hover:scale-105"> <img
               src={copyIcon} alt=""
-              className="justify-self-end mb-4" onClick={() => { copyToClipboard(depositBankDetails?.referenceNumber ? depositBankDetails.accountNumber : '') }} /></div>
+              className="justify-self-end mb-4" onClick={() => { copyToClipboard(referenceNumber) }} /></div>
           </div>
         </div>
         <button onClick={() => { setDepositConfirmation(true); setBankPayment(false); setDepositModal(false) }} className="bg-primary p-4 rounded text-white text-sm">Continue</button>
