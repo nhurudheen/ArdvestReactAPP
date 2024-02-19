@@ -237,4 +237,14 @@ export class APIService {
             throw (error);
         }
     }
+
+    static async adminAuthentication(data){
+        try{
+            return APIClient.post('admin_login', data)
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
 }
