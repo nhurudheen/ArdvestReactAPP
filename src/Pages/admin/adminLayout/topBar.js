@@ -2,7 +2,12 @@ import ardvestLogo from '../../../assets/icons/logo.svg';
 import notificationLogo from '../../../assets/icons/notification.svg';
 import menuIcon from '../../../assets/icons/menu.svg';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 const AdminTopBar = ({ toggleSideBar, topBarTitle }) => {
+    const adminSession= useSelector((state)=>state.user.adminSessionData)
+    const firstName = adminSession.firstName;
+    const lastname = adminSession.lastName;
+
     return (
         <div>
             <div className="border-b h-[10vh] md:h-[12vh] grid grid-cols-2 md:grid-cols-12 items-center px-3 md:px-8">
@@ -13,7 +18,7 @@ const AdminTopBar = ({ toggleSideBar, topBarTitle }) => {
                         <img src={notificationLogo} alt="" className="cursor-pointer" onClick="openModal('notifications')" />
                         <Link to={'profile'}>
                             <div className="h-8 w-8 bg-primary text-white rounded-full text-sm font-bold flex items-center justify-center">
-                                GH
+                                {firstName.charAt(0)} {lastname.charAt(0)}
                             </div>
                         </Link>
                     </div>

@@ -247,4 +247,15 @@ export class APIService {
             throw (error);
         }
     }
+
+    static async adminDashboard() {
+        try {
+            return APIClient.get("dashboard_summary");
+        }
+        catch (error) {
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
+
 }

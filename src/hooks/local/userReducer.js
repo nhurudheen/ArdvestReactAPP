@@ -225,6 +225,14 @@ export const adminAuth = createAsyncThunk(
         return response;
     }
 )
+export const adminDashboardSummary = createAsyncThunk(
+    "user/AdminDashboard",
+    async()=>{
+        const apiAdminDashboard = await APIService.adminDashboard();
+        const response = await apiAdminDashboard.data;
+        return response;
+    }
+)
 
 const logOutSession = () =>{
     sessionStorage.removeItem("users");
@@ -417,6 +425,12 @@ const userSlice = createSlice({
             state.loading = false;
             state.users = null;
         })
+        .addCase(adminDashboardSummary.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.users = action.payload;
+            }
+            state.loading = false;
+        })
         .addMatcher(isAnyOf(
             userRegistration.fulfilled,
             verifyEmailAddress.fulfilled,
@@ -462,7 +476,8 @@ const userSlice = createSlice({
             investmentTypesInvestments.pending,
             singleInvestment.pending,
             userBookInvestment.pending,
-            adminAuth.pending
+            adminAuth.pending,
+            adminDashboardSummary.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -490,7 +505,8 @@ const userSlice = createSlice({
             investmentTypesList.rejected,
             investmentTypesInvestments.rejected,
             singleInvestment.rejected,
-            userBookInvestment.rejected
+            userBookInvestment.rejected,
+            adminDashboardSummary.rejected
         ),
         (state,action)=>{
             state.loading = false;
