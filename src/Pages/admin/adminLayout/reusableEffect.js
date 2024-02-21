@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { adminDashboardSummary } from "../../../hooks/local/userReducer";
+import { adminDashboardSummary } from "../../../hooks/local/adminReducer";
 
 export function useDashboardSummary (){
     const [dashboardSummary, setDashboardSummary] = useState([]);

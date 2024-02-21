@@ -4,7 +4,7 @@ import menuIcon from '../../../assets/icons/menu.svg';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 const AdminTopBar = ({ toggleSideBar, topBarTitle }) => {
-    const adminSession= useSelector((state)=>state.user.adminSessionData)
+    const adminSession= useSelector((state)=>state.admin.adminSessionData)
     const firstName = adminSession.firstName;
     const lastname = adminSession.lastName;
 

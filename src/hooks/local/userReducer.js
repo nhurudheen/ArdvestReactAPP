@@ -12,7 +12,6 @@ const initialState = {
         "userSessionData",
         "userInvestmentList",
         "userSummaryData",
-        "adminSessionData"
     ])
 }
 const periodOfTheDay = getPeriodOfDay();
@@ -216,23 +215,7 @@ export const userBookInvestment = createAsyncThunk(
         return response;
     }
 )
-export const adminAuth = createAsyncThunk(
-    "user/AdminAuth",
-    async(data)=>{
-        const apiAdminAuth = await APIService.adminAuthentication(data);
-        const response = await apiAdminAuth.data;
-        saveToLocalStorage("adminSessionData", JSON.stringify(response.result));
-        return response;
-    }
-)
-export const adminDashboardSummary = createAsyncThunk(
-    "user/AdminDashboard",
-    async()=>{
-        const apiAdminDashboard = await APIService.adminDashboard();
-        const response = await apiAdminDashboard.data;
-        return response;
-    }
-)
+
 
 const logOutSession = () =>{
     sessionStorage.removeItem("users");
@@ -241,15 +224,6 @@ const logOutSession = () =>{
     sessionStorage.removeItem("userSummaryData");
 }
 
-const adminLogOutSession = () =>{
-    sessionStorage.removeItem("adminSessionData");
-}
-export const adminLogOut = createAsyncThunk(
-    "user/AdminLogOut",
-    async()=>{
-        adminLogOutSession();
-    }
-)
 export const userLogOut = createAsyncThunk(
     "user/LogOut",
     async()=>{
@@ -402,35 +376,7 @@ const userSlice = createSlice({
             }
             state.loading = false
         })
-        .addCase(adminAuth.fulfilled,(state,action)=>{
-            if(action.payload.statusCode === "200"){
-                state.users = action.payload;       
-                state.isAuthenticated = true;
-                state.adminSessionData = action.payload.result;
-                showSuccessToastMessage(`Good ${periodOfTheDay} `+action.payload.result.firstName);
-            }
-            else{
-                state.error = action.payload.message;
-                showErrorToastMessage(action.payload.message);
-            }
-            state.loading= false;
-        })
-        .addCase(adminAuth.rejected, (state,action)=>{
-            state.loading = false;
-            state.isAuthenticated = false;
-            state.error = showErrorToastMessage("Server Down, Contact Admin");
-        })
-        .addCase(adminLogOut.fulfilled, (state)=>{
-            state.isAuthenticated = false;
-            state.loading = false;
-            state.users = null;
-        })
-        .addCase(adminDashboardSummary.fulfilled, (state,action)=>{
-            if(action.payload.statusCode === "200"){
-                state.users = action.payload;
-            }
-            state.loading = false;
-        })
+       
         .addMatcher(isAnyOf(
             userRegistration.fulfilled,
             verifyEmailAddress.fulfilled,
@@ -476,8 +422,6 @@ const userSlice = createSlice({
             investmentTypesInvestments.pending,
             singleInvestment.pending,
             userBookInvestment.pending,
-            adminAuth.pending,
-            adminDashboardSummary.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -506,7 +450,6 @@ const userSlice = createSlice({
             investmentTypesInvestments.rejected,
             singleInvestment.rejected,
             userBookInvestment.rejected,
-            adminDashboardSummary.rejected
         ),
         (state,action)=>{
             state.loading = false;

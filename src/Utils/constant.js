@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import NotificationModal from '../Components/notificationModal';
 
 export const API_KEY ="08112023";
 export const JSON_CONTENT_TYPE = "application/json";

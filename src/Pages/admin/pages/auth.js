@@ -8,8 +8,8 @@ import PasswordInput from "../../../Components/passwordInput";
 import Buttons from "../../../Components/buttons";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
-import { adminAuth } from "../../../hooks/local/userReducer";
 import { useNavigate } from "react-router-dom";
+import { auth } from "../../../hooks/local/adminReducer";
 
 const AdminAuth = () => {
     const [timeOfTheDay, setTimeOfTheDay] = useState();
@@ -32,7 +32,7 @@ const AdminAuth = () => {
         onSubmit:async(values)=>{
             const {emailAddress, password} = values;
             let adminAuthData = {emailAddress, password};
-            const {payload} = await dispatch(adminAuth(adminAuthData));
+            const {payload} = await dispatch(auth(adminAuthData));
             if(payload.statusCode === "200"){
                 navigate("/management")
             }
@@ -41,7 +41,7 @@ const AdminAuth = () => {
     return (  
         <div>
             <AuthHeaders/>
-            <Spinner loading={useSelector((state)=>state.user).loading}/>
+            <Spinner loading={useSelector((state)=>state.admin).loading}/>
             <div className="grid gap-2 mt-12">
                 <p className="text-sm text-center">Good {timeOfTheDay},</p>
                 <p className="text-center text-xl font-semibold text-primary">Welcome back! Admin</p>

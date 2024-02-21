@@ -7,7 +7,7 @@ import AdminLogOut from "../pages/logout";
 import { useSelector } from "react-redux";
 
 const AdminLayout = () => {
-    const adminSession= useSelector((state)=>state.user.adminSessionData);
+    const adminSession= useSelector((state)=>state.admin.adminSessionData);
     const [sideBarVisibility, setSideBarVisibility] = useState(false);
     const toggleSideBar = ()=>{
         setSideBarVisibility(!sideBarVisibility); 

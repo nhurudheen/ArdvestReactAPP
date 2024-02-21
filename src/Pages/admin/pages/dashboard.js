@@ -13,11 +13,11 @@ const AdminDashboard = ({setPageTitle}) => {
         setTimeOfTheDay(getPeriodOfDay); 
       }, [setPageTitle]);
       const [timeOfTheDay, setTimeOfTheDay] = useState("");
-      const adminSession= useSelector((state)=>state.user.adminSessionData)
+      const adminSession= useSelector((state)=>state.admin.adminSessionData)
       const dashboardData = useDashboardSummary();
     return ( 
         <div className="col-span-10">
-            <Spinner loading={useSelector((state)=>state.user).loading}/>
+            <Spinner loading={useSelector((state)=>state.admin).loading}/>
             <div className="bg-white p-4 md:px-8 rounded-lg">
         <p>Good {timeOfTheDay} <span className="font-semibold">{adminSession.firstName}</span></p>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-8">
