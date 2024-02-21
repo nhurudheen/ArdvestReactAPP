@@ -2,7 +2,7 @@ import successSvg from "../assets/icons/success.svg";
 import closeSvg from "../assets/icons/close.svg";
 import failureSvg from "../assets/icons/failed.svg";
 const NotificationModal = ({isVisible,onClose,notificationMessage, notificationType}) => {
-  
+    if(!isVisible) return null;
     return (
      <div className="fixed inset-0 bg-black bg-opacity-50 modal">
          <div className="flex items-center justify-center h-[100vh] ">

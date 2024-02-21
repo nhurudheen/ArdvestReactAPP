@@ -258,4 +258,14 @@ export class APIService {
         }
     }
 
+    static async getCustomerList(){
+        try{
+            return APIClient.get('list_user')
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
+
 }

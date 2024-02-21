@@ -5,6 +5,7 @@ import AdminDashboard from "../pages/dashboard";
 import { useState } from "react";
 import AdminLogOut from "../pages/logout";
 import { useSelector } from "react-redux";
+import Customer from "../pages/customers";
 
 const AdminLayout = () => {
     const adminSession= useSelector((state)=>state.admin.adminSessionData);
@@ -26,6 +27,7 @@ const AdminLayout = () => {
                 <AdminSideBar sideBarVisibility={sideBarVisibility} topBarTitle={pageTitle} closeSideBar={closeSideBar} />
                 <Routes>
                     <Route path="*" element={<AdminDashboard setPageTitle={setPageTitle} />} />
+                    <Route path="/customer" element={<Customer setPageTitle={setPageTitle} />}/>
                     <Route path="/logout" element={<AdminLogOut/>}/>
                 </Routes>
             </div>

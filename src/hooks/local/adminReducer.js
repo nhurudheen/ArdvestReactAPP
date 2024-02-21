@@ -37,6 +37,30 @@ export const adminDashboardSummary = createAsyncThunk(
     }
 )
 
+export const customerList = createAsyncThunk(
+    "admin/CustomerList",
+    async()=>{
+        const apiCustomerList = await APIService.getCustomerList();
+        const response = await apiCustomerList.data;
+        return response;
+    }
+)
+export const customerDataSummary = createAsyncThunk(
+    "admin/CustomerData",
+    async(userId)=>{
+        const apiUserDataSummary  = await APIService.userSummary(userId);
+        const response = apiUserDataSummary.data;
+        return response;
+    }
+)
+export const customerInvestmentList = createAsyncThunk(
+    "admin/CustomerInvestment",
+    async(userId)=>{
+        const apiInvestmentList = await APIService.userInvestments(userId);
+        const response = apiInvestmentList.data;
+        return response;
+    }
+)
 const logOutSession = () =>{
     sessionStorage.removeItem("adminSessionData");
 }
@@ -83,9 +107,30 @@ const administrativeSlice = createSlice({
             }
             state.loading = false;
         })
+        .addCase(customerList.fulfilled,(state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.administrative = action.payload;
+            }
+            state.loading = false;
+        })
+        .addCase(customerDataSummary.fulfilled,(state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.administrative = action.payload;
+            }
+            state.loading = false;
+        })
+        .addCase(customerInvestmentList.fulfilled,(state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.administrative = action.payload;
+            }
+            state.loading = false;
+        })
         .addMatcher(isAnyOf(
             auth.pending,
-            adminDashboardSummary.pending
+            adminDashboardSummary.pending,
+            customerList.pending,
+            customerDataSummary.pending,
+            customerInvestmentList.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -94,7 +139,10 @@ const administrativeSlice = createSlice({
         })
         .addMatcher(
             isAnyOf(
-                adminDashboardSummary.rejected
+                adminDashboardSummary.rejected,
+                customerList.rejected,
+                customerDataSummary.rejected,
+                customerInvestmentList.rejected
             ),
             (state,action)=>{
                 state.loading = false;
