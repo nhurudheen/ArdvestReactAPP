@@ -1,11 +1,11 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import NavigationHeader from "../../../Components/navigationHeader";
 import Spinner from "../../../Components/spinner";
 import { useEffect, useState } from "react";
 import { useCustomerDataSummary, useCustomerInvestmentList } from "../adminLayout/reusableEffect";
-import InputWithLabel from "../../../Components/inputWithLabel";
 import investmentIcon from "../../../assets/icons/investment.svg";
 import { useParams } from "react-router-dom";
+import ReadOnlyInputWithLabel from "../../../Components/readOnlyInput";
 
 const SingleCustomer = ({setPageTitle}) => {
     useEffect(() => {
@@ -48,39 +48,39 @@ const SingleCustomer = ({setPageTitle}) => {
                 </div>
 
                 <form className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <InputWithLabel labelName={'Legal first name'}
+                    <ReadOnlyInputWithLabel labelName={'Legal first name'}
                                     inputName={'firstname'}
                                     inputValue={userData.userDetails?.firstname ? userData.userDetails.firstname : ''}
                                      inputType={'text'} />
-                    <InputWithLabel labelName={'Legal middle name'}
+                    <ReadOnlyInputWithLabel labelName={'Legal middle name'}
                                     inputType={'text'}
                                     inputName={'middleName'}
                                     inputValue={userData.userDetails?.middleName?userData.userDetails.middleName:''} />
-                    <InputWithLabel labelName={'Legal last name'}
+                    <ReadOnlyInputWithLabel labelName={'Legal last name'}
                                     inputType={'text'}
                                     inputName={'lastname'}
                                     inputValue={userData.userDetails?.lastname ? userData.userDetails.lastname : ''} />
-                    <InputWithLabel labelName={'Home address'}
+                    <ReadOnlyInputWithLabel labelName={'Home address'}
                                     inputType={'text'}
                                     inputName={'homeAddress'}
                                     inputValue={userData.userDetails?.homeAddress ? userData.userDetails.homeAddress : ''} />
-                    <InputWithLabel labelName={'Gender'}
+                    <ReadOnlyInputWithLabel labelName={'Gender'}
                                     inputType={'text'}
                                     inputName={'gender'}
                                     inputValue={userData.userDetails?.gender ? userData.userDetails.gender :''} />
-                    <InputWithLabel labelName={'Next of kin'}
+                    <ReadOnlyInputWithLabel labelName={'Next of kin'}
                                     inputType={'text'}
                                     inputName={'nextOfKinName'}
                                     inputValue={userData.userDetails?.nextOfKinName ? userData.userDetails.nextOfKinName : ''} />
-                    <InputWithLabel labelName={'Bank verification Number (BVN)'}
+                    <ReadOnlyInputWithLabel labelName={'Bank verification Number (BVN)'}
                                     inputType={'number'}
                                     inputName={'bvn'}
                                     inputValue={userData.userDetails?.bvn ? userData.userDetails.bvn :''}  />
-                    <InputWithLabel labelName={'Next of kin Phone number'}
+                    <ReadOnlyInputWithLabel labelName={'Next of kin Phone number'}
                                     inputType={'text'}
                                     inputName={'nextOfKinPhoneNumber'}
                                     inputValue={userData.userDetails?.nextOfKinPhoneNumber ? userData.userDetails.nextOfKinPhoneNumber :''} />
-                    <InputWithLabel labelName={'Next of kin address'}
+                    <ReadOnlyInputWithLabel labelName={'Next of kin address'}
                                     inputType={'text'}
                                     inputName={'nextOfKinAddress'}
                                     inputValue={userData.userDetails?.nextOfKinAddress ? userData.userDetails.nextOfKinAddress : ''} />
@@ -142,16 +142,16 @@ const SingleCustomer = ({setPageTitle}) => {
             <p className="text-red-500 font-bold pb-4">Kindly Note that withdrawal will be made to this account:</p>
               <form className="grid grid-cols-1 md:grid-cols-2  gap-5" >
                   <div className="grid grid-cols-1 gap-8">
-                    <InputWithLabel labelName={'Account Name'}
+                    <ReadOnlyInputWithLabel labelName={'Account Name'}
                                     inputType={'text'}
                                     inputName={'accountName'}
                                     inputValue={userData.userWithdrawalAccount?.accountName? userData.userWithdrawalAccount.accountName:''}
                                     />
-                    <InputWithLabel labelName={'Account Number'}
+                    <ReadOnlyInputWithLabel labelName={'Account Number'}
                                     inputType={'number'}
                                     inputName={'accountNumber'}
                                     inputValue={userData.userWithdrawalAccount?.accountNumber ? userData.userWithdrawalAccount.accountNumber :''}/>
-                    <InputWithLabel labelName={'Bank'}
+                    <ReadOnlyInputWithLabel labelName={'Bank'}
                                     inputType={'text'}
                                     inputName={'bankName'}
                                     inputValue={userData.userWithdrawalAccount?.bankName ? userData.userWithdrawalAccount.bankName : ''}/>  

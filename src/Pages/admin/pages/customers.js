@@ -4,13 +4,14 @@ import Spinner from "../../../Components/spinner";
 import { useSelector } from "react-redux";
 import noCustomerImage from "../../../assets/icons/comingSoon.svg";
 import { useCustomerList } from "../adminLayout/reusableEffect";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const Customer = ({ setPageTitle }) => {
     useEffect(() => {
         setPageTitle("Customers");
         document.title = "Customers | Ardvest";
         document.querySelector('meta[name="description"]').content = "Explore Ardvest Customers List – Your gateway to intelligent administration and personalized wealth expansion.";
     }, [setPageTitle]);
+    const navigate = useNavigate();
     const customerData = useCustomerList();
     return (
         <div className="col-span-10">
@@ -36,7 +37,7 @@ const Customer = ({ setPageTitle }) => {
                                 {
                                     customerData.map((val, key) => {
                                         return (
-                                            <tr className="odd:bg-[#F9F9F9] border-t-8 border-t-white" key={key} onClick="">
+                                            <tr className="odd:bg-[#F9F9F9] border-t-8 border-t-white" key={key} onClick={()=>navigate(`/management/single_customer/${btoa(val.userId)}`)} >
                                                 <td className="px-3 py-4 text-center"><p>{key+1}</p></td>
                                                 <td className="px-6 py-4"><p className="truncate w-[250px]">{val.lastname} {val.firstname}</p></td>
                                                 <td className="px-3 py-4"><p className="truncate w-[200px]">{val.phoneNumber}</p></td>

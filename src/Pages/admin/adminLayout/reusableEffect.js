@@ -37,7 +37,7 @@ export function useCustomerDataSummary(userId){
     const [customerData, setCustomerData] = useState([]);
     const dispatch = useDispatch();
     useEffect(()=>{
-        const getCustomerData = async()=>{
+        const getCustomerData = async ()=>{
             try{
                 const { payload } = await dispatch(customerDataSummary(userId));
                 setCustomerData(payload.result)
@@ -56,7 +56,7 @@ export function useCustomerInvestmentList(userId){
     useEffect(()=>{
         const getCustomerInvestmentData = async()=>{
             try{
-                const { payload } = await dispatch(customerInvestmentList(userId));
+                const {payload } = await dispatch(customerInvestmentList(userId));
                 setInvestmentData(payload.result)
             }
             catch(error){}
