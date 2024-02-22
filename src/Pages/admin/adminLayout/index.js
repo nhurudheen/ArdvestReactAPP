@@ -6,6 +6,7 @@ import { useState } from "react";
 import AdminLogOut from "../pages/logout";
 import { useSelector } from "react-redux";
 import Customer from "../pages/customers";
+import SingleCustomer from "../pages/singleCustomer";
 
 const AdminLayout = () => {
     const adminSession= useSelector((state)=>state.admin.adminSessionData);
@@ -28,6 +29,7 @@ const AdminLayout = () => {
                 <Routes>
                     <Route path="*" element={<AdminDashboard setPageTitle={setPageTitle} />} />
                     <Route path="/customer" element={<Customer setPageTitle={setPageTitle} />}/>
+                    <Route path="/single_customer/:userId" element={<SingleCustomer setPageTitle={setPageTitle} />}/>
                     <Route path="/logout" element={<AdminLogOut/>}/>
                 </Routes>
             </div>

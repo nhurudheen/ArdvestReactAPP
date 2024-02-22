@@ -36,13 +36,13 @@ const Customer = ({ setPageTitle }) => {
                                 {
                                     customerData.map((val, key) => {
                                         return (
-                                            <tr className="odd:bg-[#F9F9F9] border-t-8 border-t-white" key={key}>
+                                            <tr className="odd:bg-[#F9F9F9] border-t-8 border-t-white" key={key} onClick="">
                                                 <td className="px-3 py-4 text-center"><p>{key+1}</p></td>
                                                 <td className="px-6 py-4"><p className="truncate w-[250px]">{val.lastname} {val.firstname}</p></td>
                                                 <td className="px-3 py-4"><p className="truncate w-[200px]">{val.phoneNumber}</p></td>
                                                 <td className="px-3 py-4 "><p className="truncate w-[150px]">{val.homeAddress}</p></td>
                                                 <td className="px-3 py-4"><p className="truncate w-[150px] font-medium">{val.registrationDate}</p></td>
-                                                <td className="px-3 py-4 hover:scale-105"><Link to={''}><span className="truncate w-[50px] bg-primary text-white text-xs font-medium text-center rounded-full py-2 px-3">View</span></Link></td>
+                                                <td className="px-3 py-4 hover:scale-105"><Link to={`/management/single_customer/${btoa(val.userId)}  `}><span className="truncate w-[50px] bg-primary text-white text-xs font-medium text-center rounded-full py-2 px-3">View</span></Link></td>
                                             </tr>
                                         )
                                     })

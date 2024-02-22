@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { adminDashboardSummary, customerDataSummary, customerList } from "../../../hooks/local/adminReducer";
+import { adminDashboardSummary, customerDataSummary, customerInvestmentList, customerList } from "../../../hooks/local/adminReducer";
 
 export function useDashboardSummary (){
     const [dashboardSummary, setDashboardSummary] = useState([]);
@@ -48,18 +48,21 @@ export function useCustomerDataSummary(userId){
     },[dispatch,userId])
     return customerData;
 }
-export function useCustomerLis(){
-    const [listOfCustomer, setListOfCustomer] = useState([]);
+
+
+export function useCustomerInvestmentList(userId){
+    const [investmentData, setInvestmentData] = useState([]);
     const dispatch = useDispatch();
     useEffect(()=>{
-        const getCustomerList = async()=>{
+        const getCustomerInvestmentData = async()=>{
             try{
-                const { payload } = await dispatch(customerList());
-                setListOfCustomer(payload.result)
+                const { payload } = await dispatch(customerInvestmentList(userId));
+                setInvestmentData(payload.result)
             }
             catch(error){}
         }
-        getCustomerList();
-    },[dispatch])
-    return listOfCustomer;
+        getCustomerInvestmentData();
+    }, [dispatch, userId])
+
+    return investmentData;
 }

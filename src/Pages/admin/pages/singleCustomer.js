@@ -1,19 +1,32 @@
 import { useDispatch, useSelector } from "react-redux";
 import NavigationHeader from "../../../Components/navigationHeader";
 import Spinner from "../../../Components/spinner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useCustomerDataSummary, useCustomerInvestmentList } from "../adminLayout/reusableEffect";
+import InputWithLabel from "../../../Components/inputWithLabel";
+import investmentIcon from "../../../assets/icons/investment.svg";
+import { useParams } from "react-router-dom";
 
-const SingleCustomer = () => {
-    const [tabVisibility, setTabVisibility] = useState({ profileTab: true, investmentTab: false, accountTab: false });
-
-    const showTab = (tabId) => {
-        setTabVisibility(() => ({
-            profileTab: tabId === 'profileTab',
-            investmentTab: tabId === 'investmentTab',
-            accountTab: tabId === 'accountTab',
-        }))
-    }
+const SingleCustomer = ({setPageTitle}) => {
+    useEffect(() => {
+      setPageTitle("Customers");
+      document.title = "Customers | Ardvest";
+      document.querySelector('meta[name="description"]').content = "Explore Ardvest Customers List – Your gateway to intelligent administration and personalized wealth expansion.";
+  }, [setPageTitle]);
+  let { userId } = useParams();
+  userId = atob(userId);
+  const [tabVisibility, setTabVisibility] = useState({ profileTab: true, investmentTab: false, accountTab: false });
+  const userData = useCustomerDataSummary(userId);
+  const investmentData = useCustomerInvestmentList(userId);
+  const showTab = (tabId) => {
+      setTabVisibility(() => ({
+          profileTab: tabId === 'profileTab',
+          investmentTab: tabId === 'investmentTab',
+          accountTab: tabId === 'accountTab',
+      }))
+  }
     return ( 
+
         <div className="col-span-10">
             <NavigationHeader title={'Profile Details'}/>
             <Spinner loading={useSelector((state)=>state.admin).loading}/>
@@ -26,54 +39,52 @@ const SingleCustomer = () => {
             <div id="profileTab" className={tabVisibility.profileTab ? '' : 'hidden'}>
                 <div className="grid grid-cols-12 items-center mt-10 mb-16 gap-4">
                     <span className="col-span-4 md:col-span-2 text-xs bg-primary/30 p-1 rounded-full mb-4 font-medium">
-                        <img src={userData.userDetails.passport} alt="" className="rounded-full aspect-square" />
+                        <img src={userData.userDetails?.passport ? userData.userDetails.passport :''} alt="" className="rounded-full aspect-square" />
                     </span>
                     <div className="col-span-8 md:col-span-10 text-primary font-semibold">
-                        <p className="text-xl">{userData.userDetails.firstname}  {userData.userDetails.lastname}</p>
-                        <p className="text-sm">{userData.userDetails.userEmailAddress}</p>
+                        <p className="text-xl">{userData.userDetails?.firstname ? userData.userDetails.firstname :''}  {userData.userDetails?.lastname ? userData.userDetails.lastname : ''}</p>
+                        <p className="text-sm">{userData.userDetails?.userEmailAddress ? userData.userDetails.userEmailAddress: ''}</p>
                     </div>
                 </div>
 
                 <form className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <InputWithLabel labelName={'Legal first name'}
                                     inputName={'firstname'}
-                                    inputValue={updateUserProfile.values.firstname}
+                                    inputValue={userData.userDetails?.firstname ? userData.userDetails.firstname : ''}
                                      inputType={'text'} />
                     <InputWithLabel labelName={'Legal middle name'}
                                     inputType={'text'}
                                     inputName={'middleName'}
-                                    inputValue={updateUserProfile.values.middleName} />
+                                    inputValue={userData.userDetails?.middleName?userData.userDetails.middleName:''} />
                     <InputWithLabel labelName={'Legal last name'}
                                     inputType={'text'}
                                     inputName={'lastname'}
-                                    inputValue={updateUserProfile.values.lastname} />
+                                    inputValue={userData.userDetails?.lastname ? userData.userDetails.lastname : ''} />
                     <InputWithLabel labelName={'Home address'}
                                     inputType={'text'}
                                     inputName={'homeAddress'}
-                                    inputValue={updateUserProfile.values.homeAddress} />
+                                    inputValue={userData.userDetails?.homeAddress ? userData.userDetails.homeAddress : ''} />
                     <InputWithLabel labelName={'Gender'}
                                     inputType={'text'}
                                     inputName={'gender'}
-                                    inputValue={updateUserProfile.values.gender} />
+                                    inputValue={userData.userDetails?.gender ? userData.userDetails.gender :''} />
                     <InputWithLabel labelName={'Next of kin'}
                                     inputType={'text'}
                                     inputName={'nextOfKinName'}
-                                    inputValue={updateUserProfile.values.nextOfKinName} />
+                                    inputValue={userData.userDetails?.nextOfKinName ? userData.userDetails.nextOfKinName : ''} />
                     <InputWithLabel labelName={'Bank verification Number (BVN)'}
                                     inputType={'number'}
                                     inputName={'bvn'}
-                                    inputValue={updateUserProfile.values.bvn} />
+                                    inputValue={userData.userDetails?.bvn ? userData.userDetails.bvn :''}  />
                     <InputWithLabel labelName={'Next of kin Phone number'}
                                     inputType={'text'}
                                     inputName={'nextOfKinPhoneNumber'}
-                                    inputValue={updateUserProfile.values.nextOfKinPhoneNumber} />
+                                    inputValue={userData.userDetails?.nextOfKinPhoneNumber ? userData.userDetails.nextOfKinPhoneNumber :''} />
                     <InputWithLabel labelName={'Next of kin address'}
                                     inputType={'text'}
                                     inputName={'nextOfKinAddress'}
-                                    inputValue={updateUserProfile.values.nextOfKinAddress} />
-                    <div className="items-center pt-5"> 
-                     <Buttons btnText={'Update Account'} btnType={'primary'} type={'button'} />
-                    </div>
+                                    inputValue={userData.userDetails?.nextOfKinAddress ? userData.userDetails.nextOfKinAddress : ''} />
+              
                 </form>
             </div>
 
@@ -81,22 +92,22 @@ const SingleCustomer = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="grid border p-4 rounded-lg gap-4 bg-[#C3FFC6] order-1 md:order-0">
                     <p className="overflow-hidden text-sm ">Portfolio Balance</p>
-                    <p className="text-end text-3xl font-semibold">&#8358;{portfolioBalance}</p>
+                    <p className="text-end text-3xl font-semibold">&#8358;{userData.userBalanceSummary?.portfolioBalance ? userData.userBalanceSummary.portfolioBalance :''}</p>
                   </div>
 
                   <div className="grid border p-4 rounded-lg gap-4 bg-[#FFEFCA] order-0 md:order-1">
                       <p className="overflow-hidden text-sm">Active Investment Balance</p>
-                      <p className="text-end text-3xl font-semibold">&#8358;{investmentBalance}</p>
+                      <p className="text-end text-3xl font-semibold">&#8358;{userData.userBalanceSummary?.investmentBalance ? userData.userBalanceSummary.investmentBalance : ''}</p>
                   </div>
 
                   <div className="grid border p-4 rounded-lg gap-4 odd:bg-[#FFEFCA] even:bg-[#C3FFC6] order-2 md:order-2">
                       <p className="overflow-hidden text-sm">Total Deposit</p>
-                      <p className="text-end text-3xl font-semibold">&#8358;{amountDeposit}</p>
+                      <p className="text-end text-3xl font-semibold">&#8358;{userData.userBalanceSummary?.amountDeposit ? userData.userBalanceSummary.amountDeposit:''}</p>
                   </div>
 
                   <div className="grid border p-4 rounded-lg gap-4  odd:bg-[#FFEFCA] even:bg-[#C3FFC6] order-3 md:order-3">
                       <p className="overflow-hidden text-sm">Total Withdrawal</p>
-                      <p className="text-end text-3xl font-semibold">&#8358;{amountWithdrawal}</p>
+                      <p className="text-end text-3xl font-semibold">&#8358;{userData.userBalanceSummary?.amountWithdrawal ? userData.userBalanceSummary.amountWithdrawal : ''}</p>
                   </div>
               </div>
               <p className="overflow-hidden text-lg font-semibold py-4">Investment</p>
@@ -129,32 +140,22 @@ const SingleCustomer = () => {
 
             <div id="accountTab" className={tabVisibility.accountTab ? '' : 'hidden'}>
             <p className="text-red-500 font-bold pb-4">Kindly Note that withdrawal will be made to this account:</p>
-              <form className="grid grid-cols-1 md:grid-cols-2  gap-5" onSubmit={updateBankAccount.handleSubmit}>
+              <form className="grid grid-cols-1 md:grid-cols-2  gap-5" >
                   <div className="grid grid-cols-1 gap-8">
                     <InputWithLabel labelName={'Account Name'}
                                     inputType={'text'}
                                     inputName={'accountName'}
-                                    inputValue={updateBankAccount.values.accountName}
-                                    inputOnBlur={updateBankAccount.handleBlur}
-                                    inputOnChange={updateBankAccount.handleChange}
-                                    inputError={updateBankAccount.errors.accountName && updateBankAccount.touched.accountName ?  updateBankAccount.errors.accountName : null}
+                                    inputValue={userData.userWithdrawalAccount?.accountName? userData.userWithdrawalAccount.accountName:''}
                                     />
                     <InputWithLabel labelName={'Account Number'}
                                     inputType={'number'}
                                     inputName={'accountNumber'}
-                                    inputValue={updateBankAccount.values.accountNumber}
-                                    inputOnBlur={updateBankAccount.handleBlur}
-                                    inputOnChange={updateBankAccount.handleChange}
-                                    inputError={updateBankAccount.errors.accountNumber && updateBankAccount.touched.accountNumber ?  updateBankAccount.errors.accountNumber : null}/>
+                                    inputValue={userData.userWithdrawalAccount?.accountNumber ? userData.userWithdrawalAccount.accountNumber :''}/>
                     <InputWithLabel labelName={'Bank'}
                                     inputType={'text'}
                                     inputName={'bankName'}
-                                    inputValue={updateBankAccount.values.bankName}
-                                    inputOnBlur={updateBankAccount.handleBlur}
-                                    inputOnChange={updateBankAccount.handleChange}
-                                    inputError={updateBankAccount.errors.bankName && updateBankAccount.touched.bankName ?  updateBankAccount.errors.bankName : null}/>  
-                    <div>
-                    <Buttons btnText={`${updateBankAccount.values.accountName === "" ?'Create ' :' Update '}Withdrawal Account`} btnType={'primary'} type={'submit'}/>                 
+                                    inputValue={userData.userWithdrawalAccount?.bankName ? userData.userWithdrawalAccount.bankName : ''}/>  
+                    <div>              
                     </div> 
                   </div>
             </form>
