@@ -9,7 +9,8 @@ const initialState = {
     error: null,
     isAuthenticated: false,
  ...retrieveFromLocalStorage([
-    "adminSessionData"
+    "adminSessionData",
+    "investmentTypes"
  ])
 }
     
@@ -61,8 +62,19 @@ export const customerInvestmentList = createAsyncThunk(
         return response;
     }
 )
+
+export const listInvestmentType = createAsyncThunk(
+    "admin/LisInvestmentType",
+    async()=>{
+        const apiInvestmentTypeList = await APIService.investmentTypeList();
+        const response = apiInvestmentTypeList.data;
+        saveToLocalStorage("investmentTypes", JSON.stringify(response.result));
+        return response;
+    }
+)
 const logOutSession = () =>{
     sessionStorage.removeItem("adminSessionData");
+    sessionStorage.removeItem("investmentTypes");
 }
 
 export const logout = createAsyncThunk(
@@ -125,12 +137,20 @@ const administrativeSlice = createSlice({
             }
             state.loading = false;
         })
+        .addCase(listInvestmentType.fulfilled,(state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.administrative = action.payload;
+                state.investmentTypes = action.payload.result;
+            }
+            state.loading = false;
+        })
         .addMatcher(isAnyOf(
             auth.pending,
             adminDashboardSummary.pending,
             customerList.pending,
             customerDataSummary.pending,
-            customerInvestmentList.pending
+            customerInvestmentList.pending,
+            listInvestmentType.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -142,7 +162,8 @@ const administrativeSlice = createSlice({
                 adminDashboardSummary.rejected,
                 customerList.rejected,
                 customerDataSummary.rejected,
-                customerInvestmentList.rejected
+                customerInvestmentList.rejected,
+                listInvestmentType.rejected
             ),
             (state,action)=>{
                 state.loading = false;

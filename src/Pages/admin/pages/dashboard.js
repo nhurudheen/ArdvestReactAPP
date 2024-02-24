@@ -28,10 +28,12 @@ const AdminDashboard = ({ setPageTitle }) => {
                             <p className="text-end text-3xl font-semibold">{dashboardData?.totalUser ? dashboardData.totalUser : '0'}</p>
                         </div>
                     </Link>
+                    <Link to={"investment"}>
                     <div className="grid border p-4 rounded-lg gap-8 bg-[#FFEFCA] hover:scale-105">
                         <p className="h-16 overflow-hidden text-sm">Total Number of Investment.</p>
                         <p className="text-end text-3xl font-semibold">{dashboardData?.totalNoOfInvestment ? dashboardData.totalNoOfInvestment : '0'}</p>
                     </div>
+                    </Link>
                     <div className="grid border p-4 rounded-lg gap-8 bg-[#C3FFC6] hover:scale-105">
                         <p className="h-16 overflow-hidden text-sm">Total Number of Customer Investments.</p>
                         <p className="text-end text-3xl font-semibold">{dashboardData?.totalNoOfUserInvestment ? dashboardData.totalNoOfUserInvestment : '0'}</p>

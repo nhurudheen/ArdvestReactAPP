@@ -25,7 +25,7 @@ const AdminSideBar = ({ sideBarVisibility, topBarTitle, closeSideBar }) => {
                         </div>
                     </div>
                 </Link>
-                <Link to={"/investment"} onClick={closeSideBar}>
+                <Link to={"investment"} onClick={closeSideBar}>
                     <div className="pb-2 border-b">
                         <div className={`flex gap-3 items-center ${topBarTitle === 'Investments' ? 'bg-primary/10' : 'hover:bg-primary/10'} p-3 rounded-lg hover:scale-105`}>
                             <img src={investmentIcon} alt="" />
