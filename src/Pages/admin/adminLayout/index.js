@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import Customer from "../pages/customers";
 import SingleCustomer from "../pages/singleCustomer";
 import Investment from "../pages/investments";
+import SingleInvestment from "../pages/singleInvestmentType";
 
 const AdminLayout = () => {
     const adminSession= useSelector((state)=>state.admin.adminSessionData);
@@ -32,6 +33,7 @@ const AdminLayout = () => {
                     <Route path="/customer" element={<Customer setPageTitle={setPageTitle} />}/>
                     <Route path="/investment" element={<Investment setPageTitle={setPageTitle}/>}/>
                     <Route path="/single_customer/:userId" element={<SingleCustomer setPageTitle={setPageTitle} />}/>
+                    <Route path="/single_investment_type/:investmentId/:investmentName" element={<SingleInvestment setPageTitle={setPageTitle} />}/>
                     <Route path="/logout" element={<AdminLogOut/>}/>
                 </Routes>
             </div>

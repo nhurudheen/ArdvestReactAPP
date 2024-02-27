@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { adminDashboardSummary, customerDataSummary, customerInvestmentList, customerList } from "../../../hooks/local/adminReducer";
+import { adminDashboardSummary, customerDataSummary, customerInvestmentList, customerList, deleteInvestmentType, investmentTypesInvestments, listInvestmentType } from "../../../hooks/local/adminReducer";
+import { useNavigate } from "react-router-dom";
 
 export function useDashboardSummary (){
     const [dashboardSummary, setDashboardSummary] = useState([]);
@@ -65,4 +66,38 @@ export function useCustomerInvestmentList(userId){
     }, [dispatch, userId])
 
     return investmentData;
+}
+
+export function useDeleteInvestmentType(investmentId){
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    useEffect(()=>{
+        const deleteInvestmentData = async()=>{
+            try{
+                const { payload } = await dispatch(deleteInvestmentType(investmentId))
+                if(payload.statusCode === "200"){
+                    await dispatch(listInvestmentType());
+                    navigate("/management/investment")
+                }
+            }
+            catch(error){};
+        }
+         deleteInvestmentData();
+    },[dispatch, investmentId, navigate]);  
+}
+
+export function useInvestmentTypeList(investmentId){
+    const [investmentTypeDetails, setInvestmentTypeDetails] = useState([]);
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        const getInvestmentDetails = async()=>{
+            try{
+                const { payload } = await dispatch(investmentTypesInvestments(investmentId));
+                setInvestmentTypeDetails(payload.result)
+            }
+            catch(error){}
+        }
+        getInvestmentDetails();
+    },[dispatch, investmentId]);
+    return investmentTypeDetails;
 }

@@ -10,7 +10,8 @@ import Modal from "../../../Components/modals";
 import InputWithLabel from "../../../Components/inputWithLabel";
 import * as Yup from 'yup';
 import { useFormik } from "formik";
-import { createNewInvestmentType } from "../../../hooks/local/adminReducer";
+import { createNewInvestmentType, listInvestmentType } from "../../../hooks/local/adminReducer";
+import { Link } from "react-router-dom";
 
 const Investment = ({ setPageTitle }) => {
     useEffect(() => {
@@ -22,18 +23,19 @@ const Investment = ({ setPageTitle }) => {
     const investmentTypeList = useSelector((state) => state.admin.investmentTypes);
     const [investmentTypeModal, setInvestmentTypeModal] = useState(false);
     const addNewInvestmentType = useFormik({
-        initialValues : {
-            investmentName : ""
+        initialValues: {
+            investmentName: ""
         },
         validationSchema: Yup.object({
             investmentName: Yup.string().required("Investment Name cannot be empty")
         }),
-        onSubmit: async(values)=>{
-            const {investmentName} = values;
-            let investmentTypeData = {investmentName};
-            const {payload} = await dispatch(createNewInvestmentType(investmentTypeData));
-            if(payload.statusCode === "200"){
-                
+        onSubmit: async (values) => {
+            const { investmentName } = values;
+            let investmentTypeData = { investmentName };
+            const { payload } = await dispatch(createNewInvestmentType(investmentTypeData));
+            if (payload.statusCode === "200") {
+                await dispatch(listInvestmentType());
+                setInvestmentTypeModal(false);
             }
         }
 
@@ -44,7 +46,7 @@ const Investment = ({ setPageTitle }) => {
             <div className="md:flex md:justify-between">
                 <NavigationHeader title={'Available Investments'} />
                 <div className="mt-4 md:mt-0">
-                    <Buttons btnText={'Create New Investment'} btnType={'primary'} onClick={()=>{setInvestmentTypeModal(true)}} />
+                    <Buttons btnText={'Create New Investment'} btnType={'primary'} onClick={() => { setInvestmentTypeModal(true) }} />
                 </div>
             </div>
             {
@@ -53,13 +55,15 @@ const Investment = ({ setPageTitle }) => {
                         <div className="grid gap-4 mt-12 md:grid-cols-2">
                             {investmentTypeList.map((val, key) => {
                                 return (
+                                    <Link to={`/management/single_investment_type/${btoa(val.investmentTypeId)}/${btoa(val.investmentName)}  `}>
                                         <div className="hover:bg-primary/20 bg-[#F5F5F5] py-4 px-4 md:px-8 rounded-lg flex gap-4 items-center" key={key}>
-                                            <img src={investmentIcon} alt="" className="aspect-ratio w-8 h-8"/>
+                                            <img src={investmentIcon} alt="" className="aspect-ratio w-8 h-8" />
                                             <div className="flex justify-between w-full items-center">
                                                 <p className="truncate overflow-hidden font-semibold text-md">{val.investmentName}</p>
-                                                <img src={arrowIcon} alt="" className="h-3"/>
+                                                <img src={arrowIcon} alt="" className="h-3" />
                                             </div>
                                         </div>
+                                    </Link>
                                 )
                             })}
                         </div>
@@ -75,18 +79,18 @@ const Investment = ({ setPageTitle }) => {
                     )
             }
 
-            <Modal isVisible={investmentTypeModal} onClose={()=>{setInvestmentTypeModal(false)}}>
-            <p className="text-xl text-primary font-medium">Complete the form to create a new Investment Type</p>
-            <form className="grid gap-6 mt-4" onSubmit={addNewInvestmentType.handleSubmit}>
-                <InputWithLabel labelName={'Investment Name'}
-                                inputType={'text'}
-                                inputName={'investmentName'}
-                                inputValue={addNewInvestmentType.values.investmentName}
-                                inputOnBlur={addNewInvestmentType.handleBlur}
-                                inputOnChange={addNewInvestmentType.handleChange}
-                                inputError={addNewInvestmentType.errors.investmentName && addNewInvestmentType.touched.investmentName ? addNewInvestmentType.errors.investmentName : null}/>
-                <Buttons btnText={'Continue'} btnType={'primary'} type={'submit'} />
-            </form>
+            <Modal isVisible={investmentTypeModal} onClose={() => { setInvestmentTypeModal(false) }}>
+                <p className="text-xl text-primary font-medium">Complete the form to create a new Investment Type</p>
+                <form className="grid gap-6 mt-4" onSubmit={addNewInvestmentType.handleSubmit}>
+                    <InputWithLabel labelName={'Investment Name'}
+                        inputType={'text'}
+                        inputName={'investmentName'}
+                        inputValue={addNewInvestmentType.values.investmentName}
+                        inputOnBlur={addNewInvestmentType.handleBlur}
+                        inputOnChange={addNewInvestmentType.handleChange}
+                        inputError={addNewInvestmentType.errors.investmentName && addNewInvestmentType.touched.investmentName ? addNewInvestmentType.errors.investmentName : null} />
+                    <Buttons btnText={'Continue'} btnType={'primary'} type={'submit'} />
+                </form>
             </Modal>
         </div>
     );

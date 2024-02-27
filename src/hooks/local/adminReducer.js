@@ -82,6 +82,22 @@ export const createNewInvestmentType = createAsyncThunk(
     }
 )
 
+export const deleteInvestmentType = createAsyncThunk(
+    "admin/deleteInvestmentType",
+    async(data)=>{
+        const apiDeleteInvestmentType = await APIService.deleteInvestmentType(data);
+        const response = apiDeleteInvestmentType.data;
+        return response;
+    }
+)
+export const investmentTypesInvestments = createAsyncThunk(
+    "admin/InvestmentTypesInvestments",
+    async(investmentTypeId)=>{
+        const apiGetInvestmentTypes = await APIService.investmentTypeDetails(investmentTypeId);
+        const response = apiGetInvestmentTypes.data;
+        return response;
+    }
+)
 const logOutSession = () =>{
     sessionStorage.removeItem("adminSessionData");
     sessionStorage.removeItem("investmentTypes");
@@ -165,6 +181,23 @@ const administrativeSlice = createSlice({
             }
             state.loading =false;
         })
+        .addCase(deleteInvestmentType.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.administrative = action.payload;
+                showSuccessToastMessage(action.payload.message);
+            }
+            else{
+                state.error = action.payload.message;
+                showErrorToastMessage(action.payload.message);
+            }
+            state.loading =false;
+        })
+        .addCase(investmentTypesInvestments.fulfilled,(state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.administrative = action.payload;
+            }
+            state.loading = false;
+        })
         .addMatcher(isAnyOf(
             auth.pending,
             adminDashboardSummary.pending,
@@ -172,7 +205,9 @@ const administrativeSlice = createSlice({
             customerDataSummary.pending,
             customerInvestmentList.pending,
             listInvestmentType.pending,
-            createNewInvestmentType.pending
+            createNewInvestmentType.pending,
+            deleteInvestmentType.pending,
+            investmentTypesInvestments.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -186,7 +221,9 @@ const administrativeSlice = createSlice({
                 customerDataSummary.rejected,
                 customerInvestmentList.rejected,
                 listInvestmentType.rejected,
-                createNewInvestmentType.rejected
+                createNewInvestmentType.rejected,
+                deleteInvestmentType.rejected,
+                investmentTypesInvestments.rejected
             ),
             (state,action)=>{
                 state.loading = false;

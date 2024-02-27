@@ -277,4 +277,15 @@ export class APIService {
             throw (error);
         }
     }
+
+    static async deleteInvestmentType(investmentTypeId){
+        try{
+            return APIClient.get(`delete_investment_type?investmentTypeId='${investmentTypeId}`)
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
+    
 }
