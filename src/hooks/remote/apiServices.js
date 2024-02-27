@@ -280,7 +280,17 @@ export class APIService {
 
     static async deleteInvestmentType(investmentTypeId){
         try{
-            return APIClient.get(`delete_investment_type?investmentTypeId='${investmentTypeId}`)
+            return APIClient.get(`/delete_investment_type?investmentTypeId=${investmentTypeId}`)
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
+
+    static async investmentTypeInvestor(investmentTypeId){
+        try{
+            return APIClient.get(`/investment_type_investment_booked_list?investmentTypeId=${investmentTypeId}`)
         }
         catch(error){
             APIService.extractError(error);

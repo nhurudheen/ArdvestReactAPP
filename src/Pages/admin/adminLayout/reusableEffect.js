@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { adminDashboardSummary, customerDataSummary, customerInvestmentList, customerList, deleteInvestmentType, investmentTypesInvestments, listInvestmentType } from "../../../hooks/local/adminReducer";
+import { adminDashboardSummary, customerDataSummary, customerInvestmentList, customerList, deleteInvestmentType, investmentTypesInvestments, investmentTypesInvestors, listInvestmentType } from "../../../hooks/local/adminReducer";
 import { useNavigate } from "react-router-dom";
 
 export function useDashboardSummary (){
@@ -101,3 +101,20 @@ export function useInvestmentTypeList(investmentId){
     },[dispatch, investmentId]);
     return investmentTypeDetails;
 }
+
+export function useInvestmentTypeInvestors(investmentId){
+    const [investors, setInvestors] = useState([]);
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        const getInvestors = async()=>{
+            try{
+                const { payload } = await dispatch(investmentTypesInvestors(investmentId));
+                setInvestors(payload.result)
+            }
+            catch(error){}
+        }
+        getInvestors();
+    },[dispatch, investmentId]);
+    return investors;
+}
+

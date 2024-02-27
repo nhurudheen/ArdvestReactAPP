@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import NavigationHeader from "../../../Components/navigationHeader";
 import Modal from "../../../Components/modals";
-import { useInvestmentTypeList } from "../adminLayout/reusableEffect";
+import { useInvestmentTypeInvestors, useInvestmentTypeList } from "../adminLayout/reusableEffect";
 import comingSoon from "../../../assets/icons/comingSoon.svg";
+import searchIcon from "../../../assets/icons/search.svg";
 import Spinner from "../../../Components/spinner";
 import { useSelector } from "react-redux";
+import { SearchTable, filterTable } from "../../../Utils/utils";
 const SingleInvestmentType = ({ setPageTitle }) => {
   useEffect(() => {
     setPageTitle("Investments");
@@ -23,6 +25,8 @@ const SingleInvestmentType = ({ setPageTitle }) => {
     }))
   }
   const listInvestmentType = useInvestmentTypeList(investmentId);
+  const investorList = useInvestmentTypeInvestors(investmentId);
+  console.log(investorList);
   const [deleteInvestmentModal, setDeleteInvestmentModal] = useState(false);
   const [createInvestmentModal, setCreateInvestmentModal] = useState(false);
   const [selectedInvestmentType, setSelectedInvestmentType] = useState(null);
@@ -69,8 +73,8 @@ const SingleInvestmentType = ({ setPageTitle }) => {
               }
               {
                 selectedInvestmentType && (
-                  <Modal isVisible={selectedInvestmentType !== null} onClose={() => selectedInvestmentType(null)}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Modal isVisible={selectedInvestmentType !== null} onClose={() => setSelectedInvestmentType(null)}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                       <div className="rounded-lg overflow-hidden">
                         <img src={selectedInvestmentType.investmentImage} alt="" className="h" />
                       </div>
@@ -132,7 +136,78 @@ const SingleInvestmentType = ({ setPageTitle }) => {
       </div>
 
       <div id="investorsTab" className={tabVisibility.investorsTab ? '' : 'hidden'}>
-        investorsTab
+        {investorList.length > 0
+          ? (
+            <div className="bg-white px-4 md:px-8 rounded-lg">
+            <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center">
+            <div className="flex items-center gap-3 mb-2 col-span-2">
+                  <span className="text-lg text-primary font-semibold">All Investors</span>
+              </div>
+              <div className="flex items-center justify-center bg-[#f8f8f8] border rounded w-full col-span-1">
+                <div className="px-3">
+                  <img src={searchIcon} alt=""/>
+                </div>
+                <input type="search" id="searchInput" onInput={SearchTable} className="w-full px-3 py-4 bg-[#f8f8f8] text-sm active:outline-none focus:outline-none placeholder:text-xs" placeholder="Search Investors..."/>
+              </div>
+            </div>
+
+            <div className="mt-4 flex items-center gap-2">
+                <label for="statusFilter" className="block text-sm font-medium">Showing :</label>
+                <select id="statusFilter" onChange={filterTable} className="text-sm focus:outline-none focus:border-none ">
+                    <option value="All">All Investors</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                  </select>
+              </div>
+              
+            <div className="overflow-x-scroll mt-10"> 
+              <table className="min-w-full rounded-md overflow-hidden" id="dataTable">
+                <thead className="bg-[#EBFFEB]">
+                  <tr>
+                    <th>S/N</th>
+                    <th className="px-6 py-4 text-start"><p className="truncate w-[250px]">Investor Name</p></th>
+                    <th className="px-3 py-4 text-start"><p className="truncate w-[200px]">Investment</p></th>
+                    <th className="px-3 py-4 text-start"><p className="truncate w-[150px]">Amount invested</p></th>
+                    <th className="px-3 py-4 text-start"><p className="truncate w-[150px]">Date invested</p></th>
+                    <th className="px-3 py-4 text-start"><p className="truncate w-[150px]">Status</p></th>
+                    <th className="px-3 py-4 text-start"><p className="truncate w-[50px]">ROI</p></th>
+                    <th className="px-3 py-4 text-start"><p className="truncate w-[150px]">Investment End Date</p></th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {investorList.map((val,key)=>{
+                    return (
+                      <tr className="odd:bg-[#F9F9F9] border-t-8 border-t-white" key={key}>
+                      <td className="px-4">{key+1}</td>
+                      <td className="px-6 py-4"><p className="truncate w-[250px]">{val.userData.firstName}  {val.userData.lastname}</p></td>
+                      <td className="px-3 py-4"><p className="truncate w-[200px]">{val.investmentName}</p></td>
+                      <td className="px-3 py-4"><p className="truncate w-[150px]">&#8358;{val.amount}</p></td>
+                      <td className="px-3 py-4"><p className="truncate w-[150px]">{val.dateBooked}</p></td>
+                      <td className="px-3 py-4"><p className={`truncate w-[150px] ${val.status === 'Active' ? 'text-primary/50' : 'text-red-500'} font-medium`}>{val.status}</p></td>
+                      <td className="px-3 py-4">{val.roi} %</td>
+                      <td className="px-3 py-4"><p className="truncate w-[150px]">{val.investmentEndDate}</p></td>
+                    </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+      
+
+          </div>
+
+          )
+          :
+          (
+            <div className="grid gap-4 my-16 ">
+              <div className="w-full grid justify-center">
+                <img src={comingSoon} alt="" />
+              </div>
+              <p className="text-center text-lg font-semibold text-primary">No User has booked for {investmentName} Investment</p>
+            </div>
+          )
+        }
       </div>
 
       <Modal isVisible={deleteInvestmentModal} onClose={() => setDeleteInvestmentModal(false)}>

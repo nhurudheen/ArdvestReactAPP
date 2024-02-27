@@ -158,3 +158,18 @@ export async function copyToClipboard(userContent) {
       }
   }
   
+  export function filterTable() {
+    const statusFilter = document.getElementById('statusFilter').value;
+    const tableRows = document.getElementById('dataTable').querySelectorAll('tbody tr');
+  
+    for (const row of tableRows) {
+      const statusCell = row.querySelector('td:nth-child(6)');
+      const status = statusCell.textContent.trim();
+  
+      if (statusFilter === 'All' || status === statusFilter) {
+        row.style.display = 'table-row';
+      } else {
+        row.style.display = 'none';
+      }
+    }
+  }

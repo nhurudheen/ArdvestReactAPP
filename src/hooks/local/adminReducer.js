@@ -98,6 +98,15 @@ export const investmentTypesInvestments = createAsyncThunk(
         return response;
     }
 )
+
+export const investmentTypesInvestors = createAsyncThunk(
+    "admin/InvestmentTypesInvestors",
+    async(investmentTypeId)=>{
+        const apiGetInvestmentInvestor = await APIService.investmentTypeInvestor(investmentTypeId);
+        const response = apiGetInvestmentInvestor.data;
+        return response;
+    }
+)
 const logOutSession = () =>{
     sessionStorage.removeItem("adminSessionData");
     sessionStorage.removeItem("investmentTypes");
@@ -198,6 +207,12 @@ const administrativeSlice = createSlice({
             }
             state.loading = false;
         })
+        .addCase(investmentTypesInvestors.fulfilled, (state, action)=>{
+            if(action.payload.statusCode === "200"){
+                state.administrative = action.payload;
+            }
+            state.loading = false;
+        })
         .addMatcher(isAnyOf(
             auth.pending,
             adminDashboardSummary.pending,
@@ -207,7 +222,8 @@ const administrativeSlice = createSlice({
             listInvestmentType.pending,
             createNewInvestmentType.pending,
             deleteInvestmentType.pending,
-            investmentTypesInvestments.pending
+            investmentTypesInvestments.pending,
+            investmentTypesInvestors.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -223,7 +239,8 @@ const administrativeSlice = createSlice({
                 listInvestmentType.rejected,
                 createNewInvestmentType.rejected,
                 deleteInvestmentType.rejected,
-                investmentTypesInvestments.rejected
+                investmentTypesInvestments.rejected,
+                investmentTypesInvestors.rejected
             ),
             (state,action)=>{
                 state.loading = false;
