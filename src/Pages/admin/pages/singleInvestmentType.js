@@ -46,9 +46,7 @@ const SingleInvestmentType = ({ setPageTitle }) => {
             <div id="investmentTab" className={tabVisibility.investmentTab ? '' : 'hidden'}>
                 {listInvestmentType.length > 0 
                 ?(
-                    <div>
-
-                    </div>
+                    l
 
                 )
                 :(
