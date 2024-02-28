@@ -326,4 +326,13 @@ export class APIService {
             throw (error);
         }
     }
+    static async changeDepositBankAccount(data){
+        try{
+            return APIClient.post("update_bank_account", data);
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
 }

@@ -12,7 +12,9 @@ import DigitInput from "../../../Components/digitInput";
 import InputWithLabel from "../../../Components/inputWithLabel";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { updateAdminPassword, updateAdminTransactionPin } from "../../../hooks/local/adminReducer";
+import { updateAdminPassword, updateAdminTransactionPin, updateDepositBankAccount } from "../../../hooks/local/adminReducer";
+import { useGetBankDetails } from "../adminLayout/reusableEffect";
+import { useNavigate } from "react-router-dom";
 const Settings = ({ setPageTitle }) => {
     useEffect(() => {
         setPageTitle("Settings");
@@ -20,6 +22,8 @@ const Settings = ({ setPageTitle }) => {
         document.querySelector('meta[name="description"]').content = "Your access point to intelligent administration and tailored wealth expansion.";
     }, [setPageTitle]);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const bankAccountData = useGetBankDetails();
     const emailAddress = useSelector((state)=>state.admin.adminSessionData).emailAddress;
     const [changePasswordModal, setChangePasswordModal] = useState(false);
     const [changePinModal, setChangePinModal] = useState(false);
@@ -62,6 +66,31 @@ const Settings = ({ setPageTitle }) => {
             const {payload} = await dispatch(updateAdminTransactionPin(transactionPinData));
             if(payload.statusCode === "200"){
                 setChangePinModal(false);
+            }
+        },
+    })
+    const depositBankAccountForm = useFormik({
+        enableReinitialize: true,
+        initialValues: {
+            accountName: bankAccountData?.accountName ? bankAccountData.accountName: '',
+            accountNumber: bankAccountData?.accountNumber ? bankAccountData.accountNumber: '',
+            bankName: bankAccountData?.bankName ? bankAccountData.bankName: '',
+            password:""
+        },
+     validationSchema: Yup.object({
+        accountName: Yup.string().required("Account Name cannot be empty"),
+        accountNumber: Yup.number().required("Account Number cannot be empty"),
+        bankName: Yup.string().required("Bank Name cannot be empty"),
+        password: Yup.string().required("Kindly enter Administrative Password"),
+     }),
+        onSubmit: async (values, {resetForm}) => {
+            const {accountName, accountNumber, bankName, password} = values;
+            let bankData = {emailAddress, accountName, accountNumber, bankName, password};
+            const {payload} = await dispatch(updateDepositBankAccount(bankData));
+            if(payload.statusCode === "200"){
+                resetForm();
+                setChangeBankAccountModal(false);
+            //    window.location.reload();
             }
         },
     })
@@ -125,30 +154,48 @@ const Settings = ({ setPageTitle }) => {
                                     inputValue={changeTransactionPinForm.values.password}
                                     inputError={changeTransactionPinForm.touched.password && changeTransactionPinForm.errors.password ? changeTransactionPinForm.errors.password : null}/>
                     <DigitInput labelName={'New Transaction Pin (4 digit Pin)'}
-                        maxLength={'4'}
-                        inputType={'password'}  
-                        inputName={'transactionPin'}
-                        inputOnBlur={changeTransactionPinForm.handleBlur}
-                        inputOnChange={changeTransactionPinForm.handleChange}
-                        inputValue={changeTransactionPinForm.values.transactionPin}
-                        inputError={changeTransactionPinForm.touched.transactionPin && changeTransactionPinForm.errors.transactionPin ? changeTransactionPinForm.errors.transactionPin : null}/>
+                                maxLength={'4'}
+                                inputType={'password'}  
+                                inputName={'transactionPin'}
+                                inputOnBlur={changeTransactionPinForm.handleBlur}
+                                inputOnChange={changeTransactionPinForm.handleChange}
+                                inputValue={changeTransactionPinForm.values.transactionPin}
+                                inputError={changeTransactionPinForm.touched.transactionPin && changeTransactionPinForm.errors.transactionPin ? changeTransactionPinForm.errors.transactionPin : null}/>
                     <Buttons btnText={'Continue'} btnType={'primary'} type={'submit'} />
                 </form>
             </Modal>
             <Modal isVisible={changeBankAccountModal} onClose={() => setChangeBankAccountModal(false)}>
                 <p className="text-xl text-primary font-medium">Complete the form to Change Deposit Bank Details</p>
-               <div className="grid gap-6 mt-4">
+               <form className="grid gap-6 mt-4" onSubmit={depositBankAccountForm.handleSubmit}>
                <InputWithLabel labelName={'Account Name'}
-                    inputType={'text'} />
-                <DigitInput labelName={'Account Number'}
-                    maxLength={'11'}
-                    inputType={'text'} />
+                               inputType={'text'} 
+                               inputName={'accountName'}
+                               inputOnBlur={depositBankAccountForm.handleBlur}
+                               inputOnChange={depositBankAccountForm.handleChange}
+                               inputValue={depositBankAccountForm.values.accountName}
+                               inputError={depositBankAccountForm.touched.accountName && depositBankAccountForm.errors.accountName ? depositBankAccountForm.errors.accountName : null}/>
+                <InputWithLabel labelName={'Account Number'}
+                                inputType={'text'}
+                                inputName={'accountNumber'}
+                                inputOnBlur={depositBankAccountForm.handleBlur}
+                                inputOnChange={depositBankAccountForm.handleChange}
+                                inputValue={depositBankAccountForm.values.accountNumber}
+                                inputError={depositBankAccountForm.touched.accountNumber && depositBankAccountForm.errors.accountNumber ? depositBankAccountForm.errors.accountNumber : null}/>
                 <InputWithLabel labelName={'Bank Name'}
-                    inputType={'text'} />
+                                inputType={'text'}
+                                inputName={'bankName'}
+                                inputOnBlur={depositBankAccountForm.handleBlur}
+                                inputOnChange={depositBankAccountForm.handleChange}
+                                inputValue={depositBankAccountForm.values.bankName}
+                                inputError={depositBankAccountForm.touched.bankName && depositBankAccountForm.errors.bankName ? depositBankAccountForm.errors.bankName : null}/>
                 <PasswordInput labelName={'Admin Password'}
-                />
+                               inputName={'password'}
+                               inputOnBlur={depositBankAccountForm.handleBlur}
+                               inputOnChange={depositBankAccountForm.handleChange}
+                               inputValue={depositBankAccountForm.values.password}
+                               inputError={depositBankAccountForm.touched.password && depositBankAccountForm.errors.password ? depositBankAccountForm.errors.password : null}/>
                 <Buttons btnText={'Continue'} btnType={'primary'} type={'submit'} />
-               </div>
+               </form>
             </Modal>
 
         </div>

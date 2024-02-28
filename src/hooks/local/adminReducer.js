@@ -132,6 +132,22 @@ export const updateAdminTransactionPin = createAsyncThunk(
         return response;
     }
 )
+export const bankAccount = createAsyncThunk(
+    "admin/BankAccountForDeposit",
+    async()=>{
+        const apiBankAccount = await APIService.bankAccountDetails();
+        const response = await apiBankAccount.data;
+        return response;
+    }
+)
+export const updateDepositBankAccount = createAsyncThunk(
+    "admin/updateDepositBankAccount",
+    async(data)=>{
+        const apiChangeBankDeposit = await APIService.changeDepositBankAccount(data);
+        const response = apiChangeBankDeposit.data;
+        return response;
+    }
+)
 const logOutSession = () =>{
     sessionStorage.removeItem("adminSessionData");
     sessionStorage.removeItem("investmentTypes");
@@ -271,6 +287,23 @@ const administrativeSlice = createSlice({
             }
             state.loading = false;
         })
+        .addCase(bankAccount.fulfilled, (state, action)=>{
+            if(action.payload.statusCode === "200"){
+                state.administrative = action.payload;
+            }
+            state.loading = false;
+        })
+        .addCase(updateDepositBankAccount.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.administrative = action.payload;
+                showSuccessToastMessage(action.payload.message);
+            }
+            else{
+                state.error = action.payload.message;
+                showErrorToastMessage(action.payload.message);
+            }
+            state.loading = false;
+        })
         .addMatcher(isAnyOf(
             auth.pending,
             adminDashboardSummary.pending,
@@ -284,7 +317,9 @@ const administrativeSlice = createSlice({
             investmentTypesInvestors.pending,
             addNewInvestment.pending,
             updateAdminPassword.pending,
-            updateAdminTransactionPin.pending
+            updateAdminTransactionPin.pending,
+            bankAccount.pending,
+            updateDepositBankAccount.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -304,7 +339,9 @@ const administrativeSlice = createSlice({
                 investmentTypesInvestors.rejected,
                 addNewInvestment.rejected,
                 updateAdminPassword.rejected,
-                updateAdminTransactionPin.rejected
+                updateAdminTransactionPin.rejected,
+                bankAccount.rejected,
+                updateDepositBankAccount.rejected
             ),
             (state,action)=>{
                 state.loading = false;
