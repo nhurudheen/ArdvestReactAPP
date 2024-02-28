@@ -317,4 +317,13 @@ export class APIService {
             throw (error);
         }
     }
+    static async changeAdminTransactionPin(data){
+        try{
+            return APIClient.post("update_admin_pin", data);
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
 }

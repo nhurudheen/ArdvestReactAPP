@@ -124,6 +124,14 @@ export const updateAdminPassword= createAsyncThunk(
         return response;
     }
 )
+export const updateAdminTransactionPin = createAsyncThunk(
+    "admin/updateAdminTransactionPin",
+    async(data)=>{
+        const apiChangeAdminTransactionPin = await APIService.changeAdminTransactionPin(data);
+        const response = apiChangeAdminTransactionPin.data;
+        return response;
+    }
+)
 const logOutSession = () =>{
     sessionStorage.removeItem("adminSessionData");
     sessionStorage.removeItem("investmentTypes");
@@ -252,6 +260,17 @@ const administrativeSlice = createSlice({
             }
             state.loading = false;
         })
+        .addCase(updateAdminTransactionPin.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.administrative = action.payload;
+                showSuccessToastMessage(action.payload.message);
+            }
+            else{
+                state.error = action.payload.message;
+                showErrorToastMessage(action.payload.message);
+            }
+            state.loading = false;
+        })
         .addMatcher(isAnyOf(
             auth.pending,
             adminDashboardSummary.pending,
@@ -264,7 +283,8 @@ const administrativeSlice = createSlice({
             investmentTypesInvestments.pending,
             investmentTypesInvestors.pending,
             addNewInvestment.pending,
-            updateAdminPassword.pending
+            updateAdminPassword.pending,
+            updateAdminTransactionPin.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -283,7 +303,8 @@ const administrativeSlice = createSlice({
                 investmentTypesInvestments.rejected,
                 investmentTypesInvestors.rejected,
                 addNewInvestment.rejected,
-                updateAdminPassword.rejected
+                updateAdminPassword.rejected,
+                updateAdminTransactionPin.rejected
             ),
             (state,action)=>{
                 state.loading = false;

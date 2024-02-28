@@ -12,7 +12,7 @@ import DigitInput from "../../../Components/digitInput";
 import InputWithLabel from "../../../Components/inputWithLabel";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { updateAdminPassword } from "../../../hooks/local/adminReducer";
+import { updateAdminPassword, updateAdminTransactionPin } from "../../../hooks/local/adminReducer";
 const Settings = ({ setPageTitle }) => {
     useEffect(() => {
         setPageTitle("Settings");
@@ -44,6 +44,24 @@ const Settings = ({ setPageTitle }) => {
             const {payload} = await dispatch(updateAdminPassword(passwordData));
             if(payload.statusCode === "200"){
                 setChangePasswordModal(false);
+            }
+        },
+    })
+    const changeTransactionPinForm = useFormik({
+        initialValues: {
+            password: "",
+            transactionPin: ""
+        },
+     validationSchema: Yup.object({
+        password: Yup.string().required("Admin Password cannot be empty"),
+        transactionPin: Yup.string().required("Transaction Pin cannot be empty")
+     }),
+        onSubmit: async (values) => {
+            const {password, transactionPin} = values;
+            let transactionPinData = {emailAddress, password, transactionPin};
+            const {payload} = await dispatch(updateAdminTransactionPin(transactionPinData));
+            if(payload.statusCode === "200"){
+                setChangePinModal(false);
             }
         },
     })
@@ -99,14 +117,23 @@ const Settings = ({ setPageTitle }) => {
             </Modal>
             <Modal isVisible={changePinModal} onClose={() => setChangePinModal(false)}>
                 <p className="text-xl text-primary font-medium">Complete the form to Change Admin Transaction Pin</p>
-                <div className="grid gap-6 mt-4">
-                    <PasswordInput labelName={'Admin Password'}
-                    />
+                <form className="grid gap-6 mt-4" onSubmit={changeTransactionPinForm.handleSubmit}>
+                    <PasswordInput labelName={'Admin Password'}  
+                                    inputName={'password'}
+                                    inputOnBlur={changeTransactionPinForm.handleBlur}
+                                    inputOnChange={changeTransactionPinForm.handleChange}
+                                    inputValue={changeTransactionPinForm.values.password}
+                                    inputError={changeTransactionPinForm.touched.password && changeTransactionPinForm.errors.password ? changeTransactionPinForm.errors.password : null}/>
                     <DigitInput labelName={'New Transaction Pin (4 digit Pin)'}
                         maxLength={'4'}
-                        inputType={'password'} />
+                        inputType={'password'}  
+                        inputName={'transactionPin'}
+                        inputOnBlur={changeTransactionPinForm.handleBlur}
+                        inputOnChange={changeTransactionPinForm.handleChange}
+                        inputValue={changeTransactionPinForm.values.transactionPin}
+                        inputError={changeTransactionPinForm.touched.transactionPin && changeTransactionPinForm.errors.transactionPin ? changeTransactionPinForm.errors.transactionPin : null}/>
                     <Buttons btnText={'Continue'} btnType={'primary'} type={'submit'} />
-                </div>
+                </form>
             </Modal>
             <Modal isVisible={changeBankAccountModal} onClose={() => setChangeBankAccountModal(false)}>
                 <p className="text-xl text-primary font-medium">Complete the form to Change Deposit Bank Details</p>
