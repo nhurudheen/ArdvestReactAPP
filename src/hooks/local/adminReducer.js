@@ -107,6 +107,14 @@ export const investmentTypesInvestors = createAsyncThunk(
         return response;
     }
 )
+export const addInvestmentTypes= createAsyncThunk(
+    "admin/addInvestmentType",
+    async(data)=>{
+        const apiGetInvestmentInvestor = await APIService.investmentTypeInvestor(investmentTypeId);
+        const response = apiGetInvestmentInvestor.data;
+        return response;
+    }
+)
 const logOutSession = () =>{
     sessionStorage.removeItem("adminSessionData");
     sessionStorage.removeItem("investmentTypes");

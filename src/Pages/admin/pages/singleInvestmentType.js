@@ -1,14 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import NavigationHeader from "../../../Components/navigationHeader";
 import Modal from "../../../Components/modals";
-import { useInvestmentTypeInvestors, useInvestmentTypeList } from "../adminLayout/reusableEffect";
+import { useDeleteInvestmentType, useInvestmentTypeInvestors, useInvestmentTypeList } from "../adminLayout/reusableEffect";
 import comingSoon from "../../../assets/icons/comingSoon.svg";
 import searchIcon from "../../../assets/icons/search.svg";
 import Spinner from "../../../Components/spinner";
 import { useSelector } from "react-redux";
 import { SearchTable, filterTable } from "../../../Utils/utils";
+import InputWithLabel from "../../../Components/inputWithLabel";
+import CurrencyInput from "../../../Components/currencyInput";
+import Buttons from "../../../Components/buttons";
+import { useFormik } from "formik";
+import * as Yup from 'yup';
+
 const SingleInvestmentType = ({ setPageTitle }) => {
+  const fileInputRef = useRef(null);
   useEffect(() => {
     setPageTitle("Investments");
     document.title = "Investments | Ardvest";
@@ -24,13 +31,62 @@ const SingleInvestmentType = ({ setPageTitle }) => {
       investorsTab: tabId === 'investorsTab',
     }))
   }
+
+  const deleteInvestmentType = useDeleteInvestmentType(); // Use the hook here
+  const handleDeleteInvestment = async () => {
+    await deleteInvestmentType(investmentId);
+  };
   const listInvestmentType = useInvestmentTypeList(investmentId);
   const investorList = useInvestmentTypeInvestors(investmentId);
-  console.log(investorList);
   const [deleteInvestmentModal, setDeleteInvestmentModal] = useState(false);
   const [createInvestmentModal, setCreateInvestmentModal] = useState(false);
   const [selectedInvestmentType, setSelectedInvestmentType] = useState(null);
-
+  const [investmentPicture, setInvestmentPicture] = useState(null);
+  const [selectedFileError, setSelectedFileError] = useState(false);
+  const handleInvestmentPictureUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setInvestmentPicture(file);
+      setSelectedFileError(false);
+    }
+    else {
+      e.target.value = null;
+      setSelectedFileError(true);
+    }
+  }
+  const createInvestmentForm = useFormik({
+    initialValues : {
+      maximumInvestment: "",
+      minimumInvestment: "",
+      totalInvestment: "",
+      roiPercentage:"",
+      endDate: "",
+      startDate: "",
+      investmentName : "",
+      description : "",
+    },
+    validationSchema:  Yup.object({
+      maximumInvestment: Yup.string().required("Maximum Investment cannot be empty"),
+      minimumInvestment: Yup.string().required("Minimum Investment cannot be empty"),
+      totalInvestment: Yup.string().required("Total Investment cannot be empty"),
+      roiPercentage: Yup.string().required("ROI Percentage cannot be empty"),
+      endDate: Yup.string().required("End Date cannot be empty"),
+      startDate: Yup.string().required("Start Date cannot be empty"),
+      investmentName: Yup.string().required("Investment Name cannot be empty"),
+      description: Yup.string().required("Description cannot be empty")
+    }),
+    onSubmit: async (values,{resetForm}) => {
+      if(!investmentPicture){
+        setSelectedFileError(true);
+        return;
+      }
+        const investmentImage =  investmentPicture;
+        const investmentTypeId =  investmentId;
+        const { maximumInvestment, minimumInvestment, totalInvestment, roiPercentage, endDate, startDate,investmentName,description} = values;
+        let investmentData = {investmentTypeId, maximumInvestment, minimumInvestment, totalInvestment, roiPercentage,endDate, startDate,investmentName,description,investmentImage};
+        console.log(investmentData);
+    }
+  })
   return (
     <div className="col-span-10">
       <Spinner loading={useSelector((state) => state.admin).loading} />
@@ -38,7 +94,7 @@ const SingleInvestmentType = ({ setPageTitle }) => {
         <NavigationHeader title={investmentName + " Investment"} />
         <div className="mt-4 md:mt-0 d-grid">
           <button className="bg-red-500 text-white rounded px-6 py-3 mb-4 md:mb-0 md:mx-4 hover:bg-red-500/50 hover:text-black" onClick={() => setDeleteInvestmentModal(true)}>Delete {investmentName} Investment</button>
-          <button className="bg-primary text-white rounded px-6 py-3 hover:bg-primary/20 hover:text-primary">Add New {investmentName} Investment</button>
+          <button className="bg-primary text-white rounded px-6 py-3 hover:bg-primary/20 hover:text-primary" onClick={()=>setCreateInvestmentModal(true)}>Add New {investmentName} Investment</button>
         </div>
       </div>
 
@@ -116,6 +172,10 @@ const SingleInvestmentType = ({ setPageTitle }) => {
 
                     <p className="text-sm mt-4 m-8">Investment Status: <span className={`font-semibold ${selectedInvestmentType.status === 'Active' ? 'text-primary/50' : 'text-red-500'}`}>{selectedInvestmentType.status}</span></p>
 
+                  <div className="flex justify-between">
+                    <Buttons btnText={'Delete Investment'} btnType={'delete'} type={''}/>
+                    <Buttons btnText={'Update Investment'} btnType={'primary'} type={''}/>
+                  </div>
                   </Modal>
                 )
               }
@@ -215,10 +275,87 @@ const SingleInvestmentType = ({ setPageTitle }) => {
         <p className="text-xl text-red-500 font-medium">Are you sure you want to Delete {investmentName} Investment</p>
         <div className="grid gap-6 mt-4">
           <div className="flex justify-between m-6">
-            <button className="px-6 py-2 rounded-md bg-red-500 text-white hover:scale-105"   >Yes</button>
+            <button className="px-6 py-2 rounded-md bg-red-500 text-white hover:scale-105" onClick={handleDeleteInvestment}   >Yes</button>
             <button className="px-6 py-2 rounded-md bg-primary text-white hover:scale-105" onClick={() => setDeleteInvestmentModal(false)}>No</button>
           </div>
         </div>
+      </Modal>
+      <Modal isVisible={createInvestmentModal} onClose={()=>setCreateInvestmentModal(false)}>
+      <p className="text-xl text-primary font-medium">Complete the form to create a new {investmentName} Investment</p>
+
+            <form className="grid gap-6 mt-4" onSubmit={createInvestmentForm.handleSubmit}>
+              <InputWithLabel labelName={'Investment Name'}
+                              inputName={'investmentName'}
+                              inputType={'text'}
+                              inputOnBlur={createInvestmentForm.handleBlur}
+                              inputOnChange={createInvestmentForm.handleChange}
+                              inputValue={createInvestmentForm.values.investmentName}
+                              inputError={createInvestmentForm.touched.investmentName && createInvestmentForm.errors.investmentName ? createInvestmentForm.errors.investmentName : null} />
+                <div className="flex justify-between gap-4">
+                <CurrencyInput labelName={'Minimum Investment'}
+                              inputName={'minimumInvestment'}
+                              inputType={'text'}                              
+                              inputOnBlur={createInvestmentForm.handleBlur}
+                              inputOnChange={createInvestmentForm.handleChange}
+                              inputValue={createInvestmentForm.values.minimumInvestment}
+                              inputError={createInvestmentForm.touched.minimumInvestment && createInvestmentForm.errors.minimumInvestment ? createInvestmentForm.errors.minimumInvestment : null} />
+                <CurrencyInput labelName={'Maximum Investment'}
+                              inputName={'maximumInvestment'}
+                              inputType={'text'}                              
+                              inputOnBlur={createInvestmentForm.handleBlur}
+                              inputOnChange={createInvestmentForm.handleChange}
+                              inputValue={createInvestmentForm.values.maximumInvestment}
+                              inputError={createInvestmentForm.touched.maximumInvestment && createInvestmentForm.errors.maximumInvestment ? createInvestmentForm.errors.maximumInvestment : null} />
+                </div>
+                <div className="flex justify-between gap-4">
+                <CurrencyInput labelName={'Total Amount Investment'}
+                              inputName={'totalInvestment'}
+                              inputType={'text'}                              
+                              inputOnBlur={createInvestmentForm.handleBlur}
+                              inputOnChange={createInvestmentForm.handleChange}
+                              inputValue={createInvestmentForm.values.totalInvestment}
+                              inputError={createInvestmentForm.touched.totalInvestment && createInvestmentForm.errors.totalInvestment ? createInvestmentForm.errors.totalInvestment : null} />
+                <InputWithLabel labelName={'ROI'}
+                                inputName={'roiPercentage'}
+                                inputType={'number'}                              
+                                inputOnBlur={createInvestmentForm.handleBlur}
+                                inputOnChange={createInvestmentForm.handleChange}
+                                inputValue={createInvestmentForm.values.roiPercentage}
+                                inputError={createInvestmentForm.touched.roiPercentage && createInvestmentForm.errors.roiPercentage ? createInvestmentForm.errors.roiPercentage : null} />
+                </div>
+                <div className="flex justify-between gap-4">
+                <InputWithLabel labelName={'Start Date'}
+                                inputName={'startDate'}
+                                inputType={'date'}                              
+                                inputOnBlur={createInvestmentForm.handleBlur}
+                                inputOnChange={createInvestmentForm.handleChange}
+                                inputValue={createInvestmentForm.values.startDate}
+                                inputError={createInvestmentForm.touched.startDate && createInvestmentForm.errors.startDate ? createInvestmentForm.errors.startDate : null} />
+                <InputWithLabel labelName={'End Date'}
+                                inputName={'endDate'}
+                                inputType={'date'}
+                                inputOnBlur={createInvestmentForm.handleBlur}
+                                inputOnChange={createInvestmentForm.handleChange}
+                                inputValue={createInvestmentForm.values.endDate}
+                                inputError={createInvestmentForm.touched.endDate && createInvestmentForm.errors.endDate ? createInvestmentForm.errors.endDate : null} />
+                </div>
+                <div className="grid">
+            <span className="text-sm font-medium pb-1">Investment Image:</span>
+            <input type='file' className="p-3 bg-[#f8f8f8] border text-sm rounded" ref={fileInputRef} id="fileInput" onChange={handleInvestmentPictureUpload} />
+            {selectedFileError && (<code className="text-red-500 text-xs">Kindly upload a image for the investment</code>)}
+          </div>
+                <div className="grid">
+                    <span className="text-sm font-medium">Investment Description:<code>*</code></span>
+                    <textarea rows="5" cols="5" name="description" className="p-3 bg-[#f8f8f8] border text-sm rounded"   
+                              onBlur={createInvestmentForm.handleBlur}
+                              onChange={createInvestmentForm.handleChange}
+                              value={createInvestmentForm.values.description}
+                              ></textarea>
+                        <code className="text-red-500 text-xs">{createInvestmentForm.touched.description && createInvestmentForm.errors.description ? createInvestmentForm.errors.description : null} </code>
+                    
+                </div>
+                <Buttons btnText={'Continue'} btnType={'primary'} type={'submit'} />
+            </form>
       </Modal>
     </div>
   );

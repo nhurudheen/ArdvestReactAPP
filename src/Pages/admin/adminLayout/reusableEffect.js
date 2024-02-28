@@ -71,19 +71,17 @@ export function useCustomerInvestmentList(userId){
 export function useDeleteInvestmentType(investmentId){
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    useEffect(()=>{
-        const deleteInvestmentData = async()=>{
-            try{
-                const { payload } = await dispatch(deleteInvestmentType(investmentId))
-                if(payload.statusCode === "200"){
-                    await dispatch(listInvestmentType());
-                    navigate("/management/investment")
-                }
-            }
-            catch(error){};
+    return async (investmentId) => {
+        try {
+          const { payload } = await dispatch(deleteInvestmentType(investmentId));
+          if (payload.statusCode === "200") {
+            await dispatch(listInvestmentType());
+            navigate("/management/investment");
+          }
+        } catch (error) {
+          console.error(error);
         }
-         deleteInvestmentData();
-    },[dispatch, investmentId, navigate]);  
+      };
 }
 
 export function useInvestmentTypeList(investmentId){

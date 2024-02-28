@@ -84,7 +84,7 @@ const Transactions = ({ setPageTitle }) => {
                                                         </div>
                                                         <div className="flex justify-between pb-1 border-b border-b-black/10">
                                                             <div className="font-medium pr-2">Description:</div>
-                                                            <div className="font-bold">{selectedTransaction.description}</div>
+                                                            <div className="font-bold text-right">{selectedTransaction.description}</div>
                                                         </div>
                                                         <div className="flex justify-between pb-1 border-b border-b-black/10">
                                                             <div className="font-medium">Date:</div>
