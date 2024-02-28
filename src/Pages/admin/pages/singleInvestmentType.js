@@ -88,7 +88,9 @@ const SingleInvestmentType = ({ setPageTitle }) => {
         let investmentData = {investmentTypeId, maximumInvestment, minimumInvestment, totalInvestment, roiPercentage,endDate, startDate,investmentName,description,investmentImage};
         const { payload } = await dispatch(addNewInvestment(investmentData));
         if(payload.statusCode === "200"){
+          resetForm();
           setCreateInvestmentModal(false);
+          window.location.reload();
         }
     }
   })
@@ -245,7 +247,7 @@ const SingleInvestmentType = ({ setPageTitle }) => {
                     return (
                       <tr className="odd:bg-[#F9F9F9] border-t-8 border-t-white" key={key}>
                       <td className="px-4">{key+1}</td>
-                      <td className="px-6 py-4"><p className="truncate w-[250px]">{val.userData.firstName}  {val.userData.lastname}</p></td>
+                      <td className="px-6 py-4"><p className="truncate w-[250px]">{val.userData?.firstName ?val.userData.firstName : ''}  {val.userData?.lastname ? val.userData.lastname :''}</p></td>
                       <td className="px-3 py-4"><p className="truncate w-[200px]">{val.investmentName}</p></td>
                       <td className="px-3 py-4"><p className="truncate w-[150px]">&#8358;{val.amount}</p></td>
                       <td className="px-3 py-4"><p className="truncate w-[150px]">{val.dateBooked}</p></td>
