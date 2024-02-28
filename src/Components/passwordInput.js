@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const PasswordInput = ({ labelName, inputType, inputValue, placeholder, inputOnChange,inputOnBlur,inputError, inputName }) => {
+const PasswordInput = ({ labelName, inputValue, placeholder, inputOnChange,inputOnBlur,inputError, inputName }) => {
     const [passwordVisibility, setPasswordVisibility] = useState(false);
     return (
         <div className="grid">

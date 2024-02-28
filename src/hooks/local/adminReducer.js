@@ -115,6 +115,15 @@ export const addNewInvestment= createAsyncThunk(
         return response;
     }
 )
+
+export const updateAdminPassword= createAsyncThunk(
+    "admin/updateAdminPassword",
+    async(data)=>{
+        const apiChangeAdminPassword = await APIService.changeAdminPassword(data);
+        const response = apiChangeAdminPassword.data;
+        return response;
+    }
+)
 const logOutSession = () =>{
     sessionStorage.removeItem("adminSessionData");
     sessionStorage.removeItem("investmentTypes");
@@ -226,6 +235,21 @@ const administrativeSlice = createSlice({
                 state.administrative = action.payload;
                 showSuccessToastMessage(action.payload.message);
             }
+            else{
+                state.error = action.payload.message;
+                showErrorToastMessage(action.payload.message);
+            }
+            state.loading = false;
+        })
+        .addCase(updateAdminPassword.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.administrative = action.payload;
+                showSuccessToastMessage(action.payload.message);
+            }
+            else{
+                state.error = action.payload.message;
+                showErrorToastMessage(action.payload.message);
+            }
             state.loading = false;
         })
         .addMatcher(isAnyOf(
@@ -239,7 +263,8 @@ const administrativeSlice = createSlice({
             deleteInvestmentType.pending,
             investmentTypesInvestments.pending,
             investmentTypesInvestors.pending,
-            addNewInvestment.pending
+            addNewInvestment.pending,
+            updateAdminPassword.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -257,7 +282,8 @@ const administrativeSlice = createSlice({
                 deleteInvestmentType.rejected,
                 investmentTypesInvestments.rejected,
                 investmentTypesInvestors.rejected,
-                addNewInvestment.rejected
+                addNewInvestment.rejected,
+                updateAdminPassword.rejected
             ),
             (state,action)=>{
                 state.loading = false;

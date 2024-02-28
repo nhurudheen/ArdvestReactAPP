@@ -307,5 +307,14 @@ export class APIService {
             throw (error);
         }
     }
-    
+
+      static async changeAdminPassword(data){
+        try{
+            return APIClient.post("update_admin_password", data);
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
 }

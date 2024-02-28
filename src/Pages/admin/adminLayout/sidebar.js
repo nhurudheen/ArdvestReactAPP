@@ -42,7 +42,7 @@ const AdminSideBar = ({ sideBarVisibility, topBarTitle, closeSideBar }) => {
                     </div>
                 </Link>
 
-                <Link to={"/settings"} onClick={closeSideBar}>
+                <Link to={"settings"} onClick={closeSideBar}>
                     <div className="pb-2 border-b">
                         <div className={`flex gap-3 items-center ${topBarTitle === 'Settings' ? 'bg-primary/10' : 'hover:bg-primary/10'} p-3 rounded-lg hover:scale-105`}>
                             <img src={settingsIcon} alt="" />
