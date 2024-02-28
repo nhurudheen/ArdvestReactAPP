@@ -6,13 +6,14 @@ import { useDeleteInvestmentType, useInvestmentTypeInvestors, useInvestmentTypeL
 import comingSoon from "../../../assets/icons/comingSoon.svg";
 import searchIcon from "../../../assets/icons/search.svg";
 import Spinner from "../../../Components/spinner";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SearchTable, filterTable } from "../../../Utils/utils";
 import InputWithLabel from "../../../Components/inputWithLabel";
 import CurrencyInput from "../../../Components/currencyInput";
 import Buttons from "../../../Components/buttons";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
+import { addNewInvestment } from "../../../hooks/local/adminReducer";
 
 const SingleInvestmentType = ({ setPageTitle }) => {
   const fileInputRef = useRef(null);
@@ -36,6 +37,7 @@ const SingleInvestmentType = ({ setPageTitle }) => {
   const handleDeleteInvestment = async () => {
     await deleteInvestmentType(investmentId);
   };
+  const dispatch = useDispatch();
   const listInvestmentType = useInvestmentTypeList(investmentId);
   const investorList = useInvestmentTypeInvestors(investmentId);
   const [deleteInvestmentModal, setDeleteInvestmentModal] = useState(false);
@@ -84,7 +86,10 @@ const SingleInvestmentType = ({ setPageTitle }) => {
         const investmentTypeId =  investmentId;
         const { maximumInvestment, minimumInvestment, totalInvestment, roiPercentage, endDate, startDate,investmentName,description} = values;
         let investmentData = {investmentTypeId, maximumInvestment, minimumInvestment, totalInvestment, roiPercentage,endDate, startDate,investmentName,description,investmentImage};
-        console.log(investmentData);
+        const { payload } = await dispatch(addNewInvestment(investmentData));
+        if(payload.statusCode === "200"){
+          setCreateInvestmentModal(false);
+        }
     }
   })
   return (

@@ -298,6 +298,14 @@ export class APIService {
         }
     }
 
-    static async
+    static async addInvestmentTypes(data){
+        try{
+            return APIFormDataClient.post("create_investment", data);
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
     
 }
