@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import NavigationHeader from "../../../Components/navigationHeader";
 import Modal from "../../../Components/modals";
-import { useDeleteInvestmentType, useInvestmentTypeInvestors, useInvestmentTypeList } from "../adminLayout/reusableEffect";
+import { useChangeInvestmentStatus, useDeleteInvestmentType, useInvestmentTypeInvestors, useInvestmentTypeList } from "../adminLayout/reusableEffect";
 import comingSoon from "../../../assets/icons/comingSoon.svg";
 import searchIcon from "../../../assets/icons/search.svg";
 import Spinner from "../../../Components/spinner";
@@ -13,7 +13,7 @@ import CurrencyInput from "../../../Components/currencyInput";
 import Buttons from "../../../Components/buttons";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
-import { addNewInvestment } from "../../../hooks/local/adminReducer";
+import { addNewInvestment, changeInvestmentTypeStatus } from "../../../hooks/local/adminReducer";
 
 const SingleInvestmentType = ({ setPageTitle }) => {
   const fileInputRef = useRef(null);
@@ -32,12 +32,25 @@ const SingleInvestmentType = ({ setPageTitle }) => {
       investorsTab: tabId === 'investorsTab',
     }))
   }
+  const dispatch = useDispatch();
 
-  const deleteInvestmentType = useDeleteInvestmentType(); // Use the hook here
+  const deleteInvestmentType = useDeleteInvestmentType(); 
   const handleDeleteInvestment = async () => {
     await deleteInvestmentType(investmentId);
   };
-  const dispatch = useDispatch();
+
+  const changeInvestmentStatus = async(investmentId)=>{
+      try{
+        const {payload} = await dispatch(changeInvestmentTypeStatus(investmentId))
+        if(payload.statusCode === "200"){
+          setSelectedInvestmentType(null);
+          window.location.reload(false);
+        }
+      }
+      catch(error){};
+  }
+
+  
   const listInvestmentType = useInvestmentTypeList(investmentId);
   const investorList = useInvestmentTypeInvestors(investmentId);
   const [deleteInvestmentModal, setDeleteInvestmentModal] = useState(false);
@@ -94,6 +107,8 @@ const SingleInvestmentType = ({ setPageTitle }) => {
         }
     }
   })
+
+
   return (
     <div className="col-span-10">
       <Spinner loading={useSelector((state) => state.admin).loading} />
@@ -179,8 +194,14 @@ const SingleInvestmentType = ({ setPageTitle }) => {
 
                     <p className="text-sm mt-4 m-8">Investment Status: <span className={`font-semibold ${selectedInvestmentType.status === 'Active' ? 'text-primary/50' : 'text-red-500'}`}>{selectedInvestmentType.status}</span></p>
 
-                  <div className="flex justify-between">
-                    <Buttons btnText={'Delete Investment'} btnType={'delete'} type={''}/>
+                  <div className="grid gap-y-4 md:flex md:justify-between">
+                  {selectedInvestmentType.status === 'Active' ? (
+                    <Buttons btnText={'Stop Investment'} btnType={'delete'} type={''} onClick={()=>changeInvestmentStatus(selectedInvestmentType.id)}/>)
+                    :
+                    (
+                      <Buttons btnText={'Start Investment'}  btnType={'primary'} type={''} onClick={()=>changeInvestmentStatus(selectedInvestmentType.id)}/>
+                    )
+                  }
                     <Buttons btnText={'Update Investment'} btnType={'primary'} type={''}/>
                   </div>
                   </Modal>

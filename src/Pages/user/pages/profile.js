@@ -186,7 +186,7 @@ const UserProfile = ({ setPageTitle }) => {
                                     inputError={updateBankAccount.errors.accountName && updateBankAccount.touched.accountName ?  updateBankAccount.errors.accountName : null}
                                     />
                     <InputWithLabel labelName={'Account Number'}
-                                    inputType={'number'}
+                                    inputType={'text'}
                                     inputName={'accountNumber'}
                                     inputValue={updateBankAccount.values.accountNumber}
                                     inputOnBlur={updateBankAccount.handleBlur}

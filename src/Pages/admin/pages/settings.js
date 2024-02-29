@@ -12,9 +12,8 @@ import DigitInput from "../../../Components/digitInput";
 import InputWithLabel from "../../../Components/inputWithLabel";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { updateAdminPassword, updateAdminTransactionPin, updateDepositBankAccount } from "../../../hooks/local/adminReducer";
-import { useGetBankDetails } from "../adminLayout/reusableEffect";
-import { useNavigate } from "react-router-dom";
+import { bankAccount, updateAdminPassword, updateAdminTransactionPin, updateDepositBankAccount } from "../../../hooks/local/adminReducer";
+
 const Settings = ({ setPageTitle }) => {
     useEffect(() => {
         setPageTitle("Settings");
@@ -22,8 +21,7 @@ const Settings = ({ setPageTitle }) => {
         document.querySelector('meta[name="description"]').content = "Your access point to intelligent administration and tailored wealth expansion.";
     }, [setPageTitle]);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const bankAccountData = useGetBankDetails();
+    const bankAccountData = useSelector((state)=>state.admin.bankAccountData);
     const emailAddress = useSelector((state)=>state.admin.adminSessionData).emailAddress;
     const [changePasswordModal, setChangePasswordModal] = useState(false);
     const [changePinModal, setChangePinModal] = useState(false);
@@ -72,14 +70,14 @@ const Settings = ({ setPageTitle }) => {
     const depositBankAccountForm = useFormik({
         enableReinitialize: true,
         initialValues: {
-            accountName: bankAccountData?.accountName ? bankAccountData.accountName: '',
-            accountNumber: bankAccountData?.accountNumber ? bankAccountData.accountNumber: '',
-            bankName: bankAccountData?.bankName ? bankAccountData.bankName: '',
+            accountName: bankAccountData[0].accountName,
+            accountNumber: bankAccountData[0].accountNumber,
+            bankName: bankAccountData[0].bankName,
             password:""
         },
      validationSchema: Yup.object({
         accountName: Yup.string().required("Account Name cannot be empty"),
-        accountNumber: Yup.number().required("Account Number cannot be empty"),
+        accountNumber: Yup.number().required("Account Number cannot be empty").typeError('Account Number can only be in Number'),
         bankName: Yup.string().required("Bank Name cannot be empty"),
         password: Yup.string().required("Kindly enter Administrative Password"),
      }),
@@ -88,9 +86,9 @@ const Settings = ({ setPageTitle }) => {
             let bankData = {emailAddress, accountName, accountNumber, bankName, password};
             const {payload} = await dispatch(updateDepositBankAccount(bankData));
             if(payload.statusCode === "200"){
+                await dispatch(bankAccount());
                 resetForm();
                 setChangeBankAccountModal(false);
-            //    window.location.reload();
             }
         },
     })

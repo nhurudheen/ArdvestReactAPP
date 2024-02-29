@@ -9,7 +9,7 @@ import Buttons from "../../../Components/buttons";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 import { useNavigate } from "react-router-dom";
-import { auth, listInvestmentType } from "../../../hooks/local/adminReducer";
+import { auth, bankAccount, listInvestmentType } from "../../../hooks/local/adminReducer";
 
 const AdminAuth = () => {
     const [timeOfTheDay, setTimeOfTheDay] = useState();
@@ -35,6 +35,7 @@ const AdminAuth = () => {
             const {payload} = await dispatch(auth(adminAuthData));
             if(payload.statusCode === "200"){
                 await dispatch(listInvestmentType());
+                await dispatch(bankAccount());
                 navigate("/management")
             }
         }

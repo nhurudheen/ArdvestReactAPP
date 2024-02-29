@@ -10,7 +10,8 @@ const initialState = {
     isAuthenticated: false,
  ...retrieveFromLocalStorage([
     "adminSessionData",
-    "investmentTypes"
+    "investmentTypes",
+    "bankAccountData"
  ])
 }
     
@@ -98,6 +99,14 @@ export const investmentTypesInvestments = createAsyncThunk(
         return response;
     }
 )
+export const changeInvestmentTypeStatus = createAsyncThunk(
+    "admin/changeInvestmentStatus", 
+    async(investmentId)=>{
+        const apiGetInvestmentTypes = await APIService.changeInvestmentStatus(investmentId);
+        const response = apiGetInvestmentTypes.data;
+        return response;
+    }
+)
 
 export const investmentTypesInvestors = createAsyncThunk(
     "admin/InvestmentTypesInvestors",
@@ -137,6 +146,7 @@ export const bankAccount = createAsyncThunk(
     async()=>{
         const apiBankAccount = await APIService.bankAccountDetails();
         const response = await apiBankAccount.data;
+        saveToLocalStorage("bankAccountData", JSON.stringify(response.result));
         return response;
     }
 )
@@ -151,6 +161,7 @@ export const updateDepositBankAccount = createAsyncThunk(
 const logOutSession = () =>{
     sessionStorage.removeItem("adminSessionData");
     sessionStorage.removeItem("investmentTypes");
+    sessionStorage.removeItem("bankAccountData");
 }
 
 export const logout = createAsyncThunk(
@@ -231,6 +242,17 @@ const administrativeSlice = createSlice({
             }
             state.loading =false;
         })
+        .addCase(changeInvestmentTypeStatus.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.administrative = action.payload;
+                showSuccessToastMessage(action.payload.message);
+            }
+            else{
+                state.error = action.payload.message;
+                showErrorToastMessage(action.payload.message);
+            }
+            state.loading =false;
+        })
         .addCase(deleteInvestmentType.fulfilled, (state,action)=>{
             if(action.payload.statusCode === "200"){
                 state.administrative = action.payload;
@@ -290,6 +312,7 @@ const administrativeSlice = createSlice({
         .addCase(bankAccount.fulfilled, (state, action)=>{
             if(action.payload.statusCode === "200"){
                 state.administrative = action.payload;
+                state.bankAccountData = action.payload.result;
             }
             state.loading = false;
         })
@@ -312,6 +335,7 @@ const administrativeSlice = createSlice({
             customerInvestmentList.pending,
             listInvestmentType.pending,
             createNewInvestmentType.pending,
+            changeInvestmentTypeStatus.pending,
             deleteInvestmentType.pending,
             investmentTypesInvestments.pending,
             investmentTypesInvestors.pending,
@@ -334,6 +358,7 @@ const administrativeSlice = createSlice({
                 customerInvestmentList.rejected,
                 listInvestmentType.rejected,
                 createNewInvestmentType.rejected,
+                changeInvestmentTypeStatus.rejected,
                 deleteInvestmentType.rejected,
                 investmentTypesInvestments.rejected,
                 investmentTypesInvestors.rejected,

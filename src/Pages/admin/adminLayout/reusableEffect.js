@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { adminDashboardSummary, bankAccount, customerDataSummary, customerInvestmentList, customerList, deleteInvestmentType, investmentTypesInvestments, investmentTypesInvestors, listInvestmentType } from "../../../hooks/local/adminReducer";
+import { adminDashboardSummary, changeInvestmentTypeStatus, customerDataSummary, customerInvestmentList, customerList, deleteInvestmentType, investmentTypesInvestments, investmentTypesInvestors, listInvestmentType } from "../../../hooks/local/adminReducer";
 import { useNavigate } from "react-router-dom";
 
 export function useDashboardSummary (){
@@ -78,9 +78,7 @@ export function useDeleteInvestmentType(investmentId){
             await dispatch(listInvestmentType());
             navigate("/management/investment");
           }
-        } catch (error) {
-          console.error(error);
-        }
+        } catch (error) {}
       };
 }
 
@@ -115,21 +113,5 @@ export function useInvestmentTypeInvestors(investmentId){
     },[dispatch, investmentId]);
     return investors;
 }
-export function useGetBankDetails(){
-    const [depositBankDetails, setDepositBankDetails] = useState([]);
-      const dispatch = useDispatch();
-      useEffect(()=>{
-          const fetchBankDetails = async()=>{
-              try{
-                const { payload } = await dispatch(bankAccount());
-                setDepositBankDetails(payload.result[0])
-              }
-              catch(error){}
-          }
-          fetchBankDetails();
-        },[dispatch]);
-      
-      return depositBankDetails;
-  }
   
 
