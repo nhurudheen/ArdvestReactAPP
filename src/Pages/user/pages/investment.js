@@ -62,7 +62,7 @@ const Investment = ({ setPageTitle }) => {
                                             return (
                                                 <div className="grid md:flex justify-between items-center bg-[#f8f8f8] px-4 py-6 rounded mb-6 gap-8" key={key}>
                                                     <div className="flex items-center gap-3">
-                                                        <img src={investmentImage} alt="" />
+                                                        <img src={val.investmentImage} alt="" className="rounded-[50px] h-20 w-20" />
                                                         <div className="grid">
                                                             <span className="text-lg font-semibold text-primary">{val.investmentName}</span>
                                                             <span className={`text-sm ${(val.status === 'Active') ? 'text-primary/50' : 'text-red-500'} font-medium`}>{val.status} </span>

@@ -14,7 +14,10 @@ module.exports = {
           dark_color:'#232931',
           dull_white :'#F4F4F4',
           grey_color : '#3F572A',
-          border_color: '#D6D6D6'
+          border_color: '#D6D6D6',
+          ash_header_color: '#959595',
+          ash_text_color: '#595757',
+          ash_color: '#F5F5F5'
       }
       
   }

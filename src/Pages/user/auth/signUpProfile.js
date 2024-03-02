@@ -48,7 +48,6 @@ const SignUpProfile = () => {
       address: "",
       gender: "",
       nextOfKin: "",
-      bvn: "",
       nextOfKinPhoneNumber: "",
       nextOfKinAddress: ""
     },
@@ -68,8 +67,8 @@ const SignUpProfile = () => {
         return;
       }
       const passport = userPassport;
-      const { firstName, lastName, middleName, address, gender, bvn, nextOfKin, nextOfKinPhoneNumber, nextOfKinAddress } = values;
-      let userProfileData = { emailAddress, firstName, lastName, middleName, address, gender, bvn, nextOfKin, nextOfKinPhoneNumber, nextOfKinAddress, passport };
+      const { firstName, lastName, middleName, address, gender, nextOfKin, nextOfKinPhoneNumber, nextOfKinAddress } = values;
+      let userProfileData = { emailAddress, firstName, lastName, middleName, address, gender, nextOfKin, nextOfKinPhoneNumber, nextOfKinAddress, passport };
 
       const formData = new FormData();
       for (const key in userProfileData) {
@@ -156,13 +155,6 @@ const SignUpProfile = () => {
               inputOnChange={updateProfile.handleChange}
               inputValue={updateProfile.values.nextOfKin}
               inputError={updateProfile.touched.nextOfKin && updateProfile.errors.nextOfKin ? updateProfile.errors.nextOfKin : null} />
-            <InputWithLabel labelName={'Bank Verification Number (BVN)'}
-              placeholder={'01234567891'}
-              inputType={'number'}
-              inputName={'bvn'}
-              inputOnBlur={updateProfile.handleBlur}
-              inputOnChange={updateProfile.handleChange}
-              inputValue={updateProfile.values.bvn} />
             <InputWithLabel labelName={'Next of Kin Phonenumber'}
               placeholder={'08012345678'}
               inputType={'number'}
