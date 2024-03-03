@@ -16,9 +16,8 @@ const UserProfile = ({ setPageTitle }) => {
         document.querySelector('meta[name="description"]').content = "Track investments, gain insights, and grow wealth with Ardvest dashboard.";
     }, [setPageTitle]);
     const userBalanceSummary = useUserBalanceSummary();
-    const portfolioBalance = userBalanceSummary?.totalBalance? userBalanceSummary.totalBalance : '0.00';
     const investmentBalance = userBalanceSummary?.investmentBalance? userBalanceSummary.investmentBalance : '0.00'; 
-    const amountDeposit = userBalanceSummary?.amountDeposit? userBalanceSummary.amountDeposit : '0.00'; 
+    const roiBalance = userBalanceSummary?.roiBalance? userBalanceSummary.roiBalance : '0.00'; 
     const amountWithdrawal = userBalanceSummary?.amountWithdraw? userBalanceSummary.amountWithdraw : '0.00';  
     const [tabVisibility, setTabVisibility] = useState({ profileTab: true, investmentTab: false, accountTab: false });
     const userData = useSelector((state)=>state.user.userSummaryData);
@@ -124,20 +123,15 @@ const UserProfile = ({ setPageTitle }) => {
             </div>
 
             <div id="investmentTab" className={tabVisibility.investmentTab ? '' : 'hidden'}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="grid border p-4 rounded-lg gap-4 bg-[#C3FFC6] order-1 md:order-0">
-                    <p className="overflow-hidden text-sm ">Portfolio Balance</p>
-                    <p className="text-end text-3xl font-semibold">&#8358;{portfolioBalance}</p>
-                  </div>
-
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="grid border p-4 rounded-lg gap-4 bg-[#FFEFCA] order-0 md:order-1">
-                      <p className="overflow-hidden text-sm">Active Investment Balance</p>
+                      <p className="overflow-hidden text-sm">Investment Balance</p>
                       <p className="text-end text-3xl font-semibold">&#8358;{investmentBalance}</p>
                   </div>
 
                   <div className="grid border p-4 rounded-lg gap-4 odd:bg-[#FFEFCA] even:bg-[#C3FFC6] order-2 md:order-2">
-                      <p className="overflow-hidden text-sm">Total Deposit</p>
-                      <p className="text-end text-3xl font-semibold">&#8358;{amountDeposit}</p>
+                      <p className="overflow-hidden text-sm">ROI Balance</p>
+                      <p className="text-end text-3xl font-semibold">&#8358;{roiBalance}</p>
                   </div>
 
                   <div className="grid border p-4 rounded-lg gap-4  odd:bg-[#FFEFCA] even:bg-[#C3FFC6] order-3 md:order-3">

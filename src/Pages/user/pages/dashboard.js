@@ -15,7 +15,8 @@ const UserDashboard = ({ setPageTitle }) => {
   const [showInvestmentBalance, setShowInvestmentBalance] = useState(false);
   const userTransactionHistory = useUserTransactionHistory().slice(0, 5);
   const userBalanceSummary = useUserBalanceSummary();
-  const roiBalance = userBalanceSummary?.totalBalance ? currencyFormat(userBalanceSummary.totalBalance) : '0.00';
+
+  const roiBalance = userBalanceSummary?.roiBalance ? currencyFormat(userBalanceSummary.roiBalance) : '0.00';
   const investmentBalance = userBalanceSummary?.investmentBalance ? currencyFormat(userBalanceSummary.investmentBalance) : '0.00';
 
   useEffect(() => {
