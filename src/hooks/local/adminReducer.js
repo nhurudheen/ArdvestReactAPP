@@ -158,6 +158,15 @@ export const updateDepositBankAccount = createAsyncThunk(
         return response;
     }
 )
+
+export const investmentRequestHistory = createAsyncThunk(
+    "admin/Investment History",
+    async()=>{
+        const apiGetInvestmentHistory = await APIService.getInvestmentRequest();
+        const response = apiGetInvestmentHistory.data;
+        return response;
+    }
+)
 const logOutSession = () =>{
     sessionStorage.removeItem("adminSessionData");
     sessionStorage.removeItem("investmentTypes");
@@ -327,6 +336,12 @@ const administrativeSlice = createSlice({
             }
             state.loading = false;
         })
+        .addCase(investmentRequestHistory.fulfilled , (state, action)=>{
+            if(action.payload.statusCode === "200"){
+                state.administrative = action.payload;
+            }
+            state.loading = false;
+        })
         .addMatcher(isAnyOf(
             auth.pending,
             adminDashboardSummary.pending,
@@ -343,7 +358,8 @@ const administrativeSlice = createSlice({
             updateAdminPassword.pending,
             updateAdminTransactionPin.pending,
             bankAccount.pending,
-            updateDepositBankAccount.pending
+            updateDepositBankAccount.pending,
+            investmentRequestHistory.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -366,7 +382,8 @@ const administrativeSlice = createSlice({
                 updateAdminPassword.rejected,
                 updateAdminTransactionPin.rejected,
                 bankAccount.rejected,
-                updateDepositBankAccount.rejected
+                updateDepositBankAccount.rejected,
+                investmentRequestHistory.rejected
             ),
             (state,action)=>{
                 state.loading = false;

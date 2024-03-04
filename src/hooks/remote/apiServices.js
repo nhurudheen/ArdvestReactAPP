@@ -344,4 +344,14 @@ export class APIService {
             throw (error);
         }
     }
+
+    static async getInvestmentRequest(){
+        try{
+            return APIClient.get('user_investment_booked_list')
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
 }

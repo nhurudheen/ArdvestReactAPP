@@ -33,9 +33,9 @@ const AdminSideBar = ({ sideBarVisibility, topBarTitle, closeSideBar }) => {
                         </div>
                     </div>
                 </Link>
-                <Link to={"/Requests"} onClick={closeSideBar}>
+                <Link to={"requests"} onClick={closeSideBar}>
                     <div className="pb-2 border-b">
-                        <div className={`flex gap-3 items-center ${topBarTitle === 'Requests' ? 'bg-primary/10' : 'hover:bg-primary/10'} p-3 rounded-lg hover:scale-105`}>
+                        <div className={`flex gap-3 items-center ${topBarTitle === 'Investment Request' ? 'bg-primary/10' : 'hover:bg-primary/10'} p-3 rounded-lg hover:scale-105`}>
                             <img src={requestIcon} alt="" />
                             <div className={`text-lg ${topBarTitle === 'Requests' ? 'text-primary' : ''} font-medium`}>Requests</div>
                         </div>
