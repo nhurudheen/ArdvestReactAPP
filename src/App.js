@@ -18,7 +18,7 @@ import AdminLayout from './Pages/admin/adminLayout';
 function App() {
   return (
     <div className="App">
-      <ToastContainer position='top-center' theme='colored' newestOnTop={true} bodyClassName={() => 'toastBody flex items-center text-sm'} />
+      <ToastContainer position='top-center' theme='colored' newestOnTop={true} bodyClassName={() => 'toastBody flex items-center text-sm'}  />
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<LandingPage />} />

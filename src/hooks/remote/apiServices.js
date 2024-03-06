@@ -354,4 +354,14 @@ export class APIService {
             throw (error);
         }
     }
+
+    static async updateUserInvestment(data){
+        try{
+            return APIClient.post("update_user_investment", data);
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
 }

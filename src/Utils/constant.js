@@ -24,6 +24,19 @@ export const showErrorToastMessage = (errorMessage)=>{
     toast.error(errorMessage);
     return null;
 }
+export const showSuccessToastMessageReload = (errorMessage)=>{
+  toast.success(errorMessage,
+    {   
+      onClose: () => {
+        setTimeout(()=>{
+          window.location.reload();
+        },6000)
+    }
+    });
+  
+  return null;
+}
+
 
 export const retrieveFromLocalStorage = (keys)=>{
   const data = {};

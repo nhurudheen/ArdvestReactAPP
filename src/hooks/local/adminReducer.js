@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { getPeriodOfDay } from "../../Utils/utils";
-import { retrieveFromLocalStorage, showErrorToastMessage, showSuccessToastMessage} from "../../Utils/constant";
+import { retrieveFromLocalStorage, showErrorToastMessage, showSuccessToastMessage, showSuccessToastMessageReload} from "../../Utils/constant";
 import { APIService } from "../remote/apiServices";
 
 const initialState = {
@@ -164,6 +164,15 @@ export const investmentRequestHistory = createAsyncThunk(
     async()=>{
         const apiGetInvestmentHistory = await APIService.getInvestmentRequest();
         const response = apiGetInvestmentHistory.data;
+        return response;
+    }
+)
+
+export const updateUserInvestments = createAsyncThunk(
+    "admin/updateUserInvestment",
+    async(data)=>{
+        const apiChangeUserInvestmentStatus = await APIService.updateUserInvestment(data);
+        const response = apiChangeUserInvestmentStatus.data;
         return response;
     }
 )
@@ -342,6 +351,17 @@ const administrativeSlice = createSlice({
             }
             state.loading = false;
         })
+        .addCase(updateUserInvestments.fulfilled, (state,action) =>{
+            if(action.payload.statusCode === "200"){
+                state.administrative = action.payload;
+                showSuccessToastMessageReload(action.payload.message);
+            }
+            else{
+                state.error = action.payload.message;
+                showErrorToastMessage(action.payload.message)
+            }
+            state.loading = false;
+        })
         .addMatcher(isAnyOf(
             auth.pending,
             adminDashboardSummary.pending,
@@ -359,7 +379,8 @@ const administrativeSlice = createSlice({
             updateAdminTransactionPin.pending,
             bankAccount.pending,
             updateDepositBankAccount.pending,
-            investmentRequestHistory.pending
+            investmentRequestHistory.pending,
+            updateUserInvestments.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -383,7 +404,8 @@ const administrativeSlice = createSlice({
                 updateAdminTransactionPin.rejected,
                 bankAccount.rejected,
                 updateDepositBankAccount.rejected,
-                investmentRequestHistory.rejected
+                investmentRequestHistory.rejected,
+                updateUserInvestments.rejected
             ),
             (state,action)=>{
                 state.loading = false;

@@ -56,7 +56,7 @@ const Settings = ({ setPageTitle }) => {
         },
      validationSchema: Yup.object({
         password: Yup.string().required("Admin Password cannot be empty"),
-        transactionPin: Yup.string().required("Transaction Pin cannot be empty")
+        transactionPin: Yup.string().required("Transaction Pin cannot be empty").typeError('Transaction Pin can only be in Number').matches(/^\d{4}$/, 'Transaction Pin must be exactly 4 digits'),
      }),
         onSubmit: async (values) => {
             const {password, transactionPin} = values;
@@ -151,9 +151,7 @@ const Settings = ({ setPageTitle }) => {
                                     inputOnChange={changeTransactionPinForm.handleChange}
                                     inputValue={changeTransactionPinForm.values.password}
                                     inputError={changeTransactionPinForm.touched.password && changeTransactionPinForm.errors.password ? changeTransactionPinForm.errors.password : null}/>
-                    <DigitInput labelName={'New Transaction Pin (4 digit Pin)'}
-                                maxLength={'4'}
-                                inputType={'password'}  
+                    <PasswordInput labelName={'New Transaction Pin (4 digit Pin)'}
                                 inputName={'transactionPin'}
                                 inputOnBlur={changeTransactionPinForm.handleBlur}
                                 inputOnChange={changeTransactionPinForm.handleChange}

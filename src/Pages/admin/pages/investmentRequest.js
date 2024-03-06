@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useInvestmentRequest } from "../adminLayout/reusableEffect";
 import CounterCard from "../../../Components/counterCard";
 import Spinner from "../../../Components/spinner";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import NavigationHeader from "../../../Components/navigationHeader";
 import comingSoon from "../../../assets/icons/comingSoon.svg";
 import TransactionModal from "../../../Components/transactionModal";
@@ -13,6 +13,11 @@ import successIcon from "../../../assets/icons/success2.svg";
 import rejectIcon from "../../../assets/icons/failed.svg";
 import InvestmentDetailsText from "../../../Components/investmentDetailsText";
 import Buttons from "../../../Components/buttons";
+import Modal from "../../../Components/modals";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import PasswordInput from "../../../Components/passwordInput";
+import { updateUserInvestments } from "../../../hooks/local/adminReducer";
 
 const InvestmentRequest = ({ setPageTitle }) => {
     useEffect(() => {
@@ -20,9 +25,13 @@ const InvestmentRequest = ({ setPageTitle }) => {
         document.title = "Investment Request | Ardvest";
         document.querySelector('meta[name="description"]').content = "Track investments, gain insights, and grow wealth with Ardvest dashboard.";
     }, [setPageTitle]);
+    const dispatch = useDispatch();
     const investmentHistoryLog = useInvestmentRequest();
     const [tabVisibility, setTabVisibility] = useState({ investmentTab: true, pendingInvestmentTab: false });
     const [selectedTransaction, setSelectedTransaction] = useState(null);
+    const [approvalModal, setApprovalModal] = useState(null);
+    const [approvalStatus, setApprovalStatus] = useState("");
+    const [transactionId, setTransactionId] = useState("");
     const [selectedPendingTransaction, setSelectedPendingTransaction] = useState(null);
     const showTab = (tabId) => {
         setTabVisibility(() => ({
@@ -30,9 +39,27 @@ const InvestmentRequest = ({ setPageTitle }) => {
             pendingInvestmentTab: tabId === 'pendingInvestmentTab',
         }))
     }
+    const updateUserInvestment = useFormik({
+        initialValues: {
+            adminPasskey: "",
+            message: "",
+        },
+        validationSchema: Yup.object({
+            adminPasskey: Yup.string().required("Administrative Key cannot be empty").matches(/^\d{4}$/, 'Transaction Pin can only be 4 digits'),
+            message: Yup.string().required("Message cannot be empty"),
+        }),
+        onSubmit: async (values) => {
+            const { adminPasskey, message } = values;
+            let investmentData = { adminPasskey, message, transactionId, approvalStatus };
+            const { payload } = await dispatch(updateUserInvestments(investmentData));
+            if(payload.statusCode === "200"){
+                setApprovalModal(false);
+            }
+        }
+    })
     return (
         <div className="col-span-10">
-            <Spinner loading={useSelector((state) => state.user).loading} />
+            <Spinner loading={useSelector((state) => state.admin).loading} />
             <NavigationHeader title={'Investment Request Details'} />
             <div className="mt-10 grid md:flex gap-4 mb-4">
                 <span className={`py-3 px-5 bg-primary text-xs text-white rounded-md cursor-default ${tabVisibility.investmentTab ? 'opacity-50' : ''}`} onClick={() => showTab('investmentTab')} >Investment Details</span>
@@ -233,55 +260,20 @@ const InvestmentRequest = ({ setPageTitle }) => {
                                                     </div>
                                                 </div>
                                                 <div className="grid gap-y-4 md:flex md:justify-between ">
-                                                    <Buttons btnText={'Approve Investment'} btnType={'primary'} />
-                                                    <Buttons btnText={'Reject Investment'} btnType={'delete'} />
+                                                    <Buttons btnText={'Approve Investment'} btnType={'primary'} onClick={() => {
+                                                        setApprovalModal(true);
+                                                        setSelectedPendingTransaction(null);
+                                                        setApprovalStatus("0")
+                                                        setTransactionId(selectedPendingTransaction.transactionId)
+                                                    }} />
+                                                    <Buttons btnText={'Reject Investment'} btnType={'delete'} onClick={() => {
+                                                        setApprovalModal(true);
+                                                        setSelectedPendingTransaction(null);
+                                                        setApprovalStatus("2")
+                                                        setTransactionId(selectedPendingTransaction.transactionId)
+                                                    }} />
                                                 </div>
                                             </LargeModal>
-                                            // <TransactionModal isVisible={selectedPendingTransaction !== null} onClose={() => setSelectedPendingTransaction(null)}>
-                                            //     <div className="rounded-xl overflow-hidden relative">
-                                            //         <div className="w-full h-44 bg-slate-200 text-center flex items-center">
-                                            //             <div className="w-full">
-                                            //                 <div className="w-full flex justify-center mb-4">
-                                            //                     <img src={(selectedPendingTransaction.status) === "Active" ? successIcon : (selectedPendingTransaction.status) === "Pending" ? pendingIcon : rejectIcon} alt="" />
-                                            //                 </div>
-                                            //                 <p className="capitalize text-sm font-medium">{selectedPendingTransaction.transactionType}</p>
-                                            //                 <p className="text-2xl font-medium">&#8358;<span>{selectedPendingTransaction.amount}</span></p>
-                                            //                 <p className="text-xs">Investment for <span>{selectedPendingTransaction.investmentName}</span></p>
-                                            //             </div>
-                                            //         </div>
-                                            //         <div className="w-full h-44 bg-brandyellow flex items-center">
-                                            //             <div className="w-full px-3 text-xs grid gap-3">
-                                            //                 <div className="flex justify-between pb-1 border-b border-b-black/10">
-                                            //                     <div className="font-medium">ROI:</div>
-                                            //                     <div className="font-bold"><span className="mx-4">{selectedPendingTransaction.roi}%</span></div>
-                                            //                 </div>
-
-                                            //                 <div className="flex justify-between pb-1 border-b border-b-black/10">
-                                            //                     <div className="font-medium">Date Invested:</div>
-                                            //                     <div className="font-bold">{selectedPendingTransaction.dateBooked}</div>
-                                            //                 </div>
-                                            //                 <div className="flex justify-between pb-1 border-b border-b-black/10">
-                                            //                     <div className="font-medium">End Date:</div>
-                                            //                     <div className="font-bold">{selectedPendingTransaction.investmentEndDate}</div>
-                                            //                 </div>
-                                            //                 <div className="flex justify-between pb-1 border-b border-b-black/10">
-                                            //                     <div className="font-medium">Status:</div>
-                                            //                     <div className="font-bold"><span>{selectedPendingTransaction.status}</span></div>
-                                            //                 </div>
-                                            //                 <div className="flex justify-between pb-1 border-b border-b-black/10">
-                                            //                     <div className="font-medium pr-2">Payment Reference Number:</div>
-                                            //                     <div className="font-bold"><span>{selectedPendingTransaction.referenceNumber}</span></div>
-                                            //                 </div>
-                                            //             </div>
-                                            //         </div>
-                                            //         <div className="w-full h-full absolute top-0 flex items-center">
-                                            //             <div className="h-10 w-full flex justify-between">
-                                            //                 <div className="h-10 w-5 rounded-r-full bg-white"></div>
-                                            //                 <div className="h-10 w-5 rounded-l-full bg-white"></div>
-                                            //             </div>
-                                            //         </div>
-                                            //     </div>
-                                            // </TransactionModal>
                                         )
                                     }
                                 </tbody>
@@ -300,6 +292,28 @@ const InvestmentRequest = ({ setPageTitle }) => {
 
             </div>
 
+            <Modal isVisible={approvalModal} onClose={() => {setApprovalModal(false);updateUserInvestment.resetForm()}} >
+                <form onSubmit={updateUserInvestment.handleSubmit}>
+                    <p className={`text-xl text-primary font-medium pb-4`}>{(approvalStatus === "0") ? "Approve" : "Reject"} Investment</p>
+                    <PasswordInput labelName={'Admin Transaction Pin'}
+                        inputName={'adminPasskey'}
+                        inputOnBlur={updateUserInvestment.handleBlur}
+                        inputOnChange={updateUserInvestment.handleChange}
+                        inputValue={updateUserInvestment.values.adminPasskey}
+                        inputError={updateUserInvestment.errors.adminPasskey && updateUserInvestment.touched.adminPasskey ? updateUserInvestment.errors.adminPasskey : null} />
+                    <div className="grid py-5">
+                        <span className="text-sm font-medium text-primary">Message:</span>
+                        <textarea rows="5" cols="5" name="message" className="p-3 bg-[#f8f8f8] border text-sm rounded"
+                            onBlur={updateUserInvestment.handleBlur}
+                            onChange={updateUserInvestment.handleChange}
+                            value={updateUserInvestment.values.message}
+                        />
+
+                        <code className="text-red-500 text-xs">{updateUserInvestment.touched.message && updateUserInvestment.errors.message ? updateUserInvestment.errors.message : null} </code>
+                    </div>
+                    <Buttons btnText={'Continue'} btnType={'primary'} type={'submit'} />
+                </form>
+            </Modal>
         </div>
     );
 }

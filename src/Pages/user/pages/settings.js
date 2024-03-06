@@ -52,7 +52,7 @@ const UserProfileSettings = ({ setPageTitle }) => {
         },
         validationSchema: Yup.object({
             password : Yup.string().required("Kindly type your password"),
-            transactionPin: Yup.string().required("New Transaction Pin cannot be empty")
+            transactionPin: Yup.string().required("Transaction Pin cannot be empty").typeError('Transaction Pin can only be in Number').matches(/^\d{4}$/, 'Transaction Pin must be exactly 4 digits'),
         }),
         onSubmit: async(values, {resetForm})=>{
             const {password,transactionPin} = values;
@@ -114,15 +114,12 @@ const UserProfileSettings = ({ setPageTitle }) => {
             <form onSubmit={changeUserTransactionPinForm.handleSubmit}>
             <div className="grid gap-6 mt-4">
                 <PasswordInput labelName={'User Password'}
-                               inputType={'password'}
                                inputName={'password'}
                                inputValue={changeUserTransactionPinForm.values.password}
                                inputOnBlur={changeUserTransactionPinForm.handleBlur}
                                inputOnChange={changeUserTransactionPinForm.handleChange}
                                inputError={changeUserTransactionPinForm.touched.password && changeUserTransactionPinForm.errors.password ? changeUserTransactionPinForm.errors.password : null}/>
-                <DigitInput labelName={'New Transaction Pin (4 Digit Pin):'}
-                            maxLength={'4'}
-                            inputType={'password'}
+                <PasswordInput labelName={'New Transaction Pin (4 Digit Pin)'}
                             inputName={'transactionPin'}
                             inputValue={changeUserTransactionPinForm.values.transactionPin}
                             inputOnBlur={changeUserTransactionPinForm.handleBlur}
