@@ -12,7 +12,7 @@ const Buttons = ({ btnText, btnType, onClick, type }) => {
                 :
                 btnType === "secondary" ?
                     (
-                        <button type={type}  onClick={onClick} className="border border-primary text-primary text-center px-8 py-4 text-sm rounded w-full">{btnText}</button>
+                        <button type={type}  onClick={onClick} className="border border-primary text-primary text-center px-8 py-4 text-sm rounded w-full hover:bg-primary hover:text-white">{btnText}</button>
 
                     )
                     :

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import NavigationHeader from "../../../Components/navigationHeader";
 import eyeIcon from "../../../assets/icons/eyeFill.svg";
 import pendingIcon from "../../../assets/icons/pending.svg";
+import successIcon from "../../../assets/icons/success2.svg";
+import rejectIcon from "../../../assets/icons/failed.svg";
 import { useUserTransactionHistory } from "../userLayout/reusableEffects";
 import comingSoonSvg from "../../../assets/icons/comingSoon.svg";
 import Spinner from "../../../Components/spinner";
@@ -45,9 +47,8 @@ const Transactions = ({ setPageTitle }) => {
 
                             <tbody>
                                 {transactionList.map((val, key) => {
-                                    const statusColor = (val.status === "Approved") ? 'text-primary' : 'text-red-500';
+                                    const statusColor= (val.status === "Approved") ? 'text-primary' : (val.status === "Pending") ? 'text-yellow-500' : 'text-red-500';
                                     return (
-
                                         <tr key={val.id || key} className="odd:bg-[#F9F9F9] border-t-8 border-t-white" onClick={() => setSelectedTransaction(val)}>
                                             <td className="px-3 py-4"><p>{key + 1}</p></td>
                                             <td className="px-6 py-4"><p className="truncate w-[180px]">{val.transactionType}</p></td>
@@ -67,7 +68,8 @@ const Transactions = ({ setPageTitle }) => {
                                                 <div className="w-full h-44 bg-slate-200 text-center flex items-center">
                                                     <div className="w-full">
                                                         <div className="w-full flex justify-center mb-4">
-                                                            <img src={pendingIcon} alt=""/>
+                                                        <img src={(selectedTransaction.status) === "Approved" ? successIcon : (selectedTransaction.status) === "Pending" ? pendingIcon : rejectIcon} alt="" />
+                                                         
                                                         </div>
                                                         <p className="capitalize text-sm font-medium">{selectedTransaction.transactionType}</p>
                                                         <p className="text-2xl font-medium">&#8358;<span>{selectedTransaction.amount}</span></p>
