@@ -13,7 +13,6 @@ import arrowSvg from "../../../assets/icons/greenArrow.svg";
 import cardSvg from "../../../assets/icons/card.svg";
 import copyIcon from "../../../assets/icons/copyIcon.svg";
 import { userBookInvestment, userInvestmentList } from "../../../hooks/local/userReducer";
-import DigitInput from "../../../Components/digitInput";
 import { copyToClipboard } from "../../../Utils/utils";
 import * as Yup from "yup";
 import InputWithLabel from "../../../Components/inputWithLabel";
@@ -181,7 +180,7 @@ const SingleInvestment = ({ setPageTitle }) => {
                             <span><img src={arrowSvg} alt="" /></span>
                         </button>
                         <button className="w-full flex justify-between items-center bg-[#F5F5F5] rounded-lg p-5"
-                            onClick={''}>
+                            >
                             <span className="flex items-center gap-4">
                                 <img src={cardSvg} alt="" />
                                 <div className="flex items-center">
