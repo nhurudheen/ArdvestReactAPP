@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import NavigationHeader from "../../../Components/navigationHeader";
 import Modal from "../../../Components/modals";
-import { useChangeInvestmentStatus, useDeleteInvestmentType, useInvestmentTypeInvestors, useInvestmentTypeList } from "../adminLayout/reusableEffect";
+import { useDeleteInvestmentType, useInvestmentTypeInvestors, useInvestmentTypeList } from "../adminLayout/reusableEffect";
 import comingSoon from "../../../assets/icons/comingSoon.svg";
 import searchIcon from "../../../assets/icons/search.svg";
 import Spinner from "../../../Components/spinner";
@@ -235,13 +235,13 @@ const SingleInvestmentType = ({ setPageTitle }) => {
                 <div className="px-3">
                   <img src={searchIcon} alt=""/>
                 </div>
-                <input type="search" id="searchInput" onInput={SearchTable} className="w-full px-3 py-4 bg-[#f8f8f8] text-sm active:outline-none focus:outline-none placeholder:text-xs" placeholder="Search Investors..."/>
+                <input type="search" id="searchInput" onInput={SearchTable} className="w-full p-2 bg-[#f8f8f8] text-sm active:outline-none focus:outline-none placeholder:text-xs" placeholder="Search Investors..."/>
               </div>
             </div>
 
             <div className="mt-4 flex items-center gap-2">
                 <label for="statusFilter" className="block text-sm font-medium">Showing :</label>
-                <select id="statusFilter" onChange={filterTable} className="text-sm focus:outline-none focus:border-none ">
+                <select id="statusFilter" onChange={()=>filterTable(6)} className="text-sm focus:outline-none focus:border-none ">
                     <option value="All">All Investors</option>
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>

@@ -3,8 +3,10 @@ import NavigationHeader from "../../../Components/navigationHeader";
 import Spinner from "../../../Components/spinner";
 import { useSelector } from "react-redux";
 import noCustomerImage from "../../../assets/icons/comingSoon.svg";
+import searchIcon from "../../../assets/icons/search.svg";
 import { useCustomerList } from "../adminLayout/reusableEffect";
 import { Link, useNavigate } from "react-router-dom";
+import { SearchTable } from "../../../Utils/utils";
 const Customer = ({ setPageTitle }) => {
     useEffect(() => {
         setPageTitle("Customers");
@@ -16,7 +18,15 @@ const Customer = ({ setPageTitle }) => {
     return (
         <div className="col-span-10">
             <Spinner loading={useSelector((state) => state.admin).loading} />
-            <NavigationHeader title={'All Customers'} />
+            <div className="flex justify-between items-center">
+                <NavigationHeader title={'All Customers'} />
+                <div className="flex items-center justify-center bg-[#f8f8f8] border rounded  col-span-1">
+                    <div className="px-3">
+                        <img src={searchIcon} alt="" />
+                    </div>
+                    <input type="search" id="searchInput" onInput={SearchTable} className="w-full p-2 bg-[#f8f8f8] text-sm active:outline-none focus:outline-none placeholder:text-xs" placeholder="Search Customer..." />
+                </div>
+            </div>
             {customerData.length > 0
                 ?
                 (
@@ -37,8 +47,8 @@ const Customer = ({ setPageTitle }) => {
                                 {
                                     customerData.map((val, key) => {
                                         return (
-                                            <tr className="odd:bg-[#F9F9F9] border-t-8 border-t-white" key={key} onClick={()=>navigate(`/management/single_customer/${btoa(val.userId)}`)} >
-                                                <td className="px-3 py-4 text-center"><p>{key+1}</p></td>
+                                            <tr className="odd:bg-[#F9F9F9] border-t-8 border-t-white" key={key} onClick={() => navigate(`/management/single_customer/${btoa(val.userId)}`)} >
+                                                <td className="px-3 py-4 text-center"><p>{key + 1}</p></td>
                                                 <td className="px-6 py-4"><p className="truncate w-[250px]">{val.lastname} {val.firstname}</p></td>
                                                 <td className="px-3 py-4"><p className="truncate w-[200px]">{val.phoneNumber}</p></td>
                                                 <td className="px-3 py-4 "><p className="truncate w-[150px]">{val.homeAddress}</p></td>

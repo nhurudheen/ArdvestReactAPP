@@ -158,12 +158,12 @@ export async function copyToClipboard(userContent) {
       }
   }
   
-  export function filterTable() {
+  export function filterTable(num) {
     const statusFilter = document.getElementById('statusFilter').value;
     const tableRows = document.getElementById('dataTable').querySelectorAll('tbody tr');
   
     for (const row of tableRows) {
-      const statusCell = row.querySelector('td:nth-child(6)');
+      const statusCell = row.querySelector(`td:nth-child(${num})`);
       const status = statusCell.textContent.trim();
   
       if (statusFilter === 'All' || status === statusFilter) {

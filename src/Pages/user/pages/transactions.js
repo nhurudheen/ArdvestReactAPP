@@ -9,7 +9,7 @@ import comingSoonSvg from "../../../assets/icons/comingSoon.svg";
 import Spinner from "../../../Components/spinner";
 import { useSelector } from "react-redux";
 import TransactionModal from "../../../Components/transactionModal";
-import { SearchTable } from "../../../Utils/utils";
+import { SearchTable, filterTable } from "../../../Utils/utils";
 
 const Transactions = ({ setPageTitle }) => {
     const transactionList = useUserTransactionHistory();
@@ -25,10 +25,18 @@ const Transactions = ({ setPageTitle }) => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-0 mb-8 items-center">
                 <NavigationHeader title={'All Transactions'} />
                 <div className="justify-end flex">
-                    <input type="search" name="" id="searchInput" className="p-3 bg-[#f8f8f880] focus:outline focus:outline-primary border text-sm rounded w-full md:w-2/3 placeholder:text-xs" onInput={SearchTable} placeholder="Search Transactions..." />
+                    <input type="search" name="" id="searchInput" className="p-2 bg-[#f8f8f880] focus:outline focus:outline-primary border text-sm rounded w-full md:w-2/3 placeholder:text-xs" onInput={SearchTable} placeholder="Search Transactions..." />
                 </div>
             </div>
-
+            <div className="mt-4 flex items-center gap-2">
+                <label for="statusFilter" className="block text-sm font-medium">Showing :</label>
+                <select id="statusFilter" onChange={()=>filterTable(5)} className="text-sm focus:outline-none focus:border-none ">
+                    <option value="All">All Transactions</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+              </div>
 
             {
                 transactionList.length > 0 ?
