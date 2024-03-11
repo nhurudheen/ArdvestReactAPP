@@ -364,4 +364,14 @@ export class APIService {
             throw (error);
         }
     }
+
+    static async userWithdrawals(userId){
+        try{
+            return APIClient.get(`/list_user_fund_withdrawals?userId=${userId}`)
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
 }

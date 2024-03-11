@@ -1,51 +1,62 @@
 import { useEffect, useState } from "react";
+import Spinner from "../../../Components/spinner";
+import { useSelector } from "react-redux";
 import NavigationHeader from "../../../Components/navigationHeader";
+import { SearchTable } from "../../../Utils/utils";
+import searchIcon from "../../../assets/icons/search.svg";
+import Buttons from "../../../Components/buttons";
+import { useUserWithdrawalHistory } from "../userLayout/reusableEffects";
+import comingSoonSvg from "../../../assets/icons/comingSoon.svg";
 import eyeIcon from "../../../assets/icons/eyeFill.svg";
 import pendingIcon from "../../../assets/icons/pending.svg";
 import successIcon from "../../../assets/icons/success2.svg";
 import rejectIcon from "../../../assets/icons/failed.svg";
-import { useUserTransactionHistory } from "../userLayout/reusableEffects";
-import comingSoonSvg from "../../../assets/icons/comingSoon.svg";
-import Spinner from "../../../Components/spinner";
-import { useSelector } from "react-redux";
 import TransactionModal from "../../../Components/transactionModal";
-import { SearchTable, filterTable } from "../../../Utils/utils";
 
-const Transactions = ({ setPageTitle }) => {
-    const transactionList = useUserTransactionHistory();
-    const [selectedTransaction, setSelectedTransaction] = useState(null);
+const Withdrawals = ({ setPageTitle }) => {
     useEffect(() => {
-        setPageTitle("Transactions");
-        document.title = "Transactions | Ardvest";
-        document.querySelector('meta[name="description"]').content = "Track Transactions, inflow and outflow of investment, and grow wealth with Ardvest dashboard.";
+        setPageTitle("Withdrawals");
+        document.title = "Withdrawals | Ardvest";
+        document.querySelector('meta[name="description"]').content = "Track investments, gain insights, and grow wealth with Ardvest dashboard.";
     }, [setPageTitle]);
+
+    const userId = useSelector((state) => state.user.userSessionData).userId;
+    const withdrawalHistory =  useUserWithdrawalHistory(userId);
+    const [selectedTransaction, setSelectedTransaction] = useState(null);
+    console.log(withdrawalHistory);
     return (
-        <div className="col-span-10 bg-white md:px-5 pb-8 rounded-lg md:mx-4">
+        <div className="col-span-10">
             <Spinner loading={useSelector((state) => state.user).loading} />
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-0 mb-8 items-center">
-                <NavigationHeader title={'All Transactions'} />
-                <div className="justify-end flex">
-                    <input type="search" name="" id="searchInput" className="p-2 bg-[#f8f8f880] focus:outline focus:outline-primary border text-sm rounded w-full md:w-2/3 placeholder:text-xs" onInput={SearchTable} placeholder="Search Transactions..." />
+            <div className="grid grid-cols-1 lg:grid-cols-2  gap-y-4 md:gap-0 mb-8 items-center">
+                <NavigationHeader title={'All Withdrawals'} />
+                <div className="md:justify-end md:flex">
+                    <div className="flex items-center justify-center bg-[#f8f8f8] border rounded  col-span-1">
+                        <div className="px-3">
+                            <img src={searchIcon} alt="" />
+                        </div>
+                        <input type="search" id="searchInput" onInput={SearchTable} className="w-full p-2 bg-[#f8f8f8] text-sm active:outline-none focus:outline-none placeholder:text-xs" placeholder="Search Withdrawal..." />
+                    </div>
                 </div>
             </div>
-            <div className="mt-4 flex items-center gap-2">
-                <label for="statusFilter" className="block text-sm font-medium">Showing :</label>
-                <select id="statusFilter" onChange={()=>filterTable(5)} className="text-sm focus:outline-none focus:border-none ">
-                    <option value="All">All Transactions</option>
-                    <option value="Approved">Approved</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Rejected">Rejected</option>
-                  </select>
-              </div>
+
+            <div className="grid md:flex md:justify-between items-center gap-y-4">
+                <div>djj</div>
+                <div className="grid md:flex md:justify-between gap-x-8 gap-y-4">
+                    <Buttons btnText={'Make Withdrawal'} btnType={'primary'}/>
+                    <Buttons btnText={'Withdrawal Account'} btnType={'secondary'}/>
+                </div>
+
+            </div>
 
             {
-                transactionList.length > 0 ?
+                withdrawalHistory.length > 0 ?
                     <div className="overflow-x-scroll mt-10">
                         <table className="min-w-full rounded-md overflow-hidden" id="dataTable">
                             <thead className="bg-[#EBFFEB]">
                                 <tr>
                                     <th>S/N</th>
-                                    <th className="px-6 py-4 text-start"><p className="truncate w-[180px]">Transaction Type</p></th>
+                                    <th className="px-6 py-4 text-start"><p className="truncate w-[180px]">Channel</p></th>
+                                    <th className="px-6 py-4 text-start"><p className="truncate w-[180px]">Transaction Id</p></th>
                                     <th className="px-3 py-4 text-start"><p className="truncate w-[150px]">Amount</p></th>
                                     <th className="px-3 py-4 text-start "><p className="truncate w-[100px]">Date</p></th>
                                     <th className="px-3 py-4 text-start"><p className="truncate w-[80px]">Status</p></th>
@@ -54,12 +65,13 @@ const Transactions = ({ setPageTitle }) => {
                             </thead>
 
                             <tbody>
-                                {transactionList.map((val, key) => {
+                                {withdrawalHistory.map((val, key) => {
                                     const statusColor= (val.status === "Approved") ? 'text-primary' : (val.status === "Pending") ? 'text-yellow-500' : 'text-red-500';
                                     return (
                                         <tr key={val.id || key} className="odd:bg-[#F9F9F9] border-t-8 border-t-white" onClick={() => setSelectedTransaction(val)}>
                                             <td className="px-3 py-4"><p>{key + 1}</p></td>
-                                            <td className="px-6 py-4"><p className="truncate w-[180px]">{val.transactionType}</p></td>
+                                            <td className="px-6 py-4"><p className="truncate w-[180px]">{val.channel}</p></td>
+                                            <td className="px-6 py-4"><p className="truncate w-[180px]">{val.transactionId}</p></td>
                                             <td className="px-3 py-4 "><p className="truncate w-[150px]">&#8358;{val.amount}</p></td>
                                             <td className="px-3 py-4 "><p className="truncate w-[100px]">{val.insertedDt}</p></td>
                                             <td className="px-3 py-4"><p className={`truncate w-[80px] font-medium ${statusColor}`}>{val.status}</p></td>
@@ -87,18 +99,16 @@ const Transactions = ({ setPageTitle }) => {
                                                 <div className="w-full h-44 bg-brandyellow flex items-center">
                                                     <div className="w-full px-3 text-xs grid gap-3">
                                                         <div className="flex justify-between pb-1 border-b border-b-black/10">
-                                                            <div className="font-medium">Transaction Type:</div>
-                                                            <div className="font-bold text-right"><span className="mx-4">{
-                                                                (selectedTransaction.transactionType === "Deposit") ? "Credit" :(selectedTransaction.transactionType === "'Return on Investment") ?'Credit':'Debit'
-                                                            }</span></div>
+                                                            <div className="font-medium">Account Name:</div>
+                                                            <div className="font-bold text-right"><span className="mx-4">{selectedTransaction.accountName}</span></div>
                                                         </div>
                                                         <div className="flex justify-between pb-1 border-b border-b-black/10">
-                                                            <div className="font-medium pr-2">Description:</div>
-                                                            <div className="font-bold text-right">{selectedTransaction.description}</div>
+                                                            <div className="font-medium pr-2">Account Number:</div>
+                                                            <div className="font-bold text-right">{selectedTransaction.accountNumber}</div>
                                                         </div>
                                                         <div className="flex justify-between pb-1 border-b border-b-black/10">
-                                                            <div className="font-medium">Date:</div>
-                                                            <div className="font-bold text-right">{selectedTransaction.insertedDt}</div>
+                                                            <div className="font-medium">Bank:</div>
+                                                            <div className="font-bold text-right">{selectedTransaction.bank}</div>
                                                         </div>
                                                         <div className="flex justify-between pb-1 border-b border-b-black/10">
                                                             <div className="font-medium">Status:</div>
@@ -129,16 +139,14 @@ const Transactions = ({ setPageTitle }) => {
                             <div className="w-full grid justify-center">
                                 <img src={comingSoonSvg} alt="" />
                             </div>
-                            <p className="text-center text-lg font-semibold text-primary">No Transactions Available yet</p>
+                            <p className="text-center text-lg font-semibold text-primary">No Withdrawals Available yet</p>
                         </div>
                     )
             }
 
 
-
         </div>
-
     );
 }
 
-export default Transactions;
+export default Withdrawals;

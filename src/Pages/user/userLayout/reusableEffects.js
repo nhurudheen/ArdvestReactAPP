@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { depositBankAccount, investmentTypesInvestments, investmentTypesList, singleInvestment, userActiveInvestmentList, userBalanceSummary, userTransactionHistory } from "../../../hooks/local/userReducer";
+import { depositBankAccount, investmentTypesInvestments, investmentTypesList, singleInvestment, userActiveInvestmentList, userBalanceSummary, userTransactionHistory, userWithdrawalList } from "../../../hooks/local/userReducer";
 
 export function useDepositBankList(){
   const [depositBankDetails, setDepositBankDetails] = useState([]);
@@ -118,5 +118,21 @@ export function useSingleInvestmentDetails(investmentId){
 
     return investmentData;
 
+}
+
+export function useUserWithdrawalHistory(userId){
+    const [withdrawalHistory, setWithdrawalHistory] =useState([]);
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        const getUserWithdrawals = async()=>{
+            try{
+                const {payload} = await dispatch(userWithdrawalList(userId));
+                setWithdrawalHistory(payload.result);
+            }
+            catch(error){}
+        }
+        getUserWithdrawals();
+    }, [dispatch,userId]);
+    return withdrawalHistory;
 }
 

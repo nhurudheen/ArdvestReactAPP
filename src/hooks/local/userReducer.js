@@ -215,6 +215,15 @@ export const userBookInvestment = createAsyncThunk(
         return response;
     }
 )
+export const userWithdrawalList = createAsyncThunk(
+    "user/withdrawalList",
+    async(userId)=>{
+        const apiUserWithdrawal = await APIService.userWithdrawals(userId);
+        const response = await apiUserWithdrawal.data;
+        return response;
+    }
+)
+
 
 
 const logOutSession = () =>{
@@ -376,6 +385,12 @@ const userSlice = createSlice({
             }
             state.loading = false
         })
+        .addCase(userWithdrawalList.fulfilled, (state,action)=>{
+            if(action.payload.statusCode === "200"){
+                state.users = action.payload;
+            }
+            state.loading = false;
+        })
        
         .addMatcher(isAnyOf(
             userRegistration.fulfilled,
@@ -422,6 +437,7 @@ const userSlice = createSlice({
             investmentTypesInvestments.pending,
             singleInvestment.pending,
             userBookInvestment.pending,
+            userWithdrawalList.pending,
         ), 
         (state)=>{
             state.loading = true;
@@ -450,6 +466,7 @@ const userSlice = createSlice({
             investmentTypesInvestments.rejected,
             singleInvestment.rejected,
             userBookInvestment.rejected,
+            userWithdrawalList.rejected
         ),
         (state,action)=>{
             state.loading = false;

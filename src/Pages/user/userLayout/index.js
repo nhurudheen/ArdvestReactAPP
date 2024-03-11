@@ -10,6 +10,7 @@ import Transactions from "../pages/transactions";
 import UserProfile from "../pages/profile";
 import UserProfileSettings from "../pages/settings";
 import SingleInvestment from "../pages/singleInvestment";
+import Withdrawals from "../pages/withdrawals";
 
 const UserLayout = () => {
     const userSession = useSelector((state)=>state.user.userSessionData);
@@ -32,6 +33,7 @@ const UserLayout = () => {
             <Routes> 
                 <Route path="/dashboard" element={<UserDashboard setPageTitle={setPageTitle}/>}/>
                 <Route path="/investment" element={<Investment setPageTitle={setPageTitle} />}/>
+                <Route path="/withdrawals" element={<Withdrawals setPageTitle={setPageTitle}/>}/>
                 <Route path="/transactions" element={<Transactions setPageTitle={setPageTitle}/>}/>
                 <Route path="/profile" element={<UserProfile setPageTitle={setPageTitle}/>}/>
                 <Route path="/settings" element={<UserProfileSettings setPageTitle={setPageTitle}/>}/>
