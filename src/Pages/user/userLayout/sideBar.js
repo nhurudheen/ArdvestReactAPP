@@ -4,6 +4,7 @@ import transactionIcon from '../../../assets/icons/transactions.svg';
 import settingsIcon from '../../../assets/icons/settings.svg';
 import powerIcon from '../../../assets/icons/power.svg';
 import profileIcon from '../../../assets/icons/user.svg';
+import withdrawalIcon from '../../../assets/icons/withdrawalSVG.svg';
 import { Link } from 'react-router-dom';
 const SideBar = ({ sideBarVisibility, topBarTitle, closeSideBar }) => {
     return (
@@ -33,6 +34,15 @@ const SideBar = ({ sideBarVisibility, topBarTitle, closeSideBar }) => {
                         </div>
                     </div>
                 </Link>
+                <Link to={"/withdrawals"} onClick={closeSideBar}>
+                    <div className="pb-2 border-b">
+                        <div className={`flex gap-3 items-center ${topBarTitle === 'Withdrawals' ? 'bg-primary/10' : 'hover:bg-primary/10'} p-3 rounded-lg hover:scale-105`}>
+                            <img src={withdrawalIcon} alt="" />
+                            <div className={`text-lg ${topBarTitle === 'Withdrawals' ? 'text-primary' : ''} font-medium`}>Withdrawals</div>
+                        </div>
+                    </div>
+                </Link>
+    
     
                 <Link to={"/profile"} onClick={closeSideBar}>
                     <div className="pb-2 border-b">
