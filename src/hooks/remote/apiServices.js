@@ -355,6 +355,16 @@ export class APIService {
         }
     }
 
+    static async getWithdrawalRequest(){
+        try{
+            return APIClient.get('withdrawal_summary')
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
+
     static async updateUserInvestment(data){
         try{
             return APIClient.post("update_user_investment", data);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { adminDashboardSummary, changeInvestmentTypeStatus, customerDataSummary, customerInvestmentList, customerList, deleteInvestmentType, investmentRequestHistory, investmentTypesInvestments, investmentTypesInvestors, listInvestmentType } from "../../../hooks/local/adminReducer";
+import { adminDashboardSummary, changeInvestmentTypeStatus, customerDataSummary, customerInvestmentList, customerList, deleteInvestmentType, investmentRequestHistory, investmentTypesInvestments, investmentTypesInvestors, listInvestmentType, withdrawalHistory } from "../../../hooks/local/adminReducer";
 import { useNavigate } from "react-router-dom";
 
 export function useDashboardSummary (){
@@ -127,6 +127,22 @@ export function useInvestmentRequest(){
             catch(error){}
         }
         getInvestmentHistory();
+    }, [dispatch])
+    return request;
+}
+
+export function useWithdrawalRequest(){
+    const [request, setRequest] = useState([]);
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        const getWithdrawalHistory = async()=>{
+            try{
+                const {payload} = await dispatch(withdrawalHistory());
+                setRequest(payload.result)
+            }
+            catch(error){}
+        }
+        getWithdrawalHistory();
     }, [dispatch])
     return request;
 }

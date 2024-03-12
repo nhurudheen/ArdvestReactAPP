@@ -160,10 +160,18 @@ export const updateDepositBankAccount = createAsyncThunk(
 )
 
 export const investmentRequestHistory = createAsyncThunk(
-    "admin/Investment History",
+    "admin/InvestmentHistory",
     async()=>{
         const apiGetInvestmentHistory = await APIService.getInvestmentRequest();
         const response = apiGetInvestmentHistory.data;
+        return response;
+    }
+)
+export const withdrawalHistory = createAsyncThunk(
+    "admin/WithdrawalHistory",
+    async()=>{
+        const apiGetWithdrawalHistory = await APIService.getWithdrawalRequest();
+        const response = apiGetWithdrawalHistory.data;
         return response;
     }
 )
@@ -351,6 +359,12 @@ const administrativeSlice = createSlice({
             }
             state.loading = false;
         })
+        .addCase(withdrawalHistory.fulfilled , (state, action)=>{
+            if(action.payload.statusCode === "200"){
+                state.administrative = action.payload;
+            }
+            state.loading = false;
+        })
         .addCase(updateUserInvestments.fulfilled, (state,action) =>{
             if(action.payload.statusCode === "200"){
                 state.administrative = action.payload;
@@ -380,7 +394,8 @@ const administrativeSlice = createSlice({
             bankAccount.pending,
             updateDepositBankAccount.pending,
             investmentRequestHistory.pending,
-            updateUserInvestments.pending
+            updateUserInvestments.pending,
+            withdrawalHistory.pending
         ), 
         (state)=>{
             state.loading = true;
@@ -405,7 +420,8 @@ const administrativeSlice = createSlice({
                 bankAccount.rejected,
                 updateDepositBankAccount.rejected,
                 investmentRequestHistory.rejected,
-                updateUserInvestments.rejected
+                updateUserInvestments.rejected,
+                withdrawalHistory.rejected
             ),
             (state,action)=>{
                 state.loading = false;

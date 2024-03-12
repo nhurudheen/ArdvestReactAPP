@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useInvestmentRequest } from "../adminLayout/reusableEffect";
+import { useWithdrawalRequest } from "../adminLayout/reusableEffect";
 import CounterCard from "../../../Components/counterCard";
 import Spinner from "../../../Components/spinner";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,8 +26,7 @@ const Withdrawals = ({ setPageTitle }) => {
         document.querySelector('meta[name="description"]').content = "Track investments, gain insights, and grow wealth with Ardvest dashboard.";
     }, [setPageTitle]);
     const dispatch = useDispatch();
-    const investmentHistoryLog = useInvestmentRequest();
-    console.log(investmentHistoryLog);
+    const withdrawalHistoryLog = useWithdrawalRequest();
     const [tabVisibility, setTabVisibility] = useState({ withdrawalTab: true, pendingWithdrawalTab: false });
     const [selectedTransaction, setSelectedTransaction] = useState(null);
     const [approvalModal, setApprovalModal] = useState(null);
@@ -69,44 +68,44 @@ const Withdrawals = ({ setPageTitle }) => {
 
             <div id="withdrawalTab" className={tabVisibility.withdrawalTab ? '' : 'hidden'}>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                    <CounterCard title={'Total Invested Amount'}
-                        number={`\u20A6${investmentHistoryLog.investmentSummary?.totalInvestedAmount ? investmentHistoryLog.investmentSummary.totalInvestedAmount : ''}`}
+                    <CounterCard title={'Total Amount Withdraw'}
+                        number={`\u20A6${withdrawalHistoryLog.withdrawalSummary?.totalWithdrawal ? withdrawalHistoryLog.withdrawalSummary.totalWithdrawal : ''}`}
                         bgColor={'#C3FFC6'} />
-                    <CounterCard title={'Today Invested Amount'}
-                        number={`\u20A6${investmentHistoryLog.investmentSummary?.todayInvestedAmount ? investmentHistoryLog.investmentSummary.todayInvestedAmount : ''}`}
+                    <CounterCard title={'Today Withdrawal'}
+                        number={`\u20A6${withdrawalHistoryLog.withdrawalSummary?.todayWithdrawal ? withdrawalHistoryLog.withdrawalSummary.todayWithdrawal : ''}`}
                         bgColor={'#FFEFCA'} />
-                    <CounterCard title={'Total Investment'}
-                        number={investmentHistoryLog.investmentSummary?.totalInvestment ? investmentHistoryLog.investmentSummary.totalInvestment : ''}
+                    <CounterCard title={'Total Withdrawals'}
+                        number={withdrawalHistoryLog.withdrawalSummary?.noOfWithdrawals ? withdrawalHistoryLog.withdrawalSummary.noOfWithdrawals : ''}
                         bgColor={'#C3FFC6'} />
                 </div>
 
                 {
-                    investmentHistoryLog?.investmentList?.length > 0 ?
+                    withdrawalHistoryLog?.withdrawalList?.length > 0 ?
                         <div className="overflow-x-scroll mt-10">
                             <table className="min-w-full rounded-md overflow-hidden" id="dataTable">
                                 <thead className="bg-[#EBFFEB]">
                                     <tr>
                                         <th>S/N</th>
                                         <th className="px-6 py-4 text-start"><p className="truncate w-[180px]">Customer Name</p></th>
-                                        <th className="px-6 py-4 text-start"><p className="truncate w-[180px]">Portfolio</p></th>
-                                        <th className="px-3 py-4 text-start"><p className="truncate w-[150px]">Amount Invested</p></th>
-                                        <th className="px-3 py-4 text-start "><p className="truncate w-[100px]">Date Invested</p></th>
+                                        <th className="px-6 py-4 text-start"><p className="truncate w-[180px]">Channel</p></th>
+                                        <th className="px-3 py-4 text-start"><p className="truncate w-[150px]">Amount</p></th>
+                                        <th className="px-3 py-4 text-start "><p className="truncate w-[100px]">Date </p></th>
                                         <th className="px-3 py-4 text-start"><p className="truncate w-[80px]">Status</p></th>
                                         <th className="px-3 py-4 text-start"><p className="truncate w-[10px]"></p></th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
-                                    {investmentHistoryLog.investmentList.map((val, key) => {
+                                    {withdrawalHistoryLog.withdrawalList.map((val, key) => {
                                         const statusColor = (val.status === "Active") ? 'text-primary' : (val.status === "Pending") ? 'text-yellow-500' : 'text-red-500';
                                         return (
 
                                             <tr key={val.id || key} className="odd:bg-[#F9F9F9] border-t-8 border-t-white" onClick={() => setSelectedTransaction(val)}>
                                                 <td className="px-3 py-4"><p>{key + 1}</p></td>
                                                 <td className="px-6 py-4"><p className="truncate w-[180px]">{val.userData?.firstName} {val.userData?.lastname}</p></td>
-                                                <td className="px-6 py-4"><p className="truncate w-[180px]">{val.investmentName}</p></td>
+                                                <td className="px-6 py-4"><p className="truncate w-[180px]">{val.channel}</p></td>
                                                 <td className="px-3 py-4 "><p className="truncate w-[150px]">&#8358;{val.amount}</p></td>
-                                                <td className="px-3 py-4 "><p className="truncate w-[100px]">{val.dateBooked}</p></td>
+                                                <td className="px-3 py-4 "><p className="truncate w-[100px]">{val.insertedDt}</p></td>
                                                 <td className="px-3 py-4"><p className={`truncate w-[80px] font-medium ${statusColor}`}>{val.status}</p></td>
                                                 <td className="px-3 py-4 hover:scale-105"><button onClick={() => setSelectedTransaction(val)}><img src={eyeIcon} alt="" /></button></td>
                                             </tr>
@@ -123,33 +122,33 @@ const Withdrawals = ({ setPageTitle }) => {
                                                             <div className="w-full flex justify-center mb-4">
                                                                 <img src={(selectedTransaction.status) === "Active" ? successIcon : (selectedTransaction.status) === "Pending" ? pendingIcon : rejectIcon} alt="" />
                                                             </div>
-                                                            <p className="capitalize text-sm font-medium">{selectedTransaction.transactionType}</p>
+                                                            <p className="capitalize text-sm font-medium">"selectedTransaction.transactionType"</p>
                                                             <p className="text-2xl font-medium">&#8358;<span>{selectedTransaction.amount}</span></p>
-                                                            <p className="text-xs">Investment for <span>{selectedTransaction.investmentName}</span></p>
+                                                            <p className="text-xs">Withdrawal from <span>{selectedTransaction.channel}</span></p>
                                                         </div>
                                                     </div>
                                                     <div className="w-full h-44 bg-brandyellow flex items-center">
                                                         <div className="w-full px-3 text-xs grid gap-3">
                                                             <div className="flex justify-between pb-1 border-b border-b-black/10">
-                                                                <div className="font-medium">ROI:</div>
-                                                                <div className="font-bold"><span className="mx-4">{selectedTransaction.roi}%</span></div>
+                                                                <div className="font-medium">Account Number:</div>
+                                                                <div className="font-bold text-right"><span className="mx-4">{selectedTransaction.accountNumber}</span></div>
                                                             </div>
 
                                                             <div className="flex justify-between pb-1 border-b border-b-black/10">
-                                                                <div className="font-medium">Date Invested:</div>
-                                                                <div className="font-bold">{selectedTransaction.dateBooked}</div>
+                                                                <div className="font-medium">Account Name:</div>
+                                                                <div className="font-bold text-right">{selectedTransaction.accountName}</div>
                                                             </div>
                                                             <div className="flex justify-between pb-1 border-b border-b-black/10">
-                                                                <div className="font-medium">End Date:</div>
-                                                                <div className="font-bold">{selectedTransaction.investmentEndDate}</div>
+                                                                <div className="font-medium">Bank:</div>
+                                                                <div className="font-bold text-right">{selectedTransaction.bank}</div>
                                                             </div>
                                                             <div className="flex justify-between pb-1 border-b border-b-black/10">
                                                                 <div className="font-medium">Status:</div>
-                                                                <div className="font-bold"><span>{selectedTransaction.status}</span></div>
+                                                                <div className="font-bold text-right"><span>{selectedTransaction.status}</span></div>
                                                             </div>
                                                             <div className="flex justify-between pb-1 border-b border-b-black/10">
-                                                                <div className="font-medium pr-2">Payment Reference Number:</div>
-                                                                <div className="font-bold"><span>{selectedTransaction.referenceNumber}</span></div>
+                                                                <div className="font-medium pr-2">Message:</div>
+                                                                <div className="font-bold text-right"><span>{selectedTransaction.message}</span></div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -172,7 +171,7 @@ const Withdrawals = ({ setPageTitle }) => {
                                 <div className="w-full grid justify-center">
                                     <img src={comingSoon} alt="" />
                                 </div>
-                                <p className="text-center text-lg font-semibold text-primary">No Investment Available yet</p>
+                                <p className="text-center text-lg font-semibold text-primary">No Withdrawal Available yet</p>
                             </div>
                         )
                 }
@@ -182,27 +181,27 @@ const Withdrawals = ({ setPageTitle }) => {
 
             <div id="pendingWithdrawalTab" className={tabVisibility.pendingWithdrawalTab ? '' : 'hidden'}>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                    <CounterCard title={'Today Investment'}
-                        number={investmentHistoryLog.investmentSummary?.todayInvestment ? investmentHistoryLog.investmentSummary.todayInvestment : ''}
+                    <CounterCard title={'Today Pending Withdrawal Amount'}
+                        number={`\u20A6${withdrawalHistoryLog.withdrawalSummary?.pendingWithdrawal ? withdrawalHistoryLog.withdrawalSummary.pendingWithdrawal : ''}`}
                         bgColor={'#FFEFCA'} />
-                    <CounterCard title={'Total Pending Investment'}
-                        number={investmentHistoryLog.investmentSummary?.totalPendingInvestment ? investmentHistoryLog.investmentSummary.totalPendingInvestment : ''}
+                    <CounterCard title={'Total Pending Withdrawal'}
+                        number={withdrawalHistoryLog.withdrawalSummary?.noOfPendingWithdrawal ? withdrawalHistoryLog.withdrawalSummary.noOfPendingWithdrawal : ''}
                         bgColor={'#C3FFC6'} />
-                    <CounterCard title={'Today Pending Investment'}
-                        number={investmentHistoryLog.investmentSummary?.todayPendingInvestment ? investmentHistoryLog.investmentSummary.todayPendingInvestment : ''}
+                    <CounterCard title={'Today Withdrawal'}
+                        number={withdrawalHistoryLog.withdrawalSummary?.noOfTodayWithdrawal ? withdrawalHistoryLog.withdrawalSummary.noOfTodayWithdrawal : ''}
                         bgColor={'#FFEFCA'} />
                 </div>
 
                 {
-                    investmentHistoryLog?.pendingInvestmentList?.length > 0 ?
+                    withdrawalHistoryLog?.pendingWithdrawalList?.length > 0 ?
                         <div className="overflow-x-scroll mt-10">
                             <table className="min-w-full rounded-md overflow-hidden" id="dataTable">
                                 <thead className="bg-[#EBFFEB]">
                                     <tr>
                                         <th>S/N</th>
                                         <th className="px-6 py-4 text-start"><p className="truncate w-[180px]">Customer Name</p></th>
-                                        <th className="px-6 py-4 text-start"><p className="truncate w-[180px]">Portfolio</p></th>
-                                        <th className="px-3 py-4 text-start"><p className="truncate w-[150px]">Amount Invested</p></th>
+                                        <th className="px-6 py-4 text-start"><p className="truncate w-[180px]">Channel</p></th>
+                                        <th className="px-3 py-4 text-start"><p className="truncate w-[150px]">Amount</p></th>
                                         <th className="px-3 py-4 text-start "><p className="truncate w-[100px]">Date Invested</p></th>
                                         <th className="px-3 py-4 text-start"><p className="truncate w-[80px]">Status</p></th>
                                         <th className="px-3 py-4 text-start"><p className="truncate w-[10px]"></p></th>
@@ -210,16 +209,16 @@ const Withdrawals = ({ setPageTitle }) => {
                                 </thead>
 
                                 <tbody>
-                                    {investmentHistoryLog.pendingInvestmentList.map((val, key) => {
+                                    {withdrawalHistoryLog.pendingWithdrawalList.map((val, key) => {
                                         const statusColor = (val.status === "Active") ? 'text-primary' : (val.status === "Pending") ? 'text-yellow-500' : 'text-red-500';
                                         return (
 
                                             <tr key={val.id || key} className="odd:bg-[#F9F9F9] border-t-8 border-t-white" onClick={() => setSelectedPendingTransaction(val)}>
                                                 <td className="px-3 py-4"><p>{key + 1}</p></td>
                                                 <td className="px-6 py-4"><p className="truncate w-[180px]">{val.userData?.firstName} {val.userData?.lastname}</p></td>
-                                                <td className="px-6 py-4"><p className="truncate w-[180px]">{val.investmentName}</p></td>
+                                                <td className="px-6 py-4"><p className="truncate w-[180px]">{val.channel}</p></td>
                                                 <td className="px-3 py-4 "><p className="truncate w-[150px]">&#8358;{val.amount}</p></td>
-                                                <td className="px-3 py-4 "><p className="truncate w-[100px]">{val.dateBooked}</p></td>
+                                                <td className="px-3 py-4 "><p className="truncate w-[100px]">{val.insertedDt}</p></td>
                                                 <td className="px-3 py-4"><p className={`truncate w-[80px] font-medium ${statusColor}`}>{val.status}</p></td>
                                                 <td className="px-3 py-4 hover:scale-105"><button onClick={() => setSelectedPendingTransaction(val)}><img src={eyeIcon} alt="" /></button></td>
                                             </tr>
@@ -230,44 +229,38 @@ const Withdrawals = ({ setPageTitle }) => {
                                     {
                                         selectedPendingTransaction && (
                                             <LargeModal isVisible={selectedPendingTransaction !== null} onClose={() => setSelectedPendingTransaction(null)}>
-                                                <div className="flex justify-between items-center">
-                                                    <p className="text-primary text-lg font-bold">Investment Details</p>
-                                                    <div>
-                                                        <button type="" onClick="" className="border border-primary hidden md:block text-primary text-center px-4 py-2 text-xs rounded w-full hover:bg-primary hover:text-white">View Payment Receipt</button>
-                                                        <button className="block md:hidden"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="rgba(33,130,37,1)"><path d="M9 4L6 2L3 4V16V19C3 20.6569 4.34315 22 6 22H20C21.6569 22 23 20.6569 23 19V17H7V19C7 19.5523 6.55228 20 6 20C5.44772 20 5 19.5523 5 19V15H21V4L18 2L15 4L12 2L9 4Z"></path></svg></button>
-                                                    </div>
-                                                </div>
+                                                
+                                                    <p className="text-primary text-lg font-bold">Withdrawal Details</p>
+                                                
                                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-x-3 py-5">
                                                     <div>
                                                         <InvestmentDetailsText title={'Customer FullName'} text={selectedPendingTransaction.userData.lastname + " " + selectedPendingTransaction.userData.firstName} />
                                                         <InvestmentDetailsText title={'Gender'} text={selectedPendingTransaction.userData.gender} />
                                                         <InvestmentDetailsText title={'EmailAddress'} text={selectedPendingTransaction.userData.emailAddress} />
-                                                        <InvestmentDetailsText title={'Next of Kin'} text={selectedPendingTransaction.userData.nextOfKinName} />
-                                                        <InvestmentDetailsText title={'Next of Kin Phone Number'} text={selectedPendingTransaction.userData.nextOfKinPhone} />
-                                                    </div>
-                                                    <div>
                                                         <InvestmentDetailsText title={'Phone Number'} text={selectedPendingTransaction.userData.phoneNumber} />
                                                         <InvestmentDetailsText title={'Home Address'} text={selectedPendingTransaction.userData.address} />
-                                                        <InvestmentDetailsText title={'BVN'} text={selectedPendingTransaction.userData.bvn} />
-                                                        <InvestmentDetailsText title={'Next of Kin Address'} text={selectedPendingTransaction.userData.nextOfKinAddress} />
-                                                        <InvestmentDetailsText title={'Payment Reference Number'} text={selectedPendingTransaction.referenceNumber} />
                                                     </div>
                                                     <div>
-                                                        <InvestmentDetailsText title={'Investment Name'} text={selectedPendingTransaction.investmentName} />
-                                                        <InvestmentDetailsText title={'Date Booked'} text={selectedPendingTransaction.dateBooked} />
-                                                        <InvestmentDetailsText title={'Investment End Date'} text={selectedPendingTransaction.investmentEndDate} />
-                                                        <InvestmentDetailsText title={'ROI'} text={selectedPendingTransaction.roi + '%'} />
-                                                        <InvestmentDetailsText title={'Amount Invested'} text={`\u20A6${selectedPendingTransaction.amount}`} />
+                                                        <InvestmentDetailsText title={'Bank'} text={selectedPendingTransaction.bank} />
+                                                        <InvestmentDetailsText title={'Account Name'} text={selectedPendingTransaction.accountName} />
+                                                        <InvestmentDetailsText title={'Account Number'} text={selectedPendingTransaction.accountNumber} />
+                                                        <InvestmentDetailsText title={'Transaction Number'} text={selectedPendingTransaction.transactionId} />
+                                                    </div>
+                                                    <div>
+                                                        <InvestmentDetailsText title={'Amount to Withdraw'} text={`\u20A6${selectedPendingTransaction.amount}`} />
+                                                        <InvestmentDetailsText title={'Channel'} text={selectedPendingTransaction.channel} />
+                                                        <InvestmentDetailsText title={'Transaction Date'} text={selectedPendingTransaction.insertedDt} />
+                                                        <InvestmentDetailsText title={'Status'} text={selectedPendingTransaction.status} />
                                                     </div>
                                                 </div>
                                                 <div className="grid gap-y-4 md:flex md:justify-between ">
-                                                    <Buttons btnText={'Approve Investment'} btnType={'primary'} onClick={() => {
+                                                    <Buttons btnText={'Approve Withdrawal'} btnType={'primary'} onClick={() => {
                                                         setApprovalModal(true);
                                                         setSelectedPendingTransaction(null);
                                                         setApprovalStatus("0")
                                                         setTransactionId(selectedPendingTransaction.transactionId)
                                                     }} />
-                                                    <Buttons btnText={'Reject Investment'} btnType={'delete'} onClick={() => {
+                                                    <Buttons btnText={'Reject Withdrawal'} btnType={'delete'} onClick={() => {
                                                         setApprovalModal(true);
                                                         setSelectedPendingTransaction(null);
                                                         setApprovalStatus("2")
@@ -286,7 +279,7 @@ const Withdrawals = ({ setPageTitle }) => {
                                 <div className="w-full grid justify-center">
                                     <img src={comingSoon} alt="" />
                                 </div>
-                                <p className="text-center text-lg font-semibold text-primary">No Pending Investment Available yet</p>
+                                <p className="text-center text-lg font-semibold text-primary">No Pending Withdrawal Available yet</p>
                             </div>
                         )
                 }
@@ -295,7 +288,7 @@ const Withdrawals = ({ setPageTitle }) => {
 
             <Modal isVisible={approvalModal} onClose={() => {setApprovalModal(false);updateUserInvestment.resetForm()}} >
                 <form onSubmit={updateUserInvestment.handleSubmit}>
-                    <p className={`text-xl text-primary font-medium pb-4`}>{(approvalStatus === "0") ? "Approve" : "Reject"} Investment</p>
+                    <p className={`text-xl text-primary font-medium pb-4`}>{(approvalStatus === "0") ? "Approve" : "Reject"} Withdrawal</p>
                     <PasswordInput labelName={'Admin Transaction Pin'}
                         inputName={'adminPasskey'}
                         inputOnBlur={updateUserInvestment.handleBlur}
