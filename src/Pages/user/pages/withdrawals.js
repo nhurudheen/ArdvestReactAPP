@@ -1,17 +1,25 @@
 import { useEffect, useState } from "react";
 import Spinner from "../../../Components/spinner";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import NavigationHeader from "../../../Components/navigationHeader";
-import { SearchTable } from "../../../Utils/utils";
+import { SearchTable, filterTable } from "../../../Utils/utils";
 import searchIcon from "../../../assets/icons/search.svg";
 import Buttons from "../../../Components/buttons";
-import { useUserWithdrawalHistory } from "../userLayout/reusableEffects";
+import { useUserBalanceSummary, useUserWithdrawalHistory } from "../userLayout/reusableEffects";
 import comingSoonSvg from "../../../assets/icons/comingSoon.svg";
 import eyeIcon from "../../../assets/icons/eyeFill.svg";
 import pendingIcon from "../../../assets/icons/pending.svg";
 import successIcon from "../../../assets/icons/success2.svg";
 import rejectIcon from "../../../assets/icons/failed.svg";
 import TransactionModal from "../../../Components/transactionModal";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { setUserWithdrawalAccount, userDataSummary } from "../../../hooks/local/userReducer";
+import Modal from "../../../Components/modals";
+import SmallModal from "../../../Components/smallModal";
+import InputWithLabel from "../../../Components/inputWithLabel";
+import CurrencyInput from "../../../Components/currencyInput";
+import PasswordInput from "../../../Components/passwordInput";
 
 const Withdrawals = ({ setPageTitle }) => {
     useEffect(() => {
@@ -19,11 +27,36 @@ const Withdrawals = ({ setPageTitle }) => {
         document.title = "Withdrawals | Ardvest";
         document.querySelector('meta[name="description"]').content = "Track investments, gain insights, and grow wealth with Ardvest dashboard.";
     }, [setPageTitle]);
-
+    const dispatch = useDispatch();
     const userId = useSelector((state) => state.user.userSessionData).userId;
+    const userData = useSelector((state)=>state.user.userSummaryData);
+    const userBalanceSummary = useUserBalanceSummary();
+    const roiBalance = userBalanceSummary?.roiBalance? userBalanceSummary.roiBalance : '0.00'; 
+    const [withdrawalAccountSetupModal, setWithdrawalAccountSetupModal] = useState(false);
+    const [withdrawalModal, setWithdrawalModal] = useState(false);
     const withdrawalHistory =  useUserWithdrawalHistory(userId);
     const [selectedTransaction, setSelectedTransaction] = useState(null);
-    console.log(withdrawalHistory);
+
+    const updateBankAccount = useFormik({
+        initialValues: {
+            ...userData.userWithdrawalAccount
+        },
+        validationSchema : Yup.object({
+            accountName : Yup.string().required("Account Name cannot be empty"),
+            accountNumber: Yup.number().required("Account Number cannot be empty").typeError('Account Number can only be in Number'),
+            bankName: Yup.string().required("Bank Name cannot be empty")
+        }),
+        onSubmit:async(values)=>{
+            const {accountName, bankName, accountNumber} = values;
+
+            let updateBankAccountData = {accountName,bankName,accountNumber,userId};
+            const {payload} = await dispatch(setUserWithdrawalAccount(updateBankAccountData))
+            if(payload.statusCode === "200"){
+                await dispatch(userDataSummary(userId));
+            }
+        }
+    })
+
     return (
         <div className="col-span-10">
             <Spinner loading={useSelector((state) => state.user).loading} />
@@ -40,10 +73,20 @@ const Withdrawals = ({ setPageTitle }) => {
             </div>
 
             <div className="grid md:flex md:justify-between items-center gap-y-4">
-                <div>djj</div>
+                <div>
+                <div className="mt-4 flex items-center gap-2">
+                <label for="statusFilter" className="block text-sm font-medium">Showing :</label>
+                <select id="statusFilter" onChange={()=>filterTable(6)} className="text-sm focus:outline-none focus:border-none ">
+                    <option value="All">All Withdrawals</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+              </div>
+                </div>
                 <div className="grid md:flex md:justify-between gap-x-8 gap-y-4">
-                    <Buttons btnText={'Make Withdrawal'} btnType={'primary'}/>
-                    <Buttons btnText={'Withdrawal Account'} btnType={'secondary'}/>
+                    <Buttons btnText={'Make Withdrawal'} btnType={'primary'} onClick={()=>setWithdrawalModal(true)}/>
+                    <Buttons btnText={`${updateBankAccount.values.accountName === "" ?'Create ' :' Update '}Withdrawal Account`} btnType={'secondary'} onClick={()=>setWithdrawalAccountSetupModal(true)}/>
                 </div>
 
             </div>
@@ -144,6 +187,63 @@ const Withdrawals = ({ setPageTitle }) => {
                     )
             }
 
+            
+            <Modal isVisible={withdrawalAccountSetupModal} onClose={()=>setWithdrawalAccountSetupModal(false)}>
+            <p className="text-primary font-semibold text-xl">{updateBankAccount.values.accountName === "" ?'Create ' :' Update '}Withdrawal Account</p>
+            <p className="text-ash_text_color font-light text-sm pb-4">Kindly Note that withdrawal will be made to this account:</p>
+              <form className="grid grid-cols-1   gap-5" onSubmit={updateBankAccount.handleSubmit}>
+                  <div className="grid grid-cols-1 gap-8">
+                    <InputWithLabel labelName={'Account Name'}
+                                    inputType={'text'}
+                                    inputName={'accountName'}
+                                    inputValue={updateBankAccount.values.accountName}
+                                    inputOnBlur={updateBankAccount.handleBlur}
+                                    inputOnChange={updateBankAccount.handleChange}
+                                    inputError={updateBankAccount.errors.accountName && updateBankAccount.touched.accountName ?  updateBankAccount.errors.accountName : null}
+                                    />
+                    <InputWithLabel labelName={'Account Number'}
+                                    inputType={'text'}
+                                    inputName={'accountNumber'}
+                                    inputValue={updateBankAccount.values.accountNumber}
+                                    inputOnBlur={updateBankAccount.handleBlur}
+                                    inputOnChange={updateBankAccount.handleChange}
+                                    inputError={updateBankAccount.errors.accountNumber && updateBankAccount.touched.accountNumber ?  updateBankAccount.errors.accountNumber : null}/>
+                    <InputWithLabel labelName={'Bank'}
+                                    inputType={'text'}
+                                    inputName={'bankName'}
+                                    inputValue={updateBankAccount.values.bankName}
+                                    inputOnBlur={updateBankAccount.handleBlur}
+                                    inputOnChange={updateBankAccount.handleChange}
+                                    inputError={updateBankAccount.errors.bankName && updateBankAccount.touched.bankName ?  updateBankAccount.errors.bankName : null}/>  
+                    <div>
+                    <Buttons btnText={`Continue`} btnType={'primary'} type={'submit'}/>                 
+                    </div> 
+                  </div>
+            </form>
+
+            </Modal>
+            
+            <SmallModal isVisible={withdrawalModal} onClose={()=>setWithdrawalModal(false)}>
+            <p className="text-primary font-semibold text-xl">Make Withdrawal</p>
+            <p className="text-ash_text_color font-light text-sm pb-4">Kindly Note:</p>
+            <ul>
+                <li className="font-medium text-xs text-ash_header_color md:mr-12 mb-4 ms-4">That withdrawal will be made to the account you have submitted.</li>
+                <li className="font-medium text-xs text-ash_header_color md:mr-12 ms-4">That your withdrawal will be made only from your ROI (Return On Investment) Balance</li>
+            </ul>
+            <span className="font-medium text-sm text-primary bg-[#E9FFE9] py-2 px-4 rounded-[54px] my-4 mr-16"><span className="font-bold">ROI Balance:</span> &#8358;{roiBalance}</span>
+           
+            <form className="grid gap-4">
+                <CurrencyInput labelName={'Amount to withdraw'} 
+                                inputType={'text'} />
+                <PasswordInput labelName={'Transaction Pin'}
+                            inputName={'transactionPin'}/>
+                            {/* inputValue={changeUserTransactionPinForm.values.transactionPin}
+                            inputOnBlur={changeUserTransactionPinForm.handleBlur}
+                            inputOnChange={changeUserTransactionPinForm.handleChange}
+                            inputError={changeUserTransactionPinForm.touched.transactionPin && changeUserTransactionPinForm.errors.transactionPin ? changeUserTransactionPinForm.errors.transactionPin : null}/> */}
+                <Buttons btnText={'Continue'} btnType={'primary'} type={'submit'} />
+            </form>
+            </SmallModal>
 
         </div>
     );

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import NavigationHeader from "../../../Components/navigationHeader";
 import { useInvestmentTypeList, useInvestmentTypes } from "../userLayout/reusableEffects";
 import comingSoon from "../../../assets/icons/comingSoon.svg";
-import investmentImage from "../../../assets/images/cowThumbnail.png";
 import Spinner from "../../../Components/spinner";
 import { useSelector } from "react-redux";
 import Modal from "../../../Components/modals";

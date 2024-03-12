@@ -6,8 +6,6 @@ import passwordImage from "../../../assets/images/passwordReset.png";
 import transactionPinImage from "../../../assets/images/pinReset.png";
 import Modal from "../../../Components/modals";
 import Buttons from "../../../Components/buttons";
-import InputWithLabel from "../../../Components/inputWithLabel";
-import DigitInput from "../../../Components/digitInput";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 import { changeUserPassword, changeUserTransactionPin } from "../../../hooks/local/userReducer";
