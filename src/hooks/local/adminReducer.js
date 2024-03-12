@@ -263,7 +263,7 @@ const administrativeSlice = createSlice({
         .addCase(changeInvestmentTypeStatus.fulfilled, (state,action)=>{
             if(action.payload.statusCode === "200"){
                 state.administrative = action.payload;
-                showSuccessToastMessage(action.payload.message);
+                showSuccessToastMessageReload(action.payload.message);
             }
             else{
                 state.error = action.payload.message;

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit"
 import { APIService } from "../remote/apiServices"
-import { retrieveFromLocalStorage, showErrorToastMessage, showSuccessToastMessage } from "../../Utils/constant";
+import { retrieveFromLocalStorage, showErrorToastMessage, showSuccessToastMessage, showSuccessToastMessageReload } from "../../Utils/constant";
 import { getPeriodOfDay } from "../../Utils/utils";
 
 const initialState = {
@@ -350,7 +350,7 @@ const userSlice = createSlice({
         .addCase(userWithdrawal.fulfilled, (state,action)=>{
             if(action.payload.statusCode === "200"){
                 state.users = action.payload;
-                showSuccessToastMessage(action.payload.message);
+                showSuccessToastMessageReload(action.payload.message);
             }
             else{
                 showErrorToastMessage(action.payload.message)

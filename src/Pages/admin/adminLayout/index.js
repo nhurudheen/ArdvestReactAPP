@@ -11,6 +11,7 @@ import Investment from "../pages/investments";
 import SingleInvestment from "../pages/singleInvestmentType";
 import Settings from "../pages/settings";
 import InvestmentRequest from "../pages/investmentRequest";
+import Withdrawals from "../pages/withdrawals";
 
 const AdminLayout = () => {
     const adminSession= useSelector((state)=>state.admin.adminSessionData);
@@ -35,6 +36,7 @@ const AdminLayout = () => {
                     <Route path="/customer" element={<Customer setPageTitle={setPageTitle} />}/>
                     <Route path="/investment" element={<Investment setPageTitle={setPageTitle}/>}/>
                     <Route path="/settings" element={<Settings setPageTitle={setPageTitle}/>}/>
+                    <Route path="/withdrawals" element={<Withdrawals setPageTitle={setPageTitle}/>}/>
                     <Route path="/requests" element={<InvestmentRequest setPageTitle={setPageTitle}/>}/>
                     <Route path="/single_customer/:userId" element={<SingleCustomer setPageTitle={setPageTitle} />}/>
                     <Route path="/single_investment_type/:investmentId/:investmentName" element={<SingleInvestment setPageTitle={setPageTitle} />}/>

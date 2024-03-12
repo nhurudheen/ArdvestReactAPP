@@ -14,7 +14,7 @@ import rejectIcon from "../../../assets/icons/failed.svg";
 import TransactionModal from "../../../Components/transactionModal";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { setUserWithdrawalAccount, userDataSummary } from "../../../hooks/local/userReducer";
+import { setUserWithdrawalAccount, userDataSummary, userWithdrawal } from "../../../hooks/local/userReducer";
 import Modal from "../../../Components/modals";
 import SmallModal from "../../../Components/smallModal";
 import InputWithLabel from "../../../Components/inputWithLabel";
@@ -53,6 +53,28 @@ const Withdrawals = ({ setPageTitle }) => {
             const {payload} = await dispatch(setUserWithdrawalAccount(updateBankAccountData))
             if(payload.statusCode === "200"){
                 await dispatch(userDataSummary(userId));
+            }
+        }
+    })
+
+    const makeWithdrawal = useFormik({
+        initialValues: {
+            amount:"",
+            userPin: ""
+        },
+        validationSchema: Yup.object({
+            amount: Yup.string().required("Amount cannot be empty"),
+            userPin: Yup.string().required("Transaction Pin cannot be empty").typeError('Transaction Pin can only be in Number').matches(/^\d{4}$/, 'Transaction Pin must be exactly 4 digits')
+        }),
+        onSubmit: async(values, {resetForm})=> {
+            const channel = "ROI Balance";
+            const {amount, userPin} = values;
+            let makeWithdrawalData = {amount,userPin,userId, channel};
+            const {payload} = await dispatch(userWithdrawal(makeWithdrawalData))
+            if(payload.statusCode === "200"){
+                await dispatch(userDataSummary(userId))
+                setWithdrawalModal(false);
+                resetForm();
             }
         }
     })
@@ -232,15 +254,19 @@ const Withdrawals = ({ setPageTitle }) => {
             </ul>
             <span className="font-medium text-sm text-primary bg-[#E9FFE9] py-2 px-4 rounded-[54px] my-4 mr-16"><span className="font-bold">ROI Balance:</span> &#8358;{roiBalance}</span>
            
-            <form className="grid gap-4">
+            <form className="grid gap-4" onSubmit={makeWithdrawal.handleSubmit}>
                 <CurrencyInput labelName={'Amount to withdraw'} 
-                                inputType={'text'} />
+                                inputName={'amount'}
+                                inputOnChange={makeWithdrawal.handleChange}
+                                inputOnBlur={makeWithdrawal.handleBlur}
+                                inputValue={makeWithdrawal.values.amount}
+                                inputError={makeWithdrawal.touched.amount && makeWithdrawal.errors.amount ? makeWithdrawal.errors.amount : null} />
                 <PasswordInput labelName={'Transaction Pin'}
-                            inputName={'transactionPin'}/>
-                            {/* inputValue={changeUserTransactionPinForm.values.transactionPin}
-                            inputOnBlur={changeUserTransactionPinForm.handleBlur}
-                            inputOnChange={changeUserTransactionPinForm.handleChange}
-                            inputError={changeUserTransactionPinForm.touched.transactionPin && changeUserTransactionPinForm.errors.transactionPin ? changeUserTransactionPinForm.errors.transactionPin : null}/> */}
+                            inputName={'userPin'}
+                            inputValue={makeWithdrawal.values.userPin}
+                            inputOnBlur={makeWithdrawal.handleBlur}
+                            inputOnChange={makeWithdrawal.handleChange}
+                            inputError={makeWithdrawal.touched.userPin && makeWithdrawal.errors.userPin ? makeWithdrawal.errors.userPin : null}/>
                 <Buttons btnText={'Continue'} btnType={'primary'} type={'submit'} />
             </form>
             </SmallModal>

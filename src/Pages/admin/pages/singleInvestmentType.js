@@ -44,7 +44,6 @@ const SingleInvestmentType = ({ setPageTitle }) => {
         const {payload} = await dispatch(changeInvestmentTypeStatus(investmentId))
         if(payload.statusCode === "200"){
           setSelectedInvestmentType(null);
-          window.location.reload(false);
         }
       }
       catch(error){};

@@ -86,12 +86,7 @@ const Transactions = ({ setPageTitle }) => {
                                                 </div>
                                                 <div className="w-full h-44 bg-brandyellow flex items-center">
                                                     <div className="w-full px-3 text-xs grid gap-3">
-                                                        <div className="flex justify-between pb-1 border-b border-b-black/10">
-                                                            <div className="font-medium">Transaction Type:</div>
-                                                            <div className="font-bold text-right"><span className="mx-4">{
-                                                                (selectedTransaction.transactionType === "Deposit") ? "Credit" :(selectedTransaction.transactionType === "'Return on Investment") ?'Credit':'Debit'
-                                                            }</span></div>
-                                                        </div>
+                                                   
                                                         <div className="flex justify-between pb-1 border-b border-b-black/10">
                                                             <div className="font-medium pr-2">Description:</div>
                                                             <div className="font-bold text-right">{selectedTransaction.description}</div>

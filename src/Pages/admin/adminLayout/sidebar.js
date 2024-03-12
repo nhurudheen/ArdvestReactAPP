@@ -4,6 +4,7 @@ import customerIcon from "../../../assets/icons/customers.svg";
 import investmentIcon from "../../../assets/icons/investment.svg";
 import requestIcon from "../../../assets/icons/requests.svg";
 import settingsIcon from "../../../assets/icons/settings.svg";
+import withdrawalIcon from "../../../assets/icons/withdrawalSVG.svg";
 import powerIcon from "../../../assets/icons/power.svg";
 const AdminSideBar = ({ sideBarVisibility, topBarTitle, closeSideBar }) => {
     return (
@@ -37,7 +38,15 @@ const AdminSideBar = ({ sideBarVisibility, topBarTitle, closeSideBar }) => {
                     <div className="pb-2 border-b">
                         <div className={`flex gap-3 items-center ${topBarTitle === 'Investment Request' ? 'bg-primary/10' : 'hover:bg-primary/10'} p-3 rounded-lg hover:scale-105`}>
                             <img src={requestIcon} alt="" />
-                            <div className={`text-lg ${topBarTitle === 'Requests' ? 'text-primary' : ''} font-medium`}>Requests</div>
+                            <div className={`text-lg ${topBarTitle === 'Investment Request' ? 'text-primary' : ''} font-medium`}>Requests</div>
+                        </div>
+                    </div>
+                </Link>
+                <Link to={"withdrawals"} onClick={closeSideBar}>
+                    <div className="pb-2 border-b">
+                        <div className={`flex gap-3 items-center ${topBarTitle === 'Customer Withdrawals' ? 'bg-primary/10' : 'hover:bg-primary/10'} p-3 rounded-lg hover:scale-105`}>
+                            <img src={withdrawalIcon} alt="" />
+                            <div className={`text-lg ${topBarTitle === 'Customer Withdrawals' ? 'text-primary' : ''} font-medium`}>Withdrawals</div>
                         </div>
                     </div>
                 </Link>
