@@ -375,6 +375,16 @@ export class APIService {
         }
     }
 
+    static async updateUserWithdrawal(data){
+        try{
+            return APIClient.post("update_fund_withdrawal", data);
+        }
+        catch(error){
+            APIService.extractError(error);
+            throw (error);
+        }
+    }
+
     static async userWithdrawals(userId){
         try{
             return APIClient.get(`/list_user_fund_withdrawals?userId=${userId}`)

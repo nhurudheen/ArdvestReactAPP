@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { adminDashboardSummary, changeInvestmentTypeStatus, customerDataSummary, customerInvestmentList, customerList, deleteInvestmentType, investmentRequestHistory, investmentTypesInvestments, investmentTypesInvestors, listInvestmentType, withdrawalHistory } from "../../../hooks/local/adminReducer";
+import { adminDashboardSummary, customerDataSummary, customerInvestmentList, customerList, deleteInvestmentType, investmentRequestHistory, investmentTypesInvestments, investmentTypesInvestors, listInvestmentType, withdrawalHistory } from "../../../hooks/local/adminReducer";
 import { useNavigate } from "react-router-dom";
 
 export function useDashboardSummary (){

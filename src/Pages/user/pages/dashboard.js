@@ -13,7 +13,7 @@ const UserDashboard = ({ setPageTitle }) => {
   const [timeOfTheDay, setTimeOfTheDay] = useState("");
   const [showROIBalance, setShowROIBalance] = useState(false);
   const [showInvestmentBalance, setShowInvestmentBalance] = useState(false);
-  const userTransactionHistory = useUserTransactionHistory().slice(0, 5);
+  const userTransactionHistory = useUserTransactionHistory();
   const userBalanceSummary = useUserBalanceSummary();
 
   const roiBalance = userBalanceSummary?.roiBalance ? currencyFormat(userBalanceSummary.roiBalance) : '0.00';
@@ -115,9 +115,9 @@ const UserDashboard = ({ setPageTitle }) => {
           <div className=" px-4 py-8 rounded-lg mt-4 grid gap-4 bg-black/1">
             {
               userTransactionHistory.length > 0 ?
-                userTransactionHistory.map((val, key) => {
-                  const transactionIcon = (val.transactionType === "Deposit") ? creditSvg : debitSvg;
-                  const statusColor = (val.status === "Approved") ? 'text-primary' : 'text-red-500';
+                userTransactionHistory.slice(0,5).map((val, key) => {
+                  const transactionIcon = (val.transactionType === "Book Investment") ? creditSvg : debitSvg;
+                  const statusColor = (val.status === "Approved") ? 'text-primary' :(val.status === "Pending") ?'text-yellow-500' :'text-red-500';
                   return (
                     <div key={key} className="flex gap-4 ">
                       <div><img src={transactionIcon} alt="" /></div>

@@ -18,6 +18,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import PasswordInput from "../../../Components/passwordInput";
 import { updateUserInvestments } from "../../../hooks/local/adminReducer";
+import { SearchTable, filterTable } from "../../../Utils/utils";
 
 const InvestmentRequest = ({ setPageTitle }) => {
     useEffect(() => {
@@ -27,6 +28,7 @@ const InvestmentRequest = ({ setPageTitle }) => {
     }, [setPageTitle]);
     const dispatch = useDispatch();
     const investmentHistoryLog = useInvestmentRequest();
+    console.log(investmentHistoryLog);
     const [tabVisibility, setTabVisibility] = useState({ investmentTab: true, pendingInvestmentTab: false });
     const [selectedTransaction, setSelectedTransaction] = useState(null);
     const [approvalModal, setApprovalModal] = useState(null);
@@ -67,6 +69,19 @@ const InvestmentRequest = ({ setPageTitle }) => {
             </div>
 
             <div id="investmentTab" className={tabVisibility.investmentTab ? '' : 'hidden'}>
+            <div className="flex justify-between mb-5">
+                    <div className="flex items-center gap-2">
+                        <label for="statusFilter" className="block text-sm font-medium">Showing :</label>
+                        <select id="statusFilter" onChange={() => filterTable(6)} className="text-sm focus:outline-none focus:border-none ">
+                            <option value="All">All Investment</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div className="">
+                        <input type="search" name="" id="searchInput" className="p-2 bg-[#f8f8f880] focus:outline focus:outline-primary border text-sm rounded w-full placeholder:text-xs" onInput={SearchTable} placeholder="Search History..." />
+                    </div>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     <CounterCard title={'Total Invested Amount'}
                         number={`\u20A6${investmentHistoryLog.investmentSummary?.totalInvestedAmount ? investmentHistoryLog.investmentSummary.totalInvestedAmount : ''}`}
@@ -232,7 +247,9 @@ const InvestmentRequest = ({ setPageTitle }) => {
                                                 <div className="flex justify-between items-center">
                                                     <p className="text-primary text-lg font-bold">Investment Details</p>
                                                     <div>
-                                                        <button type="" onClick="" className="border border-primary hidden md:block text-primary text-center px-4 py-2 text-xs rounded w-full hover:bg-primary hover:text-white">View Payment Receipt</button>
+                                                        <button type="" onClick={()=>{
+                                                            window.open(selectedPendingTransaction.paymentFile, '_blank');
+                                                        }} className="border border-primary hidden md:block text-primary text-center px-4 py-2 text-xs rounded w-full hover:bg-primary hover:text-white">Download Payment Receipt</button>
                                                         <button className="block md:hidden"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="rgba(33,130,37,1)"><path d="M9 4L6 2L3 4V16V19C3 20.6569 4.34315 22 6 22H20C21.6569 22 23 20.6569 23 19V17H7V19C7 19.5523 6.55228 20 6 20C5.44772 20 5 19.5523 5 19V15H21V4L18 2L15 4L12 2L9 4Z"></path></svg></button>
                                                     </div>
                                                 </div>

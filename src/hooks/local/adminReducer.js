@@ -184,6 +184,15 @@ export const updateUserInvestments = createAsyncThunk(
         return response;
     }
 )
+
+export const updateUserWithdrawal = createAsyncThunk(
+    "admin/updateUserWithdrawal",
+    async(data)=>{
+        const apiChangeUserWithdrawalStatus = await APIService.updateUserWithdrawal(data);
+        const response = apiChangeUserWithdrawalStatus.data;
+        return response;
+    }
+)
 const logOutSession = () =>{
     sessionStorage.removeItem("adminSessionData");
     sessionStorage.removeItem("investmentTypes");
@@ -376,6 +385,17 @@ const administrativeSlice = createSlice({
             }
             state.loading = false;
         })
+        .addCase(updateUserWithdrawal.fulfilled, (state,action) =>{
+            if(action.payload.statusCode === "200"){
+                state.administrative = action.payload;
+                showSuccessToastMessageReload(action.payload.message);
+            }
+            else{
+                state.error = action.payload.message;
+                showErrorToastMessage(action.payload.message)
+            }
+            state.loading = false;
+        })
         .addMatcher(isAnyOf(
             auth.pending,
             adminDashboardSummary.pending,
@@ -395,6 +415,7 @@ const administrativeSlice = createSlice({
             updateDepositBankAccount.pending,
             investmentRequestHistory.pending,
             updateUserInvestments.pending,
+            updateUserWithdrawal.pending,
             withdrawalHistory.pending
         ), 
         (state)=>{
@@ -421,6 +442,7 @@ const administrativeSlice = createSlice({
                 updateDepositBankAccount.rejected,
                 investmentRequestHistory.rejected,
                 updateUserInvestments.rejected,
+                updateUserWithdrawal.rejected,
                 withdrawalHistory.rejected
             ),
             (state,action)=>{

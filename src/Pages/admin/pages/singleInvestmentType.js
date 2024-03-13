@@ -342,7 +342,7 @@ const SingleInvestmentType = ({ setPageTitle }) => {
                               inputOnChange={createInvestmentForm.handleChange}
                               inputValue={createInvestmentForm.values.totalInvestment}
                               inputError={createInvestmentForm.touched.totalInvestment && createInvestmentForm.errors.totalInvestment ? createInvestmentForm.errors.totalInvestment : null} />
-                <InputWithLabel labelName={'ROI'}
+                <InputWithLabel labelName={'ROI (%)'}
                                 inputName={'roiPercentage'}
                                 inputType={'number'}                              
                                 inputOnBlur={createInvestmentForm.handleBlur}
@@ -350,6 +350,7 @@ const SingleInvestmentType = ({ setPageTitle }) => {
                                 inputValue={createInvestmentForm.values.roiPercentage}
                                 inputError={createInvestmentForm.touched.roiPercentage && createInvestmentForm.errors.roiPercentage ? createInvestmentForm.errors.roiPercentage : null} />
                 </div>
+               
                 <div className="flex justify-between gap-4">
                 <InputWithLabel labelName={'Start Date'}
                                 inputName={'startDate'}

@@ -17,7 +17,8 @@ import Modal from "../../../Components/modals";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import PasswordInput from "../../../Components/passwordInput";
-import { updateUserInvestments } from "../../../hooks/local/adminReducer";
+import { SearchTable, filterTable } from "../../../Utils/utils";
+import { updateUserWithdrawal } from "../../../hooks/local/adminReducer";
 
 const Withdrawals = ({ setPageTitle }) => {
     useEffect(() => {
@@ -27,7 +28,7 @@ const Withdrawals = ({ setPageTitle }) => {
     }, [setPageTitle]);
     const dispatch = useDispatch();
     const withdrawalHistoryLog = useWithdrawalRequest();
-    const [tabVisibility, setTabVisibility] = useState({ withdrawalTab: true, pendingWithdrawalTab: false });
+    const [tabVisibility, setTabVisibility] = useState({ withdrawalTab: false, pendingWithdrawalTab: true });
     const [selectedTransaction, setSelectedTransaction] = useState(null);
     const [approvalModal, setApprovalModal] = useState(null);
     const [approvalStatus, setApprovalStatus] = useState("");
@@ -39,7 +40,7 @@ const Withdrawals = ({ setPageTitle }) => {
             pendingWithdrawalTab: tabId === 'pendingWithdrawalTab',
         }))
     }
-    const updateUserInvestment = useFormik({
+    const updateUserWithdrawalStatus = useFormik({
         initialValues: {
             adminPasskey: "",
             message: "",
@@ -51,8 +52,8 @@ const Withdrawals = ({ setPageTitle }) => {
         onSubmit: async (values) => {
             const { adminPasskey, message } = values;
             let investmentData = { adminPasskey, message, transactionId, approvalStatus };
-            const { payload } = await dispatch(updateUserInvestments(investmentData));
-            if(payload.statusCode === "200"){
+            const { payload } = await dispatch(updateUserWithdrawal(investmentData));
+            if (payload.statusCode === "200") {
                 setApprovalModal(false);
             }
         }
@@ -62,11 +63,24 @@ const Withdrawals = ({ setPageTitle }) => {
             <Spinner loading={useSelector((state) => state.admin).loading} />
             <NavigationHeader title={'Withdrawal History'} />
             <div className="mt-10 grid md:flex gap-4 mb-4">
-                <span className={`py-3 px-5 bg-primary text-xs text-white rounded-md cursor-default ${tabVisibility.withdrawalTab ? 'opacity-50' : ''}`} onClick={() => showTab('withdrawalTab')} >Withdrawal List</span>
                 <span className={`py-3 px-5 bg-primary text-xs text-white rounded-md cursor-default ${tabVisibility.pendingWithdrawalTab ? 'opacity-50' : ''}`} onClick={() => showTab('pendingWithdrawalTab')}>Pending Withdrawal</span>
+                <span className={`py-3 px-5 bg-primary text-xs text-white rounded-md cursor-default ${tabVisibility.withdrawalTab ? 'opacity-50' : ''}`} onClick={() => showTab('withdrawalTab')} >Withdrawal List</span>
             </div>
 
             <div id="withdrawalTab" className={tabVisibility.withdrawalTab ? '' : 'hidden'}>
+                <div className="flex justify-between mb-5">
+                    <div className="flex items-center gap-2">
+                        <label for="statusFilter" className="block text-sm font-medium">Showing :</label>
+                        <select id="statusFilter" onChange={() => filterTable(6)} className="text-sm focus:outline-none focus:border-none ">
+                            <option value="All">All Withdrawal</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div className="">
+                        <input type="search" name="" id="searchInput" className="p-2 bg-[#f8f8f880] focus:outline focus:outline-primary border text-sm rounded w-full placeholder:text-xs" onInput={SearchTable} placeholder="Search Withdrawals..." />
+                    </div>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     <CounterCard title={'Total Amount Withdraw'}
                         number={`\u20A6${withdrawalHistoryLog.withdrawalSummary?.totalWithdrawal ? withdrawalHistoryLog.withdrawalSummary.totalWithdrawal : ''}`}
@@ -97,7 +111,7 @@ const Withdrawals = ({ setPageTitle }) => {
 
                                 <tbody>
                                     {withdrawalHistoryLog.withdrawalList.map((val, key) => {
-                                        const statusColor = (val.status === "Active") ? 'text-primary' : (val.status === "Pending") ? 'text-yellow-500' : 'text-red-500';
+                                        const statusColor = (val.status === "Approved") ? 'text-primary' : (val.status === "Pending") ? 'text-yellow-500' : 'text-red-500';
                                         return (
 
                                             <tr key={val.id || key} className="odd:bg-[#F9F9F9] border-t-8 border-t-white" onClick={() => setSelectedTransaction(val)}>
@@ -120,11 +134,11 @@ const Withdrawals = ({ setPageTitle }) => {
                                                     <div className="w-full h-44 bg-slate-200 text-center flex items-center">
                                                         <div className="w-full">
                                                             <div className="w-full flex justify-center mb-4">
-                                                                <img src={(selectedTransaction.status) === "Active" ? successIcon : (selectedTransaction.status) === "Pending" ? pendingIcon : rejectIcon} alt="" />
+                                                                <img src={(selectedTransaction.status) === "Approved" ? successIcon : (selectedTransaction.status) === "Pending" ? pendingIcon : rejectIcon} alt="" />
                                                             </div>
-                                                            <p className="capitalize text-sm font-medium">"selectedTransaction.transactionType"</p>
+                                                            <p className="capitalize text-sm font-medium">Withdrawal from <span>{selectedTransaction.channel}</span></p>
                                                             <p className="text-2xl font-medium">&#8358;<span>{selectedTransaction.amount}</span></p>
-                                                            <p className="text-xs">Withdrawal from <span>{selectedTransaction.channel}</span></p>
+                                                            <p className="text-xs">TransactionID: <span>{selectedTransaction.transactionId}</span></p>
                                                         </div>
                                                     </div>
                                                     <div className="w-full h-44 bg-brandyellow flex items-center">
@@ -171,7 +185,7 @@ const Withdrawals = ({ setPageTitle }) => {
                                 <div className="w-full grid justify-center">
                                     <img src={comingSoon} alt="" />
                                 </div>
-                                <p className="text-center text-lg font-semibold text-primary">No Withdrawal Available yet</p>
+                                <p className="text-center text-lg font-semibold text-primary">No Withdrawal Available yet, Kindly check pending withdrawal</p>
                             </div>
                         )
                 }
@@ -229,9 +243,9 @@ const Withdrawals = ({ setPageTitle }) => {
                                     {
                                         selectedPendingTransaction && (
                                             <LargeModal isVisible={selectedPendingTransaction !== null} onClose={() => setSelectedPendingTransaction(null)}>
-                                                
-                                                    <p className="text-primary text-lg font-bold">Withdrawal Details</p>
-                                                
+
+                                                <p className="text-primary text-lg font-bold">Withdrawal Details</p>
+
                                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-x-3 py-5">
                                                     <div>
                                                         <InvestmentDetailsText title={'Customer FullName'} text={selectedPendingTransaction.userData.lastname + " " + selectedPendingTransaction.userData.firstName} />
@@ -286,24 +300,24 @@ const Withdrawals = ({ setPageTitle }) => {
 
             </div>
 
-            <Modal isVisible={approvalModal} onClose={() => {setApprovalModal(false);updateUserInvestment.resetForm()}} >
-                <form onSubmit={updateUserInvestment.handleSubmit}>
+            <Modal isVisible={approvalModal} onClose={() => { setApprovalModal(false); updateUserWithdrawalStatus.resetForm() }} >
+                <form onSubmit={updateUserWithdrawalStatus.handleSubmit}>
                     <p className={`text-xl text-primary font-medium pb-4`}>{(approvalStatus === "0") ? "Approve" : "Reject"} Withdrawal</p>
                     <PasswordInput labelName={'Admin Transaction Pin'}
                         inputName={'adminPasskey'}
-                        inputOnBlur={updateUserInvestment.handleBlur}
-                        inputOnChange={updateUserInvestment.handleChange}
-                        inputValue={updateUserInvestment.values.adminPasskey}
-                        inputError={updateUserInvestment.errors.adminPasskey && updateUserInvestment.touched.adminPasskey ? updateUserInvestment.errors.adminPasskey : null} />
+                        inputOnBlur={updateUserWithdrawalStatus.handleBlur}
+                        inputOnChange={updateUserWithdrawalStatus.handleChange}
+                        inputValue={updateUserWithdrawalStatus.values.adminPasskey}
+                        inputError={updateUserWithdrawalStatus.errors.adminPasskey && updateUserWithdrawalStatus.touched.adminPasskey ? updateUserWithdrawalStatus.errors.adminPasskey : null} />
                     <div className="grid py-5">
                         <span className="text-sm font-medium text-primary">Message:</span>
                         <textarea rows="5" cols="5" name="message" className="p-3 bg-[#f8f8f8] border text-sm rounded"
-                            onBlur={updateUserInvestment.handleBlur}
-                            onChange={updateUserInvestment.handleChange}
-                            value={updateUserInvestment.values.message}
+                            onBlur={updateUserWithdrawalStatus.handleBlur}
+                            onChange={updateUserWithdrawalStatus.handleChange}
+                            value={updateUserWithdrawalStatus.values.message}
                         />
 
-                        <code className="text-red-500 text-xs">{updateUserInvestment.touched.message && updateUserInvestment.errors.message ? updateUserInvestment.errors.message : null} </code>
+                        <code className="text-red-500 text-xs">{updateUserWithdrawalStatus.touched.message && updateUserWithdrawalStatus.errors.message ? updateUserWithdrawalStatus.errors.message : null} </code>
                     </div>
                     <Buttons btnText={'Continue'} btnType={'primary'} type={'submit'} />
                 </form>
