@@ -10,7 +10,6 @@ const initialState = {
     isAuthenticated :  false,
     ...retrieveFromLocalStorage([
         "userSessionData",
-        "userInvestmentList",
         "userSummaryData",
     ])
 }
@@ -123,7 +122,6 @@ export const userInvestmentList = createAsyncThunk(
     async(userId)=>{
         const apiInvestmentList = await APIService.userInvestments(userId);
         const response = apiInvestmentList.data;
-        saveToLocalStorage("userInvestmentList", JSON.stringify(response.result));
         return response;
     }
 )
@@ -229,7 +227,6 @@ export const userWithdrawalList = createAsyncThunk(
 const logOutSession = () =>{
     sessionStorage.removeItem("users");
     sessionStorage.removeItem("userSessionData"); 
-    sessionStorage.removeItem("userInvestmentList");
     sessionStorage.removeItem("userSummaryData");
 }
 
@@ -296,7 +293,6 @@ const userSlice = createSlice({
         .addCase(userInvestmentList.fulfilled, (state,action)=>{
             if(action.payload.statusCode === "200"){
                 state.users = action.payload;
-                state.userInvestmentList = action.payload.result;
             }
             state.loading = false
         })

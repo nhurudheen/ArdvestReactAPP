@@ -8,7 +8,7 @@ import PasswordInput from "../../../Components/passwordInput";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { userAuthenticate, userDataSummary, userInvestmentList } from "../../../hooks/local/userReducer";
+import { userAuthenticate, userDataSummary } from "../../../hooks/local/userReducer";
 import Spinner from "../../../Components/spinner";
 
 const UserLogin = () => {
@@ -48,7 +48,6 @@ const UserLogin = () => {
                 navigate('/dashboard');
                 const userId = payload.result.userId;
                 await dispatch(userDataSummary(userId));
-                await dispatch(userInvestmentList(userId));
             }
         }
     })

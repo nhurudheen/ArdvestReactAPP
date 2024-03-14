@@ -12,7 +12,7 @@ import bankSvg from "../../../assets/icons/bank.svg";
 import arrowSvg from "../../../assets/icons/greenArrow.svg";
 import cardSvg from "../../../assets/icons/card.svg";
 import copyIcon from "../../../assets/icons/copyIcon.svg";
-import { userBookInvestment, userInvestmentList } from "../../../hooks/local/userReducer";
+import { userBookInvestment } from "../../../hooks/local/userReducer";
 import { copyToClipboard } from "../../../Utils/utils";
 import * as Yup from "yup";
 import InputWithLabel from "../../../Components/inputWithLabel";
@@ -87,7 +87,6 @@ const SingleInvestment = ({ setPageTitle }) => {
             let bookInvestmentData = { userId, amount, investmentId,referenceNumber,proofOfPayment };
             const { payload } = await dispatch(userBookInvestment(bookInvestmentData))
             if (payload.statusCode === "200") {
-                await dispatch(userInvestmentList(userId));
                 navigate("/investment")
             }
             else {

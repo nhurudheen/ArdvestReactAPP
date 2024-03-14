@@ -5,7 +5,7 @@ import Buttons from "../../../Components/buttons";
 import { useFormik } from "formik";
 import { useSelector } from "react-redux";
 import Spinner from "../../../Components/spinner";
-import { useUserBalanceSummary } from "../userLayout/reusableEffects";
+import { useUserBalanceSummary, useUserInvestmentList } from "../userLayout/reusableEffects";
 import investmentIcon from "../../../assets/icons/investment.svg";
 const UserProfile = ({ setPageTitle }) => {
     useEffect(() => {
@@ -19,7 +19,7 @@ const UserProfile = ({ setPageTitle }) => {
     const amountWithdrawal = userBalanceSummary?.amountWithdraw? userBalanceSummary.amountWithdraw : '0.00';  
     const [tabVisibility, setTabVisibility] = useState({ profileTab: true, investmentTab: false });
     const userData = useSelector((state)=>state.user.userSummaryData);
-    const investmentData = useSelector((state)=>state.user.userInvestmentList);
+    const investmentData = useUserInvestmentList();
 
     const showTab = (tabId) => {
         setTabVisibility(() => ({
