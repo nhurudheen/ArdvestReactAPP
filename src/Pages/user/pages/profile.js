@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import Spinner from "../../../Components/spinner";
 import { useUserBalanceSummary, useUserInvestmentList } from "../userLayout/reusableEffects";
 import investmentIcon from "../../../assets/icons/investment.svg";
+import comingSoon from "../../../assets/icons/comingSoon.svg";
 const UserProfile = ({ setPageTitle }) => {
     useEffect(() => {
         setPageTitle("Profile");
@@ -120,7 +121,10 @@ const UserProfile = ({ setPageTitle }) => {
               </div>
               <p className="overflow-hidden text-lg font-semibold py-4">Investment</p>
               <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-               {investmentData.map((val,key)=>{
+               {
+                investmentData.length > 0
+                ?
+               investmentData.map((val,key)=>{
                     return(
                         <div className="bg-[#F5F5F5] py-4 px-4 rounded-lg grid md:flex gap-4 items-center" key={key}>
                         <img src={investmentIcon} alt=""/>
@@ -142,7 +146,18 @@ const UserProfile = ({ setPageTitle }) => {
                         </div>   
                       </div>
                     )
-               })}
+               })
+               :
+               (
+                <div className="grid gap-4 my-16">
+                    <div className="w-full grid justify-center">
+                        <img src={comingSoon} alt="" />
+                    </div>
+                    <p className="text-center text-lg font-semibold text-primary">No Investment Booked yet</p>
+                    <p className="text-center">Kindly check the investment tab to get started</p>
+                </div>
+               )
+               }
              </div>
             </div>
 

@@ -271,7 +271,7 @@ const SingleInvestmentType = ({ setPageTitle }) => {
                       <td className="px-3 py-4"><p className="truncate w-[200px]">{val.investmentName}</p></td>
                       <td className="px-3 py-4"><p className="truncate w-[150px]">&#8358;{val.amount}</p></td>
                       <td className="px-3 py-4"><p className="truncate w-[150px]">{val.dateBooked}</p></td>
-                      <td className="px-3 py-4"><p className={`truncate w-[150px] ${val.status === 'Active' ? 'text-primary/50' : 'text-red-500'} font-medium`}>{val.status}</p></td>
+                      <td className="px-3 py-4"><p className={`truncate w-[150px] ${val.status === 'Active' ? 'text-primary/50' : val.status ==='Pending' ? 'text-yellow-500' : 'text-red-500'} font-medium`}>{val.status}</p></td>
                       <td className="px-3 py-4">{val.roi} %</td>
                       <td className="px-3 py-4"><p className="truncate w-[150px]">{val.investmentEndDate}</p></td>
                     </tr>

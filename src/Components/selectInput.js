@@ -2,7 +2,7 @@ const SelectInput = ({ labelName, selectOptions, valueKey, labelKey, selectError
     return (
         <div className="grid">
             <span className="text-sm font-medium">{labelName}:</span>
-            <select type="text" value={selectValue} onBlur={selectBlur} name={selectName} onChange={onChange}  className="p-3 bg-[#f8f8f8] border text-sm rounded text-primary">
+            <select type="text" value={selectValue} onBlur={selectBlur} name={selectName} onChange={onChange}  className="p-3 bg-[#f8f8f8] border text-sm rounded text-primary focus:border-black focus:border-2 focus:outline-none">
                 <option value="" disabled selected defaultValue>Select a {labelName}</option>
                 {
                     selectOptions.map((option) => (

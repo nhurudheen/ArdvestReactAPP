@@ -29,37 +29,47 @@ const AdminDashboard = ({ setPageTitle }) => {
                         </div>
                     </Link>
                     <Link to={"investment"}>
-                    <div className="grid border p-4 rounded-lg gap-8 bg-[#FFEFCA] hover:scale-105">
-                        <p className="h-16 overflow-hidden text-sm">Total Number of Investment.</p>
-                        <p className="text-end text-3xl font-semibold">{dashboardData?.totalNoOfInvestment ? dashboardData.totalNoOfInvestment : '0'}</p>
-                    </div>
+                        <div className="grid border p-4 rounded-lg gap-8 bg-[#FFEFCA] hover:scale-105">
+                            <p className="h-16 overflow-hidden text-sm">Total Number of Investment.</p>
+                            <p className="text-end text-3xl font-semibold">{dashboardData?.totalNoOfInvestment ? dashboardData.totalNoOfInvestment : '0'}</p>
+                        </div>
                     </Link>
-                    <div className="grid border p-4 rounded-lg gap-8 bg-[#C3FFC6] hover:scale-105">
-                        <p className="h-16 overflow-hidden text-sm">Total Number of Customer Investments.</p>
-                        <p className="text-end text-3xl font-semibold">{dashboardData?.totalNoOfUserInvestment ? dashboardData.totalNoOfUserInvestment : '0'}</p>
-                    </div>
-
-                    <div className="grid border p-4 rounded-lg gap-8 bg-[#FFEFCA] hover:scale-105">
-                        <p className="h-16 overflow-hidden text-sm">Total Pending Investment Request.</p>
-                        <p className="text-end text-3xl font-semibold">{dashboardData?.pendingInvestment ? dashboardData.pendingInvestment : '0'}</p>
-                    </div>
-
-                    <div className="grid border p-4 rounded-lg gap-8 bg-[#C3FFC6] hover:scale-105">
-                        <p className="h-16 overflow-hidden text-sm">Today Investment.</p>
-                        <p className="text-end text-3xl font-semibold">{dashboardData?.todayInvestment ? dashboardData.todayInvestment : '0'}</p>
-                    </div>
-                    <div className="grid border p-4 rounded-lg gap-8 bg-[#FFEFCA] hover:scale-105">
-                        <p className="h-16 overflow-hidden text-sm">Total Number of Withdrawal.</p>
-                        <p className="text-end text-3xl font-semibold">{dashboardData?.totalWithdrawal ? dashboardData.totalWithdrawal : '0'}</p>
-                    </div>
-                    <div className="grid border p-4 rounded-lg gap-8 bg-[#C3FFC6] hover:scale-105">
-                        <p className="h-16 overflow-hidden text-sm ">Today Withdrawal</p>
-                        <p className="text-end text-3xl font-semibold">{dashboardData?.todayWithdrawal ? dashboardData.todayWithdrawal : '0'}</p>
-                    </div>
-                    <div className="grid border p-4 rounded-lg gap-8 bg-[#FFEFCA] hover:scale-105">
-                        <p className="h-16 overflow-hidden text-sm">Total Pending Withdrawal Request.</p>
-                        <p className="text-end text-3xl font-semibold">{dashboardData?.pendingWithdrawal ? dashboardData.pendingWithdrawal : '0'}</p>
-                    </div>
+                    <Link to={"request"}>
+                        <div className="grid border p-4 rounded-lg gap-8 bg-[#C3FFC6] hover:scale-105">
+                            <p className="h-16 overflow-hidden text-sm">Total Number of Customer Investments.</p>
+                            <p className="text-end text-3xl font-semibold">{dashboardData?.totalNoOfUserInvestment ? dashboardData.totalNoOfUserInvestment : '0'}</p>
+                        </div>
+                    </Link>
+                    <Link to={"request"}>
+                        <div className="grid border p-4 rounded-lg gap-8 bg-[#FFEFCA] hover:scale-105">
+                            <p className="h-16 overflow-hidden text-sm">Total Pending Investment Request.</p>
+                            <p className="text-end text-3xl font-semibold">{dashboardData?.pendingInvestment ? dashboardData.pendingInvestment : '0'}</p>
+                        </div>
+                    </Link>
+                    <Link to={"request"}>
+                        <div className="grid border p-4 rounded-lg gap-8 bg-[#C3FFC6] hover:scale-105">
+                            <p className="h-16 overflow-hidden text-sm">Today Investment.</p>
+                            <p className="text-end text-3xl font-semibold">{dashboardData?.todayInvestment ? dashboardData.todayInvestment : '0'}</p>
+                        </div>
+                    </Link>
+                    <Link to={"withdrawals"}>
+                        <div className="grid border p-4 rounded-lg gap-8 bg-[#FFEFCA] hover:scale-105">
+                            <p className="h-16 overflow-hidden text-sm">Total Number of Withdrawal.</p>
+                            <p className="text-end text-3xl font-semibold">{dashboardData?.totalWithdrawal ? dashboardData.totalWithdrawal : '0'}</p>
+                        </div>
+                    </Link>
+                    <Link to={"withdrawals"}>
+                        <div className="grid border p-4 rounded-lg gap-8 bg-[#C3FFC6] hover:scale-105">
+                            <p className="h-16 overflow-hidden text-sm ">Today Withdrawal</p>
+                            <p className="text-end text-3xl font-semibold">{dashboardData?.todayWithdrawal ? dashboardData.todayWithdrawal : '0'}</p>
+                        </div>
+                    </Link>
+                    <Link to={"withdrawals"}>
+                        <div className="grid border p-4 rounded-lg gap-8 bg-[#FFEFCA] hover:scale-105">
+                            <p className="h-16 overflow-hidden text-sm">Total Pending Withdrawal Request.</p>
+                            <p className="text-end text-3xl font-semibold">{dashboardData?.pendingWithdrawal ? dashboardData.pendingWithdrawal : '0'}</p>
+                        </div>
+                    </Link>
 
                 </div>
             </div>
