@@ -261,7 +261,7 @@ const SingleInvestmentType = ({ setPageTitle }) => {
                     <th className="px-3 py-4 text-start"><p className="truncate w-[150px]">Investment End Date</p></th>
                   </tr>
                 </thead>
-
+   
                 <tbody>
                   {investorList.map((val,key)=>{
                     return (
